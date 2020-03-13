@@ -1,0 +1,1231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created 2020-03-02 10:26:39 by zhaider on BTIS1000096241 using MTPE-5.3.0.1 -->
+<!-- File: C:/mt/Aventra/Sandbox/AVENTRA_TCMS_SIL2/cfg/CCUS_1/applications/SA8_MonTempGear/EEA_CCUS_SA8_MonTempGear.mtx -->
+<application name="SA8_MonTempGear" version="1.1.0.0" type="safe" cycle-time="256" etb-access="None" redundant="1" broadcast="0">
+ <comment><![CDATA[10.Jan 2020: 
+Splitted application SA2_Mon into 3 parts, due to the tool limitation of 5000 instructions for an application.
+
+SA8_MonTempGear(Diag) on train level containing safety related and Interface functions for GearBox Temp and Prob error detection]]></comment>
+ <file path="SA8_MonTempGear.zip"/>
+ <meta-data>
+  <tag name="ProductID" value=""/>
+  <tag name="Supplier" value="BT"/>
+  <tag name="Type" value="a"/>
+ </meta-data>
+ <interface>
+  <variable-group name="S_Parameters">
+   <variable name="S_P_Project" array-size="1" type="MWT_UINT" usage="input" safe="1">
+    <comment><![CDATA[External parameter (Para_Static.Project): S_P_Project]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SMDC_Parameters">
+   <variable name="SMDC_P_TmpPrbFltHiLim" array-size="1" type="MWT_INT" usage="input" safe="1" min="150" max="200">
+    <comment><![CDATA[Parameter: Temperature probe Fault High threshold limit]]></comment>
+   </variable>
+   <variable name="SMDC_P_TmpPrbFltLoLim" array-size="1" type="MWT_INT" usage="input" safe="1" min="-40" max="0">
+    <comment><![CDATA[Parameter: Temperature probe Fault Low threshold limit]]></comment>
+   </variable>
+   <variable name="SMDC_P_TmpOutLim" array-size="1" type="MWT_INT" usage="input" safe="1" min="-40" max="200">
+    <comment><![CDATA[External parameter (Para_Cust.HABD): SMAC_P_TmpOutLim]]></comment>
+   </variable>
+   <variable name="SMDC_P_TmpInLim" array-size="1" type="MWT_INT" usage="input" safe="1" min="-40" max="200">
+    <comment><![CDATA[External parameter (Para_Cust.HABD): SMAC_P_TmpInLim]]></comment>
+   </variable>
+   <variable name="SMDC_Pt_TmpOutLimTimer" array-size="1" type="MWT_TIME" usage="input" safe="1" min="0s" max="10s">
+    <comment><![CDATA[Parameter: Temperature Probe Outside range limit trigger timer]]></comment>
+   </variable>
+   <variable name="SMDC_Pt_TmpInLimTimer" array-size="1" type="MWT_TIME" usage="input" safe="1" min="0s" max="10s">
+    <comment><![CDATA[Parameter: Temperature Probe Inside range limit trigger timer]]></comment>
+   </variable>
+   <variable name="SMDC_Pt_TmpInLimEctTimer" array-size="1" type="MWT_TIME" usage="input" safe="1" min="0s" max="10s">
+    <comment><![CDATA[Parameter: Temperature Probe Inside range limit timer to reset event]]></comment>
+   </variable>
+   <variable name="SMDC_Pt_FltPrbEvtSetTimer" array-size="1" type="MWT_TIME" usage="input" safe="1" min="0s" max="259200s">
+    <comment><![CDATA[Parameter: Fault Probe Event Set timer]]></comment>
+   </variable>
+   <variable name="SMDC_Pt_TmpHiTimer" array-size="1" type="MWT_TIME" usage="input" safe="1" min="0s" max="10s">
+    <comment><![CDATA[Parameter: Temperature exceeded set timer]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SMDC_MiosToCccus">
+   <variable name="MIO_XR_TmpGb1SdACar1" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(1): Gearbox 1 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb1SdBCar1" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(1): Gearbox 1 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb2SdACar1" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(1): Gearbox 2 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb2SdBCar1" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(1): Gearbox 2 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb3SdACar1" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(1): Gearbox 3 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb3SdBCar1" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(1): Gearbox 3 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb4SdACar1" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(1): Gearbox 4 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb4SdBCar1" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(1): Gearbox 4 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb1SdACar2" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(2): Gearbox 1 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb1SdBCar2" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(2): Gearbox 1 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb2SdACar2" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(2): Gearbox 2 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb2SdBCar2" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(2): Gearbox 2 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb3SdACar2" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(2): Gearbox 3 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb3SdBCar2" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(2): Gearbox 3 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb4SdACar2" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(2): Gearbox 4 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb4SdBCar2" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(2): Gearbox 4 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb1SdACar3" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(3): Gearbox 1 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb1SdBCar3" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(3): Gearbox 1 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb2SdACar3" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(3): Gearbox 2 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb2SdBCar3" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(3): Gearbox 2 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb3SdACar3" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(3): Gearbox 3 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb3SdBCar3" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(3): Gearbox 3 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb4SdACar3" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(3): Gearbox 4 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb4SdBCar3" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(3): Gearbox 4 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb1SdACar4" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(4): Gearbox 1 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb1SdBCar4" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(4): Gearbox 1 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb2SdACar4" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(4): Gearbox 2 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb2SdBCar4" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(4): Gearbox 2 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb3SdACar4" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(4): Gearbox 3 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb3SdBCar4" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(4): Gearbox 3 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb4SdACar4" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(4): Gearbox 4 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb4SdBCar4" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(4): Gearbox 4 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb1SdACar5" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(5): Gearbox 1 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb1SdBCar5" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(5): Gearbox 1 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb2SdACar5" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(5): Gearbox 2 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb2SdBCar5" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(5): Gearbox 2 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb3SdACar5" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(5): Gearbox 3 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb3SdBCar5" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(5): Gearbox 3 Temp B]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb4SdACar5" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(5): Gearbox 4 Temp A]]></comment>
+   </variable>
+   <variable name="MIO_XR_TmpGb4SdBCar5" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(5): Gearbox 4 Temp B]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SMDC__TempVal_to_SA2">
+   <variable name="SMD_XT_TmpGb1SdACar1" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 1 in car 1]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb1SdBCar1" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 1 in car 1]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb2SdACar1" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 2 in car 1]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb2SdBCar1" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 2 in car 1]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb3SdACar1" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 3 in car 1]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb3SdBCar1" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 3 in car 1]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb4SdACar1" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 4 in car 1]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb4SdBCar1" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 4 in car 1]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb1SdACar2" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 1 in car 2]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb1SdBCar2" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 1 in car 2]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb2SdACar2" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 2 in car 2]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb2SdBCar2" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 2 in car 2]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb3SdACar2" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 3 in car 2]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb3SdBCar2" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 3 in car 2]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb4SdACar2" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 4 in car 2]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb4SdBCar2" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 4 in car 2]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb1SdACar3" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 1 in car 3]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb1SdBCar3" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 1 in car 3]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb2SdACar3" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 2 in car 3]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb2SdBCar3" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 2 in car 3]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb3SdACar3" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 3 in car 3]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb3SdBCar3" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 3 in car 3]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb4SdACar3" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 4 in car 3]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb4SdBCar3" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 4 in car 3]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb1SdACar4" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 1 in car 4]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb1SdBCar4" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 1 in car 4]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb2SdACar4" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 2 in car 4]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb2SdBCar4" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 2 in car 4]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb3SdACar4" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 3 in car 4]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb3SdBCar4" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 3 in car 4]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb4SdACar4" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 4 in car 4]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb4SdBCar4" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 4 in car 4]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb1SdACar5" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 1 in car 5]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb1SdBCar5" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 1 in car 5]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb2SdACar5" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 2 in car 5]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb2SdBCar5" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 2 in car 5]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb3SdACar5" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 3 in car 5]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb3SdBCar5" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 3 in car 5]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb4SdACar5" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side A temperature for gearbox 4 in car 5]]></comment>
+   </variable>
+   <variable name="SMD_XT_TmpGb4SdBCar5" array-size="1" type="MWT_INT" usage="output" safe="1">
+    <comment><![CDATA[Internal: Side B temperature for gearbox 4 in car 5]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SMDC__TempHigh_to_SA2">
+   <variable name="SMD_S_TmpGb1SdAHiCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 1 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb1SdBHiCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 1 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb2SdAHiCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 2 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb2SdBHiCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 2 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb3SdAHiCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 3 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb3SdBHiCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 3 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb4SdAHiCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 4 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb4SdBHiCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 4 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb1SdAHiCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 1 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb1SdBHiCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 1 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb2SdAHiCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 2 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb2SdBHiCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 2 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb3SdAHiCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 3 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb3SdBHiCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 3 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb4SdAHiCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 4 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb4SdBHiCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 4 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb1SdAHiCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 1 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb1SdBHiCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 1 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb2SdAHiCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 2 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb2SdBHiCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 2 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb3SdAHiCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 3 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb3SdBHiCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 3 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb4SdAHiCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 4 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb4SdBHiCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 4 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb1SdAHiCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 1 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb1SdBHiCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 1 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb2SdAHiCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 2 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb2SdBHiCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 2 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb3SdAHiCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 3 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb3SdBHiCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 3 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb4SdAHiCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 4 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb4SdBHiCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 4 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb1SdAHiCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 1 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb1SdBHiCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 1 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb2SdAHiCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 2 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb2SdBHiCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 2 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb3SdAHiCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 3 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb3SdBHiCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 3 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb4SdAHiCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 4 Side A temperature considered as hot (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_TmpGb4SdBHiCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 4 Side B temperature considered as hot (Safe)]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SMDC__ProbeFaulty_to_SA2">
+   <variable name="SMD_S_Gb1PrbFltySdACar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 1 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFltySdBCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 1 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFltySdACar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 2 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFltySdBCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 2 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFltySdACar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 3 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFltySdBCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 3 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFltySdACar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 4 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFltySdBCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 4 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFltySdACar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 1 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFltySdBCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 1 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFltySdACar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 2 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFltySdBCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 2 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFltySdACar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 3 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFltySdBCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 3 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFltySdACar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 4 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFltySdBCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 4 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFltySdACar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 1 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFltySdBCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 1 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFltySdACar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 2 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFltySdBCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 2 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFltySdACar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 3 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFltySdBCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 3 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFltySdACar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 4 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFltySdBCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 4 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFltySdACar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 1 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFltySdBCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 1 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFltySdACar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 2 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFltySdBCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 2 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFltySdACar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 3 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFltySdBCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 3 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFltySdACar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 4 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFltySdBCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 4 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFltySdACar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 1 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFltySdBCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 1 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFltySdACar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 2 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFltySdBCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 2 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFltySdACar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 3 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFltySdBCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 3 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFltySdACar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 4 Side A temperature probe faulty (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFltySdBCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 4 Side B temperature probe faulty (Safe)]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SMDC__ProbeFaulty24h_to_SA2">
+   <variable name="SMD_S_Gb1PrbFlt24hSdACar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 1 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFlt24hSdBCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 1 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFlt24hSdACar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 2 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFlt24hSdBCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 2 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFlt24hSdACar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 3 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFlt24hSdBCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 3 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFlt24hSdACar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 4 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFlt24hSdBCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car1: Gearbox 4 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFlt24hSdACar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 1 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFlt24hSdBCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 1 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFlt24hSdACar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 2 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFlt24hSdBCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 2 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFlt24hSdACar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 3 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFlt24hSdBCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 3 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFlt24hSdACar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 4 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFlt24hSdBCar2" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car2: Gearbox 4 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFlt24hSdACar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 1 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFlt24hSdBCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 1 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFlt24hSdACar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 2 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFlt24hSdBCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 2 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFlt24hSdACar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 3 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFlt24hSdBCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 3 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFlt24hSdACar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 4 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFlt24hSdBCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car3: Gearbox 4 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFlt24hSdACar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 1 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFlt24hSdBCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 1 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFlt24hSdACar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 2 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFlt24hSdBCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 2 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFlt24hSdACar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 3 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFlt24hSdBCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 3 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFlt24hSdACar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 4 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFlt24hSdBCar4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car4: Gearbox 4 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFlt24hSdACar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 1 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb1PrbFlt24hSdBCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 1 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFlt24hSdACar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 2 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb2PrbFlt24hSdBCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 2 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFlt24hSdACar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 3 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb3PrbFlt24hSdBCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 3 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFlt24hSdACar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 4 Side A temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+   <variable name="SMD_S_Gb4PrbFlt24hSdBCar5" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Car5: Gearbox 4 Side B temperature probe faulty for 24 hours (Safe)]]></comment>
+   </variable>
+  </variable-group>
+ </interface>
+ <safe-signal variable="SMDC_Pt_TmpHiTimer" type="PARAMETER" value="5s"/>
+ <safe-signal variable="SMDC_Pt_FltPrbEvtSetTimer" type="PARAMETER" value="86400s"/>
+ <safe-signal variable="SMDC_Pt_TmpInLimEctTimer" type="PARAMETER" value="3s"/>
+ <safe-signal variable="SMDC_Pt_TmpInLimTimer" type="PARAMETER" value="5s"/>
+ <safe-signal variable="SMDC_Pt_TmpOutLimTimer" type="PARAMETER" value="3s"/>
+ <safe-signal variable="SMDC_P_TmpPrbFltHiLim" type="PARAMETER" value="200"/>
+ <safe-signal variable="SMDC_P_TmpPrbFltLoLim" type="PARAMETER" value="-30"/>
+ <safe-signal variable="SMD_S_Gb1PrbFltySdACar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFltySdACar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFltySdBCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFltySdBCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFltySdACar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFltySdACar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFltySdBCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFltySdBCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFltySdACar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFltySdACar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFltySdBCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFltySdBCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFltySdACar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFltySdACar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFltySdBCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFltySdBCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFltySdACar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFltySdACar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFltySdBCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFltySdBCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFltySdACar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFltySdACar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFltySdBCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFltySdBCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFltySdACar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFltySdACar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFltySdBCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFltySdBCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFltySdACar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFltySdACar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFltySdBCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFltySdBCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFltySdACar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFltySdACar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFltySdBCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFltySdBCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFltySdACar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFltySdACar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFltySdBCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFltySdBCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFltySdACar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFltySdACar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFltySdBCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFltySdBCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFltySdACar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFltySdACar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFltySdBCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFltySdBCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFltySdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFltySdACar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFltySdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFltySdBCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFltySdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFltySdACar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFltySdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFltySdBCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFltySdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFltySdACar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFltySdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFltySdBCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFltySdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFltySdACar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFltySdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFltySdBCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFltySdACar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFltySdACar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFltySdBCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFltySdBCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFltySdACar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFltySdACar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFltySdBCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFltySdBCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFltySdACar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFltySdACar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFltySdBCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFltySdBCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFltySdACar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFltySdACar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFltySdBCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFltySdBCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFlt24hSdACar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFlt24hSdACar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFlt24hSdBCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFlt24hSdBCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFlt24hSdACar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFlt24hSdACar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFlt24hSdBCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFlt24hSdBCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFlt24hSdACar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFlt24hSdACar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFlt24hSdBCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFlt24hSdBCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFlt24hSdACar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFlt24hSdACar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFlt24hSdBCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFlt24hSdBCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFlt24hSdACar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFlt24hSdACar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFlt24hSdBCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFlt24hSdBCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFlt24hSdACar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFlt24hSdACar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFlt24hSdBCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFlt24hSdBCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFlt24hSdACar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFlt24hSdACar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFlt24hSdBCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFlt24hSdBCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFlt24hSdACar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFlt24hSdACar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFlt24hSdBCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFlt24hSdBCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFlt24hSdACar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFlt24hSdACar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFlt24hSdBCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFlt24hSdBCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFlt24hSdACar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFlt24hSdACar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFlt24hSdBCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFlt24hSdBCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFlt24hSdACar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFlt24hSdACar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFlt24hSdBCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFlt24hSdBCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFlt24hSdACar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFlt24hSdACar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFlt24hSdBCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFlt24hSdBCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFlt24hSdACar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFlt24hSdACar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFlt24hSdBCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFlt24hSdBCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFlt24hSdACar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFlt24hSdACar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFlt24hSdBCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFlt24hSdBCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFlt24hSdACar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFlt24hSdACar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFlt24hSdBCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFlt24hSdBCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFlt24hSdACar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFlt24hSdACar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFlt24hSdBCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFlt24hSdBCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFlt24hSdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFlt24hSdACar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb1PrbFlt24hSdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb1PrbFlt24hSdBCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFlt24hSdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFlt24hSdACar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb2PrbFlt24hSdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb2PrbFlt24hSdBCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFlt24hSdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFlt24hSdACar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb3PrbFlt24hSdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb3PrbFlt24hSdBCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFlt24hSdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFlt24hSdACar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_Gb4PrbFlt24hSdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_Gb4PrbFlt24hSdBCar4"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb1SdACar1" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb1SdBCar1" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb2SdACar1" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb2SdBCar1" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb1SdACar2" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb1SdBCar2" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb2SdACar2" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb2SdBCar2" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb1SdACar3" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb1SdBCar3" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb2SdACar3" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb2SdBCar3" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb1SdACar5" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb1SdBCar5" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb2SdACar5" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb2SdBCar5" type="PARAMETER" value="4000"/>
+ <safe-signal variable="SMD_XT_TmpGb1SdACar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb1SdACar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb1SdBCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb1SdBCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb2SdACar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb2SdACar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb2SdBCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb2SdBCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb3SdACar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb3SdACar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb3SdBCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb3SdBCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb4SdACar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb4SdACar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb4SdBCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb4SdBCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb1SdACar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb1SdACar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb1SdBCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb1SdBCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb2SdACar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb2SdACar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb2SdBCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb2SdBCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb3SdACar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb3SdACar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb3SdBCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb3SdBCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb4SdACar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb4SdACar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb4SdBCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb4SdBCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb1SdACar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb1SdACar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb1SdBCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb1SdBCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb2SdACar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb2SdACar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb2SdBCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb2SdBCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb3SdACar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb3SdACar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb3SdBCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb3SdBCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb4SdACar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb4SdACar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb4SdBCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb4SdBCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb1SdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb1SdACar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb1SdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb1SdBCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb2SdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb2SdACar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb2SdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb2SdBCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb3SdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb3SdACar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb3SdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb3SdBCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb4SdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb4SdACar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb4SdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb4SdBCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb1SdACar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb1SdACar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb1SdBCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb1SdBCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb2SdACar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb2SdACar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb2SdBCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb2SdBCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb3SdACar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb3SdACar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb3SdBCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb3SdBCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb4SdACar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb4SdACar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_XT_TmpGb4SdBCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_XT_TmpGb4SdBCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb1SdAHiCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb1SdAHiCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb1SdBHiCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb1SdBHiCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb2SdAHiCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb2SdAHiCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb2SdBHiCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb2SdBHiCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb3SdAHiCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb3SdAHiCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb3SdBHiCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb3SdBHiCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb4SdAHiCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb4SdAHiCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb4SdBHiCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb4SdBHiCar1"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb1SdAHiCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb1SdAHiCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb1SdBHiCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb1SdBHiCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb2SdAHiCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb2SdAHiCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb2SdBHiCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb2SdBHiCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb3SdAHiCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb3SdAHiCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb3SdBHiCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb3SdBHiCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb4SdAHiCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb4SdAHiCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb4SdBHiCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb4SdBHiCar2"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb1SdAHiCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb1SdAHiCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb1SdBHiCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb1SdBHiCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb2SdAHiCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb2SdAHiCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb2SdBHiCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb2SdBHiCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb3SdAHiCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb3SdAHiCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb3SdBHiCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb3SdBHiCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb4SdAHiCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb4SdAHiCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb4SdBHiCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb4SdBHiCar3"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb1SdAHiCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb1SdAHiCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb1SdBHiCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb1SdBHiCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb2SdAHiCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb2SdAHiCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb2SdBHiCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb2SdBHiCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb3SdAHiCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb3SdAHiCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb3SdBHiCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb3SdBHiCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb4SdAHiCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb4SdAHiCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb4SdBHiCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb4SdBHiCar5"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb1SdAHiCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb1SdAHiCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb1SdBHiCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb1SdBHiCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb2SdAHiCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb2SdAHiCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb2SdBHiCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb2SdBHiCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb3SdAHiCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb3SdAHiCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb3SdBHiCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb3SdBHiCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb4SdAHiCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb4SdAHiCar4"/>
+ </safe-signal>
+ <safe-signal variable="SMD_S_TmpGb4SdBHiCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA8MonTempGearInternal.SA8MonTempGearInternal" member="SMD_S_TmpGb4SdBHiCar4"/>
+ </safe-signal>
+ <safe-signal variable="S_P_Project" type="EXT_PARAMETER" scope="Para_Static" set="Project" name="S_P_Project"/>
+ <safe-signal variable="MIO_XR_TmpGb4SdBCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0x91St.iMIOSAI0x91St_AIN8"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb4SdACar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0x91St.iMIOSAI0x91St_AIN7"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb3SdBCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0x91St.iMIOSAI0x91St_AIN6"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb3SdACar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0x91St.iMIOSAI0x91St_AIN5"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb3SdACar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xA1St.iMIOSAI0xA1St_AIN5"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb3SdBCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xA1St.iMIOSAI0xA1St_AIN6"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb4SdACar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xA1St.iMIOSAI0xA1St_AIN7"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb4SdBCar2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xA1St.iMIOSAI0xA1St_AIN8"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb4SdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xC1St.iMIOSAI0xC1St_AIN8"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb4SdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xC1St.iMIOSAI0xC1St_AIN7"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb3SdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xC1St.iMIOSAI0xC1St_AIN6"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb3SdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xC1St.iMIOSAI0xC1St_AIN5"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb2SdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xC1St.iMIOSAI0xC1St_AIN4"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb2SdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xC1St.iMIOSAI0xC1St_AIN3"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb1SdBCar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xC1St.iMIOSAI0xC1St_AIN2"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb1SdACar4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xC1St.iMIOSAI0xC1St_AIN1"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb4SdBCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xD1St.iMIOSAI0xD1St_AIN8"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb4SdACar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xD1St.iMIOSAI0xD1St_AIN7"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb3SdBCar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xD1St.iMIOSAI0xD1St_AIN6"/>
+ </safe-signal>
+ <safe-signal variable="MIO_XR_TmpGb3SdACar5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xD1St.iMIOSAI0xD1St_AIN5"/>
+ </safe-signal>
+ <safe-signal variable="SMDC_P_TmpOutLim" type="PARAMETER" value="140"/>
+ <safe-signal variable="SMDC_P_TmpInLim" type="PARAMETER" value="120"/>
+ <safe-signal variable="MIO_XR_TmpGb3SdACar3" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb3SdBCar3" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb4SdACar3" type="PARAMETER" value="4000"/>
+ <safe-signal variable="MIO_XR_TmpGb4SdBCar3" type="PARAMETER" value="4000"/>
+</application>

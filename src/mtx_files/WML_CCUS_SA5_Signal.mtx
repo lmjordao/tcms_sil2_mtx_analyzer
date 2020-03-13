@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created 2020-03-03 16:30:48 by rgustafs on BTIS1000096325 using MTPE-5.3.0.1 -->
+<!-- File: C:/Data/AVENTRA_Software/AVENTRA_TCMS_SIL2/cfg/CCUS_1/applications/SA5_Signal/WML_CCUS_SA5_Signal.mtx -->
+<application name="SA5_Signal" version="1.8.1.0" type="safe" cycle-time="64" etb-access="None" redundant="1" broadcast="0">
+ <comment><![CDATA[2018-11-14 copied from LOTrain CCU-S version 1.5.5.0
+
+2018-11-xx
+SA5_Signal(ling) containing safety related and Interface functions like: (alphbetical order)
+- STE_TPWS
+- STE_TpwsSel
+- STE_TpwsSup
+- STE_VehStatus (added 1 March 2019 for SWR)
+- STV_VigCtrl
+- STV_VigDrvActiv]]></comment>
+ <file path="SA5_Signal.zip"/>
+ <meta-data>
+  <tag name="ProductID" value=""/>
+  <tag name="Supplier" value="BT"/>
+  <tag name="Type" value="a"/>
+ </meta-data>
+ <interface>
+  <variable-group name="STE_Parameter">
+   <variable name="STE_Pt_TmOutLfSign" array-size="1" type="MWT_TIME" usage="input" safe="1" min="0ms" max="1280ms">
+    <comment><![CDATA[Parameter: Max time in [ms] without LfSign update for TPWS telegram.]]></comment>
+   </variable>
+   <variable name="STE_Pt_ErrFlgRmv" array-size="1" type="MWT_TIME" usage="input" safe="1" min="0ms" max="1280ms">
+    <comment><![CDATA[Parameter: Time [ms] to remove the error flag before setting the output back to valid.]]></comment>
+   </variable>
+   <variable name="STE_Pt_CabStADropOffDly" array-size="1" type="MWT_TIME" usage="input" safe="1" min="0s" max="32s">
+    <comment><![CDATA[Parameter: Minimum delay before dropping CabStatusA]]></comment>
+   </variable>
+   <variable name="STE_Pt_TrSleepDropOffDly" array-size="1" type="MWT_TIME" usage="input" safe="1" min="0s" max="32s">
+    <comment><![CDATA[Parameter: Minimum delay before dropping TrainSleep]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="STV_Parameter">
+   <variable name="STV_P_TBCDemdMin" array-size="1" type="MWT_INT" usage="input" safe="1" min="0" max="4000">
+    <comment><![CDATA[Parameter: Minimum valid TBC demand, limit 0...4000]]></comment>
+   </variable>
+   <variable name="STV_P_TBCDemdMax" array-size="1" type="MWT_INT" usage="input" safe="1" min="0" max="4000">
+    <comment><![CDATA[Parameter: Maximum valid TBC demand, limit 0...4000]]></comment>
+   </variable>
+   <variable name="STV_P_TBCDemdVar" array-size="1" type="MWT_INT" usage="input" safe="1" min="0" max="4000">
+    <comment><![CDATA[Parameter: Required TBC demand variation to detect driver activity (absolute value)(Default = 5% of valid range i.e. 640 to 3200)]]></comment>
+   </variable>
+   <variable name="STV_P_TBCMinBrkDemand" array-size="1" type="MWT_INT" usage="input" safe="1" min="640" max="1650">
+    <comment><![CDATA[Parameter: Minimum brake demand threshold used for vigilance, limit 640...1650]]></comment>
+   </variable>
+   <variable name="STV_Pt_DrvActMonDelay" array-size="1" type="MWT_TIME" usage="input" safe="1">
+    <comment><![CDATA[External parameter (Para_Cust.Vigilance): Driver activity monitor (ms)]]></comment>
+   </variable>
+   <variable name="STV_Pt_DrvRespMon" array-size="1" type="MWT_TIME" usage="input" safe="1">
+    <comment><![CDATA[External parameter (Para_Cust.Vigilance): Driver response monitor time (ms)]]></comment>
+   </variable>
+   <variable name="STV_Pt_RollAwayMon" array-size="1" type="MWT_TIME" usage="input" safe="1" min="2s" max="10s">
+    <comment><![CDATA[Parameter: Rollaway monitor time]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="STC_CabStatus">
+   <variable name="STCT_X_CabStatus" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Internal Active Cab status Train]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="STE_TPWS">
+   <variable name="TPWS1_S_Ind3Dis" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData1: Show Combined Isolation and Fault in-dicator as Disabled.]]></comment>
+   </variable>
+   <variable name="TPWS1_S_Ind3Stdy" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData1: Show Combined Isolation and Fault in-dicator as Steady Lit.]]></comment>
+   </variable>
+   <variable name="TPWS1_S_Ind3Flsh" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData1: Show Combined Isolation and Fault in-dicator as Flashing. (Steady Red on Aventra)]]></comment>
+   </variable>
+   <variable name="TPWS1_S_Pb5Show" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData1.Button5Show]]></comment>
+   </variable>
+   <variable name="TPWS1_S_Pb5ShowInv" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData1: The antivalent counterpart to Button5Show.]]></comment>
+   </variable>
+   <variable name="TPWS1_X_Pb5St" array-size="1" type="MWT_USINT" usage="input">
+    <comment><![CDATA[iStmDMIData1.Button5State]]></comment>
+   </variable>
+   <variable name="TPWS1_X_StmDmiDataCRC" array-size="1" type="MWT_UDINT" usage="input">
+    <comment><![CDATA[iStmDMIData1.Checksum]]></comment>
+   </variable>
+   <variable name="TPWS1_S_Ind1Black" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData1: Show AWS visual indicator (sunflower) in the "all black" state.]]></comment>
+   </variable>
+   <variable name="TPWS1_S_Ind1BlackYellow" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData1: Show AWS visual indicator (sunflower) in the "black and yellow" state.]]></comment>
+   </variable>
+   <variable name="TPWS1_S_Button1Show" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData1.Button1Show]]></comment>
+   </variable>
+   <variable name="TPWS1_X_Button1St" array-size="1" type="MWT_USINT" usage="input">
+    <comment><![CDATA[iStmDMIData1.Button1State]]></comment>
+   </variable>
+   <variable name="TPWS1_S_Button2Show" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData1.Button2Show]]></comment>
+   </variable>
+   <variable name="TPWS1_X_Button2St" array-size="1" type="MWT_USINT" usage="input">
+    <comment><![CDATA[iStmDMIData1.Button2State]]></comment>
+   </variable>
+   <variable name="TPWS1_S_Button3Show" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData1.Button3Show]]></comment>
+   </variable>
+   <variable name="TPWS1_X_Button3St" array-size="1" type="MWT_USINT" usage="input">
+    <comment><![CDATA[iStmDMIData1.Button3State]]></comment>
+   </variable>
+   <variable name="TPWS1_S_Button4Show" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData1.Button4Show]]></comment>
+   </variable>
+   <variable name="TPWS1_X_Button4St" array-size="1" type="MWT_USINT" usage="input">
+    <comment><![CDATA[iStmDMIData1.Button4State]]></comment>
+   </variable>
+   <variable name="TPWS1_X_LfSign" array-size="1" type="MWT_UINT" usage="input">
+    <comment><![CDATA[iStmDMIData1.LifeSign]]></comment>
+   </variable>
+   <variable name="TPWS2_S_Ind3Dis" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData2: Show Combined Isolation and Fault in-dicator as Disabled.]]></comment>
+   </variable>
+   <variable name="TPWS2_S_Ind3Stdy" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData2: Show Combined Isolation and Fault in-dicator as Steady Lit.]]></comment>
+   </variable>
+   <variable name="TPWS2_S_Ind3Flsh" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData2: Show Combined Isolation and Fault in-dicator as Flashing. (Steady Red on Aventra)]]></comment>
+   </variable>
+   <variable name="TPWS2_S_Pb5Show" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData2.Button5Show]]></comment>
+   </variable>
+   <variable name="TPWS2_S_Pb5ShowInv" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData2: The antivalent counterpart to Button5Show.]]></comment>
+   </variable>
+   <variable name="TPWS2_X_Pb5St" array-size="1" type="MWT_USINT" usage="input">
+    <comment><![CDATA[iStmDMIData2.Button5State]]></comment>
+   </variable>
+   <variable name="TPWS2_X_StmDmiDataCRC" array-size="1" type="MWT_UDINT" usage="input">
+    <comment><![CDATA[iStmDMIData2.Checksum]]></comment>
+   </variable>
+   <variable name="TPWS2_S_Ind1Black" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData2: Show AWS visual indicator (sunflower) in the "all black" state.]]></comment>
+   </variable>
+   <variable name="TPWS2_S_Ind1BlackYellow" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData2: Show AWS visual indicator (sunflower) in the "black and yellow" state.]]></comment>
+   </variable>
+   <variable name="TPWS2_S_Button1Show" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData2.Button1Show]]></comment>
+   </variable>
+   <variable name="TPWS2_X_Button1St" array-size="1" type="MWT_USINT" usage="input">
+    <comment><![CDATA[iStmDMIData2.Button1State]]></comment>
+   </variable>
+   <variable name="TPWS2_S_Button2Show" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData2.Button2Show]]></comment>
+   </variable>
+   <variable name="TPWS2_X_Button2St" array-size="1" type="MWT_USINT" usage="input">
+    <comment><![CDATA[iStmDMIData2.Button2State]]></comment>
+   </variable>
+   <variable name="TPWS2_S_Button3Show" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData2.Button3Show]]></comment>
+   </variable>
+   <variable name="TPWS2_X_Button3St" array-size="1" type="MWT_USINT" usage="input">
+    <comment><![CDATA[iStmDMIData2.Button3State]]></comment>
+   </variable>
+   <variable name="TPWS2_S_Button4Show" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iStmDMIData2.Button4Show]]></comment>
+   </variable>
+   <variable name="TPWS2_X_Button4St" array-size="1" type="MWT_USINT" usage="input">
+    <comment><![CDATA[iStmDMIData2.Button4State]]></comment>
+   </variable>
+   <variable name="TPWS2_X_LfSign" array-size="1" type="MWT_UINT" usage="input">
+    <comment><![CDATA[iStmDMIData2.LifeSign]]></comment>
+   </variable>
+   <variable name="STE_X_TSO_Ind" array-size="1" type="MWT_USINT" usage="output" safe="1">
+    <comment><![CDATA[Status Train Stop Override indicator/button.;]]></comment>
+   </variable>
+   <variable name="STE_X_TI_FLT_Ind" array-size="1" type="MWT_USINT" usage="output" safe="1">
+    <comment><![CDATA[Status Temporary Isolation / Fault indicator.;]]></comment>
+   </variable>
+   <variable name="STE_E_TpwsCrcInvCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[CRC of TPWS from Car1 is invalid.;]]></comment>
+   </variable>
+   <variable name="STE_E_TpwsCrcInvCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[CRC of TPWS from Car3 is invalid.;]]></comment>
+   </variable>
+   <variable name="STE_E_TpwsLfSignInvCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[LifSign of TPWS from Car1 is invalid.;]]></comment>
+   </variable>
+   <variable name="STE_E_TpwsLfSignInvCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[LifSign of TPWS from Car3 is invalid.;]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="STE_VehStatus">
+   <variable name="MIO_S_AtpSvBrDemCar1" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Parameter: FalseBool]]></comment>
+   </variable>
+   <variable name="MIO_S_AtpSvBrDemCar3" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Parameter: FalseBool]]></comment>
+   </variable>
+   <variable name="BGW_S_EmBrkAppl" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[iBGWSfCtrl1: Emergency Brake Applied]]></comment>
+   </variable>
+   <variable name="MIO_S_McsInSecureCar1" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[Parameter: FalseBool]]></comment>
+   </variable>
+   <variable name="MIO_S_McsInSecureCar3" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[Parameter: FalseBool]]></comment>
+   </variable>
+   <variable name="MIO_S_McsInRecovCar1" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Parameter: FalseBool]]></comment>
+   </variable>
+   <variable name="MIO_S_McsInRecovCar3" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Parameter: FalseBool]]></comment>
+   </variable>
+   <variable name="MIO_S_AtPTraPrmitCar1" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Parameter: FalseBool]]></comment>
+   </variable>
+   <variable name="MIO_S_AtPTraPrmitCar3" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Parameter: FalseBool]]></comment>
+   </variable>
+   <variable name="STE_X_Tr1alias1Car1" array-size="1" type="MWT_WORD" usage="output" safe="1">
+    <comment><![CDATA[Not Connected - only used in SWR]]></comment>
+   </variable>
+   <variable name="STE_X_Tr1alias1Car3" array-size="1" type="MWT_WORD" usage="output" safe="1">
+    <comment><![CDATA[Not Connected - only used in SWR]]></comment>
+   </variable>
+   <variable name="STE_X_Tr1Validity1Car1" array-size="1" type="MWT_WORD" usage="output" safe="1">
+    <comment><![CDATA[Not Connected - only used in SWR]]></comment>
+   </variable>
+   <variable name="STE_X_Tr1Validity1Car3" array-size="1" type="MWT_WORD" usage="output" safe="1">
+    <comment><![CDATA[Not Connected - only used in SWR]]></comment>
+   </variable>
+   <variable name="STE_X_Tr2alias1Car1" array-size="1" type="MWT_WORD" usage="output" safe="1">
+    <comment><![CDATA[Not Connected - only used in SWR]]></comment>
+   </variable>
+   <variable name="STE_X_Tr2alias1Car3" array-size="1" type="MWT_WORD" usage="output" safe="1">
+    <comment><![CDATA[Not Connected - only used in SWR]]></comment>
+   </variable>
+   <variable name="STE_X_Tr2Validity1Car1" array-size="1" type="MWT_WORD" usage="output" safe="1">
+    <comment><![CDATA[Not Connected - only used in SWR]]></comment>
+   </variable>
+   <variable name="STE_X_Tr2Validity1Car3" array-size="1" type="MWT_WORD" usage="output" safe="1">
+    <comment><![CDATA[Not Connected - only used in SWR]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="STV_Vigilance_DAC">
+   <variable name="MIO_S_AwsAckCar1" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Car(1): AWS acknowledge pressed]]></comment>
+   </variable>
+   <variable name="MIO_S_DsdPedalPrssdCar1" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Car(1): DSD pedal pressed]]></comment>
+   </variable>
+   <variable name="MIO_S_VigAckPrssdCar1" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Car(1): Vigilance acknowledge pressed]]></comment>
+   </variable>
+   <variable name="MIO_X_TBCDemandCar1" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(1): TBC demand Level]]></comment>
+   </variable>
+   <variable name="MIO_S_AwsAckCar3" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Car(3): AWS acknowledge pressed]]></comment>
+   </variable>
+   <variable name="MIO_S_DsdPedalPrssdCar3" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Car(3): DSD pedal pressed]]></comment>
+   </variable>
+   <variable name="MIO_S_VigAckPrssdCar3" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Car(3): Vigilance acknowledge pressed]]></comment>
+   </variable>
+   <variable name="MIO_X_TBCDemandCar3" array-size="1" type="MWT_INT" usage="input" safe="1">
+    <comment><![CDATA[Car(3): TBC demand Level]]></comment>
+   </variable>
+   <variable name="MIO_S_McsInRevCar1" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Car(1): MCS in Reverse]]></comment>
+   </variable>
+   <variable name="MIO_S_McsInFwdCar1" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Car(1): MCS in Forward]]></comment>
+   </variable>
+   <variable name="MIO_S_McsInRevCar3" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Car(3): MCS in Reverse]]></comment>
+   </variable>
+   <variable name="MIO_S_McsInFwdCar3" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Car(3): MCS in Forward]]></comment>
+   </variable>
+   <variable name="CCUO_S_RollbackDet" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1: Status: Rollback detected]]></comment>
+   </variable>
+   <variable name="STV_C_VigAlarmCar1_Int" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal Car(1): Vigilance alarm]]></comment>
+   </variable>
+   <variable name="STV_C_VigAlarmCar3_Int" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal Car(3): Vigilance alarm]]></comment>
+   </variable>
+   <variable name="STV_C_VigNotEbReqCar1_Int" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal Car(1): Vigilance brake release]]></comment>
+   </variable>
+   <variable name="STV_C_VigNotEbReqCar3_Int" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal Car(3): Vigilance brake release]]></comment>
+   </variable>
+   <variable name="STV_S_VigNotEbReq" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Status: Vigilance No Emergency Brake (EB) Request]]></comment>
+   </variable>
+   <variable name="STV_E_DacInputInvalCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Inputs for DAC acknowledgement are invalid in Cab1]]></comment>
+   </variable>
+   <variable name="STV_E_DacInputInvalCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Inputs for DAC acknowledgement are invalid in Cab2]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SBHT_HoldingBrake">
+   <variable name="SBHT_S_ByHldBr" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal Bypass Holding Brake]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="STSC_Speed">
+   <variable name="STSC_S_LowSpdThr" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal SW Low Speed status]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="S_Parameters">
+   <variable name="S_P_Project" array-size="1" type="MWT_UINT" usage="input" safe="1">
+    <comment><![CDATA[External Parameter]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="Packet44_Interface">
+   <variable name="ETCS1_Z_OBU26_alias" array-size="1" type="MWT_BYTE" usage="input" safe="1">
+    <comment><![CDATA[ETCS1 - Alias variable for bit mapping; Bit0 = OBU26_Door_left_release. Status of the left Door ; Bit1 = OBU26_Door_right_release. Status of the right Door; Bit2..3: OBU26_Q_DOOR_SIDE ; Identifies side of track permitted for door release.; Values:; 0 = doors released left side; 1 = doors released right side; 2 = doors released both sides; 3 = spare; Bit4..5:OBU26_A_DIR; Qualifier to indicate the relevant approach direction for the transmitted data, ; Note: This is to be used by the ASDO application and is defined by the infrastructure convention where 'Up' should be used for a route traveling towards a major location (i.e. London) and 'Down' for a route traveling from a major location.; Values:; 0 = spare, not used; 1 = Up; 2 = Down; 3 = spare, not used; Bit6..7: obu26_spare1 ; Spare bits for alignment;]]></comment>
+   </variable>
+   <variable name="ETCS1_Z_OBU26_Q_Config" array-size="1" type="MWT_BYTE" usage="input" safe="1">
+    <comment><![CDATA[ETCS1 - Additional variable, identifies whether the packet applies for a 5 car or 10 car train.; Values:; 0 = Not Applicable; 1 = Class 701 5 car; 2 = Class 701 10 car; 3 = Class 701 5 & 10 car; 4-255=Not used]]></comment>
+   </variable>
+   <variable name="ETCS1_Z_OBU26_NID_Station" array-size="1" type="MWT_WORD" usage="input" safe="1">
+    <comment><![CDATA[ETCS1 - Station identifier]]></comment>
+   </variable>
+   <variable name="ETCS1_Z_OBU26_NID_Track" array-size="1" type="MWT_WORD" usage="input" safe="1">
+    <comment><![CDATA[ETCS1 - Track (platform) identifier within the station.]]></comment>
+   </variable>
+   <variable name="ETCS1_Z_OBU26_D_Platform" array-size="1" type="MWT_WORD" usage="input" safe="1">
+    <comment><![CDATA[ETCS1 - Parameter used by ATO to evaluate the validity of the platform related packet data provided to the TCMS. The distance is given in [cm].]]></comment>
+   </variable>
+   <variable name="ETCS1_Z_OBU26_L_Platform" array-size="1" type="MWT_WORD" usage="input" safe="1">
+    <comment><![CDATA[ETCS1 - Length of the platform used by the TCMS to determine doors to be released. The length is given in [cm].]]></comment>
+   </variable>
+   <variable name="ETCS1_Z_OBU26_Validity" array-size="1" type="MWT_WORD" usage="input" safe="1">
+    <comment><![CDATA[ETCS1 - Validity bits for variables (each variable represented by 1-Bit); 0 = OBU26_Door_left_release; 1 = OBU26_Door_right_release; 2 = OBU26_Q_DOOR_SIDE; 3 = OBU26_A_DIR; 4 = OBU26_Q_CONFIGURATION; 5 = OBU26_NID_STATION; 6 = OBU26_NID_TRACK; 7 = OBU26_D_PLATFORM; 8 = OBU26_L_PLATFORM; 9..15 = not used (set to invalid).]]></comment>
+   </variable>
+   <variable name="ETCS2_Z_OBU26_alias" array-size="1" type="MWT_BYTE" usage="input" safe="1">
+    <comment><![CDATA[ETCS2 - Alias variable for bit mapping; Bit0 = OBU26_Door_left_release. Status of the left Door ; Bit1 = OBU26_Door_right_release. Status of the right Door; Bit2..3: OBU26_Q_DOOR_SIDE ; Identifies side of track permitted for door release.; Values:; 0 = doors released left side; 1 = doors released right side; 2 = doors released both sides; 3 = spare; Bit4..5:OBU26_A_DIR; Qualifier to indicate the relevant approach direction for the transmitted data, ; Note: This is to be used by the ASDO application and is defined by the infrastructure convention where 'Up' should be used for a route traveling towards a major location (i.e. London) and 'Down' for a route traveling from a major location.; Values:; 0 = spare, not used; 1 = Up; 2 = Down; 3 = spare, not used; Bit6..7: obu26_spare1 ; Spare bits for alignment;]]></comment>
+   </variable>
+   <variable name="ETCS2_Z_OBU26_Q_Config" array-size="1" type="MWT_BYTE" usage="input" safe="1">
+    <comment><![CDATA[ETCS2 - Additional variable, identifies whether the packet applies for a 5 car or 10 car train.; Values:; 0 = Not Applicable; 1 = Class 701 5 car; 2 = Class 701 10 car; 3 = Class 701 5 & 10 car; 4-255=Not used]]></comment>
+   </variable>
+   <variable name="ETCS2_Z_OBU26_NID_Station" array-size="1" type="MWT_WORD" usage="input" safe="1">
+    <comment><![CDATA[ETCS2 - Station identifier]]></comment>
+   </variable>
+   <variable name="ETCS2_Z_OBU26_NID_Track" array-size="1" type="MWT_WORD" usage="input" safe="1">
+    <comment><![CDATA[ETCS2 - Track (platform) identifier within the station.]]></comment>
+   </variable>
+   <variable name="ETCS2_Z_OBU26_D_Platform" array-size="1" type="MWT_WORD" usage="input" safe="1">
+    <comment><![CDATA[ETCS2 - Parameter used by ATO to evaluate the validity of the platform related packet data provided to the TCMS. The distance is given in [cm].]]></comment>
+   </variable>
+   <variable name="ETCS2_Z_OBU26_L_Platform" array-size="1" type="MWT_WORD" usage="input" safe="1">
+    <comment><![CDATA[ETCS2 - Length of the platform used by the TCMS to determine doors to be released. The length is given in [cm].]]></comment>
+   </variable>
+   <variable name="ETCS2_Z_OBU26_Validity" array-size="1" type="MWT_WORD" usage="input" safe="1">
+    <comment><![CDATA[ETCS2 - Validity bits for variables (each variable represented by 1-Bit); 0 = OBU26_Door_left_release; 1 = OBU26_Door_right_release; 2 = OBU26_Q_DOOR_SIDE; 3 = OBU26_A_DIR; 4 = OBU26_Q_CONFIGURATION; 5 = OBU26_NID_STATION; 6 = OBU26_NID_TRACK; 7 = OBU26_D_PLATFORM; 8 = OBU26_L_PLATFORM; 9..15 = not used (set to invalid).]]></comment>
+   </variable>
+   <variable name="ETCS1_Z_TR8_Alias" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[ETCS1 - Alias variable for bit mapping; Bit0 = TR8_Door_left_sw_feedback. SW Feedback of left door ; Bit1 = TR8_Door_right_sw_feedback. SW Feedback of right door; Bit2..7: tr8_spare1 ; Spare bits for alignment;]]></comment>
+   </variable>
+   <variable name="ETCS2_Z_TR8_Alias" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[ETCS2 - Alias variable for bit mapping; Bit0 = TR8_Door_left_sw_feedback. SW Feedback of left door ; Bit1 = TR8_Door_right_sw_feedback. SW Feedback of right door; Bit2..7: tr8_spare1 ; Spare bits for alignment;]]></comment>
+   </variable>
+   <variable name="ETCS1_Z_TR8_Validity" array-size="1" type="MWT_WORD" usage="output" safe="1">
+    <comment><![CDATA[ETCS1 - Alias variable for bit mapping; Bit0 = TR8_Door_left_sw_feedback. SW Feedback of left door ; Bit1 = TR8_Door_right_sw_feedback. SW Feedback of right door; Bit2..7: tr8_spare1 ; Spare bits for alignment;]]></comment>
+   </variable>
+   <variable name="ETCS2_Z_TR8_Validity" array-size="1" type="MWT_WORD" usage="output" safe="1">
+    <comment><![CDATA[ETCS2 - Alias variable for bit mapping; Bit0 = TR8_Door_left_sw_feedback. SW Feedback of left door ; Bit1 = TR8_Door_right_sw_feedback. SW Feedback of right door; Bit2..7: tr8_spare1 ; Spare bits for alignment;]]></comment>
+   </variable>
+  </variable-group>
+ </interface>
+ <safe-signal variable="STE_Pt_TmOutLfSign" type="PARAMETER" value="512ms"/>
+ <safe-signal variable="STE_Pt_ErrFlgRmv" type="PARAMETER" value="256ms"/>
+ <safe-signal variable="STV_P_TBCDemdMin" type="PARAMETER" value="624"/>
+ <safe-signal variable="STV_P_TBCDemdMax" type="PARAMETER" value="3216"/>
+ <safe-signal variable="STV_P_TBCDemdVar" type="PARAMETER" value="160"/>
+ <safe-signal variable="STV_P_TBCMinBrkDemand" type="PARAMETER" value="1048"/>
+ <safe-signal variable="STV_Pt_DrvActMonDelay" type="EXT_PARAMETER" scope="Para_Cust" set="Vigilance" name="STV_Pt_DrvActMonDelay"/>
+ <safe-signal variable="STV_Pt_DrvRespMon" type="EXT_PARAMETER" scope="Para_Cust" set="Vigilance" name="STV_Pt_DrvRespMon"/>
+ <safe-signal variable="STV_Pt_RollAwayMon" type="PARAMETER" value="5s"/>
+ <safe-signal variable="STCT_X_CabStatus" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_CabStatus"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_S_Ind3Dis" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Ind3Disabled"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_S_Ind3Stdy" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Ind3Steady"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_S_Ind3Flsh" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Ind3Flashing"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_S_Pb5Show" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Button5Show"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_S_Pb5ShowInv" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Button5ShowInverse"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_X_Pb5St" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Button5State"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_X_StmDmiDataCRC" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Checksum"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_S_Ind1Black" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Ind1Black"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_S_Ind1BlackYellow" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Ind1BlackYellow"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_S_Button1Show" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Button1Show"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_X_Button1St" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Button1State"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_S_Button2Show" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Button2Show"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_X_Button2St" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Button2State"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_S_Button3Show" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Button3Show"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_X_Button3St" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Button3State"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_S_Button4Show" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Button4Show"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_X_Button4St" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="Button4State"/>
+ </safe-signal>
+ <safe-signal variable="TPWS1_X_LfSign" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData1.iStmDMIData1" member="LifeSign"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_S_Ind3Dis" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Ind3Disabled"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_S_Ind3Stdy" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Ind3Steady"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_S_Ind3Flsh" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Ind3Flashing"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_S_Pb5Show" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Button5Show"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_S_Pb5ShowInv" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Button5ShowInverse"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_X_Pb5St" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Button5State"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_X_StmDmiDataCRC" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Checksum"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_S_Ind1Black" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Ind1Black"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_S_Ind1BlackYellow" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Ind1BlackYellow"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_S_Button1Show" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Button1Show"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_X_Button1St" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Button1State"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_S_Button2Show" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Button2Show"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_X_Button2St" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Button2State"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_S_Button3Show" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Button3Show"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_X_Button3St" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Button3State"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_S_Button4Show" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Button4Show"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_X_Button4St" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="Button4State"/>
+ </safe-signal>
+ <safe-signal variable="TPWS2_X_LfSign" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iStmDMIData2.iStmDMIData2" member="LifeSign"/>
+ </safe-signal>
+ <safe-signal variable="STE_X_TSO_Ind" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA5SignalSaf.oCCUSSA5SignalSaf" member="ITSO_Ind"/>
+ </safe-signal>
+ <safe-signal variable="STE_X_TI_FLT_Ind" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA5SignalSaf.oCCUSSA5SignalSaf" member="ITI_Flt_Ind"/>
+ </safe-signal>
+ <safe-signal variable="STE_E_TpwsCrcInvCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA5SignalSaf.oCCUSSA5SignalSaf" member="FTpwsCrcInvCar1"/>
+ </safe-signal>
+ <safe-signal variable="STE_E_TpwsCrcInvCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA5SignalSaf.oCCUSSA5SignalSaf" member="FTpwsCrcInvCar3"/>
+ </safe-signal>
+ <safe-signal variable="STE_E_TpwsLfSignInvCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA5SignalSaf.oCCUSSA5SignalSaf" member="FTpwsLfSignInvCar1"/>
+ </safe-signal>
+ <safe-signal variable="STE_E_TpwsLfSignInvCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA5SignalSaf.oCCUSSA5SignalSaf" member="FTpwsLfSignInvCar3"/>
+ </safe-signal>
+ <safe-signal variable="MIO_S_AwsAckCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSDXH0x98St.iMIOSDXH0x98St_DI_INPUT9"/>
+ </safe-signal>
+ <safe-signal variable="MIO_S_DsdPedalPrssdCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSDXH0x98St.iMIOSDXH0x98St_DI_INPUT10"/>
+ </safe-signal>
+ <safe-signal variable="MIO_S_VigAckPrssdCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSDXH0x98St.iMIOSDXH0x98St_DI_INPUT11"/>
+ </safe-signal>
+ <safe-signal variable="MIO_X_TBCDemandCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0x91St.iMIOSAI0x91St_AIN2"/>
+ </safe-signal>
+ <safe-signal variable="MIO_S_AwsAckCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSDXH0xB8St.iMIOSDXH0xB8St_DI_INPUT9"/>
+ </safe-signal>
+ <safe-signal variable="MIO_S_DsdPedalPrssdCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSDXH0xB8St.iMIOSDXH0xB8St_DI_INPUT10"/>
+ </safe-signal>
+ <safe-signal variable="MIO_S_VigAckPrssdCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSDXH0xB8St.iMIOSDXH0xB8St_DI_INPUT11"/>
+ </safe-signal>
+ <safe-signal variable="MIO_X_TBCDemandCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSAI0xB1St.iMIOSAI0xB1St_AIN2"/>
+ </safe-signal>
+ <safe-signal variable="MIO_S_McsInRevCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSDXH0x98St.iMIOSDXH0x98St_DI_INPUT8"/>
+ </safe-signal>
+ <safe-signal variable="MIO_S_McsInFwdCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSDXH0x98St.iMIOSDXH0x98St_DI_INPUT6"/>
+ </safe-signal>
+ <safe-signal variable="MIO_S_McsInRevCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSDXH0xB8St.iMIOSDXH0xB8St_DI_INPUT8"/>
+ </safe-signal>
+ <safe-signal variable="MIO_S_McsInFwdCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSDXH0xB8St.iMIOSDXH0xB8St_DI_INPUT6"/>
+ </safe-signal>
+ <safe-signal variable="CCUO_S_RollbackDet" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="IRollbackDet"/>
+ </safe-signal>
+ <safe-signal variable="STV_S_VigNotEbReq" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA5SignalSaf.oCCUSSA5SignalSaf" member="IVgNoEmBrReq"/>
+ </safe-signal>
+ <safe-signal variable="STV_E_DacInputInvalCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA5SignalSaf.oCCUSSA5SignalSaf" member="FDacInputInvalCab1"/>
+ </safe-signal>
+ <safe-signal variable="STV_E_DacInputInvalCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA5SignalSaf.oCCUSSA5SignalSaf" member="FDacInputInvalCab2"/>
+ </safe-signal>
+ <safe-signal variable="SBHT_S_ByHldBr" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="SBHT_S_ByHldBr"/>
+ </safe-signal>
+ <safe-signal variable="STSC_S_LowSpdThr" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STSC_S_LowSpdThr"/>
+ </safe-signal>
+ <safe-signal variable="STV_C_VigNotEbReqCar3_Int" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA5SignalInternal.SA5SignalInternal" member="STV_C_VigNotEbReqCar3_Int"/>
+ </safe-signal>
+ <safe-signal variable="STV_C_VigNotEbReqCar1_Int" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA5SignalInternal.SA5SignalInternal" member="STV_C_VigNotEbReqCar1_Int"/>
+ </safe-signal>
+ <safe-signal variable="STV_C_VigAlarmCar3_Int" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA5SignalInternal.SA5SignalInternal" member="STV_C_VigAlarmCar3_Int"/>
+ </safe-signal>
+ <safe-signal variable="STV_C_VigAlarmCar1_Int" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA5SignalInternal.SA5SignalInternal" member="STV_C_VigAlarmCar1_Int"/>
+ </safe-signal>
+ <safe-signal variable="STE_Pt_CabStADropOffDly" type="PARAMETER" value="1s"/>
+ <safe-signal variable="STE_Pt_TrSleepDropOffDly" type="PARAMETER" value="1s"/>
+ <safe-signal variable="BGW_S_EmBrkAppl" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iBGWSfCtrl1.iBGWSfCtrl1_EmBrAppl"/>
+ </safe-signal>
+ <safe-signal variable="MIO_S_McsInSecureCar1" type="PARAMETER" value="FALSE"/>
+ <safe-signal variable="MIO_S_McsInSecureCar3" type="PARAMETER" value="FALSE"/>
+ <safe-signal variable="MIO_S_McsInRecovCar1" type="PARAMETER" value="FALSE"/>
+ <safe-signal variable="MIO_S_McsInRecovCar3" type="PARAMETER" value="FALSE"/>
+ <safe-signal variable="MIO_S_AtPTraPrmitCar1" type="PARAMETER" value="FALSE"/>
+ <safe-signal variable="MIO_S_AtPTraPrmitCar3" type="PARAMETER" value="FALSE"/>
+ <safe-signal variable="STE_X_Tr2Validity1Car3" type="NOT_CONNECTED" max-time-diff="0"/>
+ <safe-signal variable="STE_X_Tr2alias1Car3" type="NOT_CONNECTED" max-time-diff="0"/>
+ <safe-signal variable="STE_X_Tr2Validity1Car1" type="NOT_CONNECTED" max-time-diff="0"/>
+ <safe-signal variable="STE_X_Tr2alias1Car1" type="NOT_CONNECTED" max-time-diff="0"/>
+ <safe-signal variable="STE_X_Tr1Validity1Car3" type="NOT_CONNECTED" max-time-diff="0"/>
+ <safe-signal variable="STE_X_Tr1Validity1Car1" type="NOT_CONNECTED" max-time-diff="0"/>
+ <safe-signal variable="STE_X_Tr1alias1Car3" type="NOT_CONNECTED" max-time-diff="0"/>
+ <safe-signal variable="STE_X_Tr1alias1Car1" type="NOT_CONNECTED" max-time-diff="0"/>
+ <safe-signal variable="MIO_S_AtpSvBrDemCar1" type="PARAMETER" value="FALSE"/>
+ <safe-signal variable="MIO_S_AtpSvBrDemCar3" type="PARAMETER" value="FALSE"/>
+ <safe-signal variable="S_P_Project" type="EXT_PARAMETER" scope="Para_Static" set="Project" name="S_P_Project"/>
+ <safe-signal variable="ETCS2_Z_TR8_Validity" type="NOT_CONNECTED" max-time-diff="0"/>
+ <safe-signal variable="ETCS1_Z_TR8_Validity" type="NOT_CONNECTED" max-time-diff="0"/>
+ <safe-signal variable="ETCS2_Z_TR8_Alias" type="NOT_CONNECTED" max-time-diff="0"/>
+ <safe-signal variable="ETCS1_Z_TR8_Alias" type="NOT_CONNECTED" max-time-diff="0"/>
+ <safe-signal variable="ETCS2_Z_OBU26_Validity" type="PARAMETER" value="0"/>
+ <safe-signal variable="ETCS2_Z_OBU26_L_Platform" type="PARAMETER" value="0"/>
+ <safe-signal variable="ETCS2_Z_OBU26_D_Platform" type="PARAMETER" value="0"/>
+ <safe-signal variable="ETCS2_Z_OBU26_NID_Track" type="PARAMETER" value="0"/>
+ <safe-signal variable="ETCS2_Z_OBU26_NID_Station" type="PARAMETER" value="0"/>
+ <safe-signal variable="ETCS2_Z_OBU26_Q_Config" type="PARAMETER" value="0"/>
+ <safe-signal variable="ETCS2_Z_OBU26_alias" type="PARAMETER" value="0"/>
+ <safe-signal variable="ETCS1_Z_OBU26_Validity" type="PARAMETER" value="0"/>
+ <safe-signal variable="ETCS1_Z_OBU26_L_Platform" type="PARAMETER" value="0"/>
+ <safe-signal variable="ETCS1_Z_OBU26_D_Platform" type="PARAMETER" value="0"/>
+ <safe-signal variable="ETCS1_Z_OBU26_NID_Track" type="PARAMETER" value="0"/>
+ <safe-signal variable="ETCS1_Z_OBU26_NID_Station" type="PARAMETER" value="0"/>
+ <safe-signal variable="ETCS1_Z_OBU26_Q_Config" type="PARAMETER" value="0"/>
+ <safe-signal variable="ETCS1_Z_OBU26_alias" type="PARAMETER" value="0"/>
+</application>

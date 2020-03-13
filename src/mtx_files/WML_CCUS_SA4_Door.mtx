@@ -1,0 +1,1143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created 2020-03-03 16:30:48 by rgustafs on BTIS1000096325 using MTPE-5.3.0.1 -->
+<!-- File: C:/Data/AVENTRA_Software/AVENTRA_TCMS_SIL2/cfg/CCUS_1/applications/SA4_Door/WML_CCUS_SA4_Door.mtx -->
+<application name="SA4_Door" version="1.6.7.0" type="safe" cycle-time="64" etb-access="Read" redundant="1" broadcast="0">
+ <comment><![CDATA[2018-11-14 copied from LOTrain CCU-S version 1.5.5.0
+
+SA4_Door(control) on consist level containing safety related and Interface functions like: (alphbetical order)
+- required Libaries (sub-)functions
+
+- SDS_TravelDist
+- SDSC_SdoCab  
+- SDSC_SdoCabCalcNbDoors
+- SDSC_SdoLoc 	(SDSC_SdoLocGps, SDS_SdoLocPibs, SDSC_SdoLocStId, SDSC_SdoLocTrk)
+- SDSC_SdoSendToCcuo 	(SDSC_SdoMirRelPat, SDSC_SdoCarOrient)
+- SDSC_SdoStorage]]></comment>
+ <file path="SA4_Door.zip"/>
+ <meta-data>
+  <tag name="ProductID" value=""/>
+  <tag name="Supplier" value="BT"/>
+  <tag name="Type" value="a"/>
+ </meta-data>
+ <interface>
+  <variable-group name="S_Parameters">
+   <variable name="S_ApplicationCycleTime" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[Parameter: Application Cycle Time]]></comment>
+   </variable>
+   <variable name="S_P_Project" array-size="1" type="MWT_UINT" usage="input" safe="1">
+    <comment><![CDATA[External parameter (Para_Static.Project): S_P_Project]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDS_Parameter">
+   <variable name="SDS_Pt_ColdMovmDelay" array-size="1" type="MWT_TIME" usage="input" safe="1" min="1000ms" max="30000ms">
+    <comment><![CDATA[Parameter: Cold movement detection startup time (ms)]]></comment>
+   </variable>
+   <variable name="SDS_Pt_NvramRedDiffDelay" array-size="1" type="MWT_TIME" usage="input" safe="1" min="500ms" max="5000ms">
+    <comment><![CDATA[Parameter: Redundant CCU-S NVRAM diff check time (ms)]]></comment>
+   </variable>
+   <variable name="SDS_Pt_RedStartupDelay" array-size="1" type="MWT_TIME" usage="input" safe="1" min="1000ms" max="40000ms">
+    <comment><![CDATA[Parameter: Redundant CCU-S startup time (ms)]]></comment>
+   </variable>
+   <variable name="SDS_Pv_LeadCabSpdChange" array-size="1" type="MWT_UINT" usage="input" safe="1" min="100" max="5000">
+    <comment><![CDATA[Parameter: Leading cab change speed min (1/100 kph)]]></comment>
+   </variable>
+   <variable name="SDS_P_PibsReplyLimit" array-size="1" type="MWT_UDINT" usage="input" safe="1" min="2" max="100">
+    <comment><![CDATA[Parameter: Maximum number of CCUS cycles in which the PIBS shall reply.]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="STC_TrainCfg_Ext.Parameter">
+   <variable name="STC_P_DoorsPerCar" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[External parameter (Para_Static.Project): STC_P_DoorsPerCar]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="PIBS_Interface">
+   <variable name="SDS_C_PibsIso" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Pibs isolated state from SA3]]></comment>
+   </variable>
+   <variable name="PIBS_X_PibsByte1" array-size="1" type="MWT_BYTE" usage="input" safe="1">
+    <comment><![CDATA[RFID SDT array byte 1]]></comment>
+   </variable>
+   <variable name="PIBS_X_PibsByte2" array-size="1" type="MWT_BYTE" usage="input" safe="1">
+    <comment><![CDATA[RFID SDT array byte 2]]></comment>
+   </variable>
+   <variable name="PIBS_X_PibsByte3" array-size="1" type="MWT_BYTE" usage="input" safe="1">
+    <comment><![CDATA[RFID SDT array byte 3]]></comment>
+   </variable>
+   <variable name="PIBS_X_PibsByte4" array-size="1" type="MWT_BYTE" usage="input" safe="1">
+    <comment><![CDATA[RFID SDT array byte 4]]></comment>
+   </variable>
+   <variable name="PIBS_X_PibsByte5" array-size="1" type="MWT_BYTE" usage="input" safe="1">
+    <comment><![CDATA[RFID SDT array byte 5]]></comment>
+   </variable>
+   <variable name="PIBS_X_PibsByte6" array-size="1" type="MWT_BYTE" usage="input" safe="1">
+    <comment><![CDATA[RFID SDT array byte 6]]></comment>
+   </variable>
+   <variable name="PIBS_S_RfidTagRead" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[iRFID_to_TCMS_IRfidTagRead]]></comment>
+   </variable>
+   <variable name="PIBS_S_PibsFlt" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[iRFID_to_TCMS_IRfidTagRdHwFlt]]></comment>
+   </variable>
+   <variable name="PIBS_X_PibsTimestampCntIn1" array-size="1" type="MWT_BYTE" usage="input" safe="1">
+    <comment><![CDATA[iRFID_to_TCMS: Timestamp & counter byte 1]]></comment>
+   </variable>
+   <variable name="PIBS_X_PibsTimestampCntIn2" array-size="1" type="MWT_BYTE" usage="input" safe="1">
+    <comment><![CDATA[iRFID_to_TCMS: Timestamp & counter byte 2]]></comment>
+   </variable>
+   <variable name="PIBS_X_PibsTimestampCntIn3" array-size="1" type="MWT_BYTE" usage="input" safe="1">
+    <comment><![CDATA[iRFID_to_TCMS: Timestamp & counter byte 3]]></comment>
+   </variable>
+   <variable name="PIBS_X_PibsTimestampCntIn4" array-size="1" type="MWT_BYTE" usage="input" safe="1">
+    <comment><![CDATA[iRFID_to_TCMS: Timestamp & counter byte 4]]></comment>
+   </variable>
+   <variable name="SDSC_X_TimestampFromCcus1" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[oTCMS_to_RFID: Timestamp & counter byte 1]]></comment>
+   </variable>
+   <variable name="SDSC_X_TimestampFromCcus2" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[oTCMS_to_RFID: Timestamp & counter byte 2]]></comment>
+   </variable>
+   <variable name="SDSC_X_TimestampFromCcus3" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[oTCMS_to_RFID: Timestamp & counter byte 3]]></comment>
+   </variable>
+   <variable name="SDSC_X_TimestampFromCcus4" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[oTCMS_to_RFID: Timestamp & counter byte 4]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDSC to SA6_Door fkt on Train Level">
+   <variable name="SDSC_C_ClrMsmOffst" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Command to clear the release pattern due to mismatch in the offset]]></comment>
+   </variable>
+   <variable name="SDSC_S_TrackingLost" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Tracking lost indication to clear the pattern]]></comment>
+   </variable>
+   <variable name="SDSC_S_NvramAvlblSa4" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[NVRAM of sa4 state]]></comment>
+   </variable>
+   <variable name="SDSC_S_StIdMsmDtc" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Mismatch detected in the RFID and GPS station id]]></comment>
+   </variable>
+   <variable name="SDSC_S_TagExpectedCcuo" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Tag expected to ccuo]]></comment>
+   </variable>
+   <variable name="SDSC_S_CurRfidTagExpected" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[RFID Tag expected value from ASDO Database]]></comment>
+   </variable>
+   <variable name="SDSC_S_RfidSideDoorRight" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Correct Side Door Enable is Right from RFID]]></comment>
+   </variable>
+   <variable name="SDSC_S_RfidSideDoorLeft" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Correct Side Door Enable is Left from RFID]]></comment>
+   </variable>
+   <variable name="SDSC_S_RfidValidData" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[PIBS data is valid]]></comment>
+   </variable>
+   <variable name="SDSC_S_ILocConfirmed" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Location confirmed]]></comment>
+   </variable>
+   <variable name="SDSC_S_CalcColdMovm" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Calculated Cold Movement TCMS]]></comment>
+   </variable>
+   <variable name="SDSC_S_ColdMovmChecked" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Startup waiting of the cold movement detection has elapsed]]></comment>
+   </variable>
+   <variable name="SDSC_S_ColdMovmDetected" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Cold movement has been detected whilst the train was in hibernation/stabling]]></comment>
+   </variable>
+   <variable name="SDSC_X_RfidPltfrmLgt" array-size="1" type="MWT_UINT" usage="output" safe="1">
+    <comment><![CDATA[Rfid Platform length received from the PIBS]]></comment>
+   </variable>
+   <variable name="SDSC_X_CurAsdoExpDistance" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[Asdo Expiry Distance from ASDO Database]]></comment>
+   </variable>
+   <variable name="SDSC_X_IStationId" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[Confirmed station ID]]></comment>
+   </variable>
+   <variable name="SDSC_X_PlatformNo" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[Platform Number retrieved from PIBS]]></comment>
+   </variable>
+   <variable name="SDSC_X_ApprDir" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[Approach Direction retrieved from PIBS]]></comment>
+   </variable>
+   <variable name="SDSC_Z_StoredRelPat1" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[Last Stored Train Release Pattern 1]]></comment>
+   </variable>
+   <variable name="SDSC_Z_StoredRelPat2" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[Last Stored Train Release Pattern 2]]></comment>
+   </variable>
+   <variable name="SDST_S_DrgDetNotActCar1_In" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: Drag Detection Not Active Car 1]]></comment>
+   </variable>
+   <variable name="SDST_S_DrgDetNotActCar3_In" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: Drag Detection Not Active Car 3]]></comment>
+   </variable>
+   <variable name="SDST_S_DrgDetNotActCar1" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Drag Detection Not Active Car 1]]></comment>
+   </variable>
+   <variable name="SDST_S_DrgDetNotActCar3" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Drag Detection Not Active Car 3]]></comment>
+   </variable>
+   <variable name="SDSC_S_InsideSt" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Vehicle is inside station]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDS_SdoLoc_Input">
+   <variable name="CCUO1_S_ColdMovm" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.IColdMovm]]></comment>
+   </variable>
+   <variable name="CCUO2_S_ColdMovm" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.IColdMovm]]></comment>
+   </variable>
+   <variable name="CCUO3_S_ColdMovm" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.IColdMovm]]></comment>
+   </variable>
+   <variable name="CCUO4_S_ColdMovm" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.IColdMovm]]></comment>
+   </variable>
+   <variable name="SDS_X_GPSCurLat" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[Internal: GPS Current Latitude]]></comment>
+   </variable>
+   <variable name="SDS_X_GPSCurLong" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[Internal: GPS Current Longitude]]></comment>
+   </variable>
+   <variable name="SDS_C_GpsCoordValid" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: GPS Coordinates valid for computation]]></comment>
+   </variable>
+   <variable name="S_AsdoIsoAct" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: ASDO isolated]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDS_SdoLoc_Output">
+   <variable name="SDSC_X_JrPibsPltLgt" array-size="1" type="MWT_UINT" usage="output" safe="1">
+    <comment><![CDATA[JR data PIBS Platform Length]]></comment>
+   </variable>
+   <variable name="SDSC_S_JrRfidTagRead" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[CSDE data - RFID Tag data available]]></comment>
+   </variable>
+   <variable name="SDSC_S_PibsFlt" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Status: PIBS Fault;; Internal: Status: PIBS Fault]]></comment>
+   </variable>
+   <variable name="SDSC_S_GPSLocMatch" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[GPS Location match]]></comment>
+   </variable>
+   <variable name="SDSC_E_GPSLocError" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Multiple GPS location error]]></comment>
+   </variable>
+   <variable name="SDSC_X_JrPibsStationId" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[JR data Station ID received from PIBS]]></comment>
+   </variable>
+   <variable name="SDSC_X_JrAsdoStationId" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[JR data Station ID determined by ASDO]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDS_SdoSendToCcuo">
+   <variable name="SDSC_C_AsdoEnHwCar1_AF1A" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car1: SDO front release (a+f) - Redundant O/P 1A;; Doors A&F in car1 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar1_AF1B" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car1: SDO front release (a+f) - Redundant O/P 1B;; Doors A&F in car1 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar1_AF2A" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car1: SDO front release (a+f) - Redundant O/P 2A;; Doors A&F in car1 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar1_AF2B" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car1: SDO front release (a+f) - Redundant O/P 2B;; Doors A&F in car1 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar1_CD" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car1: SDO front release (a+f) - Redundant O/P 1A;; Doors C&D in car1 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar4_AF" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car4: SDO release, adjacent vehicle  No.1 End;; Doors A&F in car4 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar4_CD" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car4: SDO release, adjacent vehicle  No.2 End;; Doors C&D in car4 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar2_AF" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car2: SDO release, adjacent vehicle  No.1 End;; Doors A&F in car2 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar2_CD" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car2: SDO release, adjacent vehicle  No.2 End;; Doors C&D in car2 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar5_AF" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car5: SDO release, adjacent vehicle  No.1 End;; Doors A&F in car5 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar5_CD" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car5: SDO release, adjacent vehicle  No.2 End;; Doors C&D in car5 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar3_AF1A" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car3: SDO front release (a+f) - Redundant O/P 1A;; Doors A&F in car3 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar3_AF1B" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car3: SDO front release (a+f) - Redundant O/P 1B;; Doors A&F in car3 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar3_AF2A" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car3: SDO front release (a+f) - Redundant O/P 2A;; Doors A&F in car3 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar3_AF2B" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car3: SDO front release (a+f) - Redundant O/P 2B;; Doors A&F in car3 ASDO Enable]]></comment>
+   </variable>
+   <variable name="SDSC_C_AsdoEnHwCar3_CD" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int car3: SDO front release (a+f) - Redundant O/P 1A;; Doors C&D in car3 ASDO Enable]]></comment>
+   </variable>
+   <variable name="CCUO1_S_EAsdoSafTstFltCar1AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.ISdoSafTstFltCar1AF]]></comment>
+   </variable>
+   <variable name="CCUO1_S_EAsdoRedTstFltCar1AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.ISdoRedTstFltCar1AF]]></comment>
+   </variable>
+   <variable name="CCUO1_S_EAsdoSafTstFltCar3AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.ISdoSafTstFltCar3AF]]></comment>
+   </variable>
+   <variable name="CCUO1_S_EAsdoRedTstFltCar3AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.ISdoRedTstFltCar3AF]]></comment>
+   </variable>
+   <variable name="CCUO2_S_EAsdoSafTstFltCar1AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.ISdoSafTstFltCar1AF]]></comment>
+   </variable>
+   <variable name="CCUO2_S_EAsdoRedTstFltCar1AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.ISdoRedTstFltCar1AF]]></comment>
+   </variable>
+   <variable name="CCUO2_S_EAsdoSafTstFltCar3AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.ISdoSafTstFltCar3AF]]></comment>
+   </variable>
+   <variable name="CCUO2_S_EAsdoRedTstFltCar3AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.ISdoRedTstFltCar3AF]]></comment>
+   </variable>
+   <variable name="CCUO3_S_EAsdoSafTstFltCar1AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.ISdoSafTstFltCar1AF]]></comment>
+   </variable>
+   <variable name="CCUO3_S_EAsdoRedTstFltCar1AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.ISdoRedTstFltCar1AF]]></comment>
+   </variable>
+   <variable name="CCUO3_S_EAsdoSafTstFltCar3AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.ISdoSafTstFltCar3AF]]></comment>
+   </variable>
+   <variable name="CCUO3_S_EAsdoRedTstFltCar3AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.ISdoRedTstFltCar3AF]]></comment>
+   </variable>
+   <variable name="CCUO4_S_EAsdoSafTstFltCar1AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.ISdoSafTstFltCar1AF]]></comment>
+   </variable>
+   <variable name="CCUO4_S_EAsdoRedTstFltCar1AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.ISdoRedTstFltCar1AF]]></comment>
+   </variable>
+   <variable name="CCUO4_S_EAsdoSafTstFltCar3AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.ISdoSafTstFltCar3AF]]></comment>
+   </variable>
+   <variable name="CCUO4_S_EAsdoRedTstFltCar3AF" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.ISdoRedTstFltCar3AF]]></comment>
+   </variable>
+   <variable name="SDS_X_Sif78ConfirmedData0" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[Internal: iHMI1411_Status: SIF 78 confirmed data0]]></comment>
+   </variable>
+   <variable name="SDS_C_AsdoSafTst" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: ASDO Safe Test Requested]]></comment>
+   </variable>
+   <variable name="SDSC_X_ASDOSafeTestResultSt" array-size="1" type="MWT_UINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: ASDO Safe Test Result Status. 0: Unknown, 1: Pass, 2: Fail]]></comment>
+   </variable>
+   <variable name="SDSC_E_MsmDtcCpl" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Event for a mismatch during the coupling]]></comment>
+   </variable>
+   <variable name="SDSC_E_MsgDrs" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Event for a mismatch due to offset having missing doors]]></comment>
+   </variable>
+   <variable name="SDSC_E_DplDrs" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Event for a mismatch due to offset having overlapping doors]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDS_SdoStorage">
+   <variable name="SDS_X_RedOtherLastStationId" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iCCUSSA4Nvram: Last known station ID in NVRAM.]]></comment>
+   </variable>
+   <variable name="SDS_Z_RedOtherReleasePat1" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iCCUSSA4Nvram: Door release pattern 1 in NVRAM.]]></comment>
+   </variable>
+   <variable name="SDS_Z_RedOtherReleasePat2" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iCCUSSA4Nvram: Door release pattern 2 in NVRAM.]]></comment>
+   </variable>
+   <variable name="SDS_X_RedOtherLeadCab" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iCCUSSA4Nvram: Leading cab in NVRAM.]]></comment>
+   </variable>
+   <variable name="SDS_X_RedOtherAsdoExpDist" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iCCUSSA4Nvram: Asdo Expiry Distance in NVRAM]]></comment>
+   </variable>
+   <variable name="SDS_S_RedOtherTagExpected" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[iCCUSSA4Nvram: Tag Expected in NVRAM]]></comment>
+   </variable>
+   <variable name="SDS_X_RedOwnLastStationId" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[oCCUSSA4Nvram: Last known station ID in NVRAM.]]></comment>
+   </variable>
+   <variable name="SDS_Z_RedOwnReleasePat1" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[oCCUSSA4Nvram: Door release pattern 1 in NVRAM.]]></comment>
+   </variable>
+   <variable name="SDS_Z_RedOwnReleasePat2" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[oCCUSSA4Nvram: Door release pattern 2 in NVRAM.]]></comment>
+   </variable>
+   <variable name="SDS_X_RedOwnLeadCab" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[oCCUSSA4Nvram: Leading cab in NVRAM.]]></comment>
+   </variable>
+   <variable name="SDS_X_RedOwnAsdoExpDist" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[oCCUSSA4Nvram: Asdo Expiry Distance in NVRAM]]></comment>
+   </variable>
+   <variable name="SDS_S_RedOwnTagExpected" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[oCCUSSA4Nvram: Tag Expected in NVRAM]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDS_SdoTrRelPat">
+   <variable name="SDST_S_StAsdoInAdv" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[TRUE if station with ASDO in advance]]></comment>
+   </variable>
+   <variable name="SDST_X_NbDoorsToOpen" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[Number of doors to open according to rfid platform length]]></comment>
+   </variable>
+   <variable name="SDST_S_TagExpctCcuo" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Tag expected to ccuo]]></comment>
+   </variable>
+   <variable name="SDST_E_ArrivStationInt" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: Event Arriving Station]]></comment>
+   </variable>
+   <variable name="SDST_E_DepFrmStationInt" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: Event Departing Station]]></comment>
+   </variable>
+   <variable name="SDST_E_ArrivStation" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Event Arriving Station;]]></comment>
+   </variable>
+   <variable name="SDST_E_DepFrmStation" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Event Departing Station;]]></comment>
+   </variable>
+   <variable name="SDST_S_CsdeLeftEnabled" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[CSDE data - RFID platform left]]></comment>
+   </variable>
+   <variable name="SDST_S_CsdeRgtEnabled" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[CSDE data - RFID platform right]]></comment>
+   </variable>
+   <variable name="SDST_Z_CalcRelPattern1" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[Release pattern 1 calculated after overriding]]></comment>
+   </variable>
+   <variable name="SDST_Z_CalcRelPattern2" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[Release pattern 2 calculated after overriding]]></comment>
+   </variable>
+   <variable name="SDST_S_Pk44DataStrdInt" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: Packet 44 Data Stored]]></comment>
+   </variable>
+   <variable name="SDST_S_Pk44DataExpctInt" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: Packet 44 Data Expected]]></comment>
+   </variable>
+   <variable name="SDST_S_Pk44DataStrd" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Packet 44 Data Stored]]></comment>
+   </variable>
+   <variable name="SDST_S_Pk44DataExpct" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Packet 44 Data Expected]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDS_SdoCouplingPat">
+   <variable name="SDST_S_MsmtDrnCpl" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: Inhibit all doors and allow override due to mismatch in coupling]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDST_Sdo">
+   <variable name="SDSC_X_TotDistTrp" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[Total distance per trip]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDSC_SdoCab">
+   <variable name="MIO_S_McsInFwdCar1" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Car(1): MCS in Forward]]></comment>
+   </variable>
+   <variable name="MIO_S_McsInFwdCar3" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Car(3): MCS in Forward]]></comment>
+   </variable>
+   <variable name="SDST_S_McsInFwdInt" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: MCS in Forward, trainwide signal]]></comment>
+   </variable>
+   <variable name="SDSC_S_McsInFwdWTB" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[MCS in Forward, local, To WTB]]></comment>
+   </variable>
+   <variable name="SDSC_S_PersLeadCabCpld" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Int Persistent Leading Cab is Coupled]]></comment>
+   </variable>
+   <variable name="SDSC_X_PersLeadingCab" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[Int Indicate the persistent leading cab]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDS_SdoOverriding">
+   <variable name="SDS_S_RstDrvOvrd" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Reset driver override]]></comment>
+   </variable>
+   <variable name="SDS_E_AsdoOvrdAvlInt" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: Flag if ASDO Override is available]]></comment>
+   </variable>
+   <variable name="SDS_E_AsdoOvrdAvl" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Status: Flag if ASDO Override is available]]></comment>
+   </variable>
+   <variable name="SDST_S_OvrrdActTrn" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: ASDO Override trainwide signal]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDSC_SdoNxtStn">
+   <variable name="CCUO1_X_NxtStnId" array-size="1" type="MWT_UDINT" usage="input">
+    <comment><![CDATA[Next Station ID from CCU-O1]]></comment>
+   </variable>
+   <variable name="CCUO2_X_NxtStnId" array-size="1" type="MWT_UDINT" usage="input">
+    <comment><![CDATA[Next Station ID from CCU-O2]]></comment>
+   </variable>
+   <variable name="CCUO3_X_NxtStnId" array-size="1" type="MWT_UDINT" usage="input">
+    <comment><![CDATA[Next Station ID from CCU-O3]]></comment>
+   </variable>
+   <variable name="CCUO4_X_NxtStnId" array-size="1" type="MWT_UDINT" usage="input">
+    <comment><![CDATA[Next Station ID from CCU-O4]]></comment>
+   </variable>
+   <variable name="SDSC_X_NextStaRelPat1" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[Next Station Release Pattern 1]]></comment>
+   </variable>
+   <variable name="SDSC_X_NextStaRelPat2" array-size="1" type="MWT_UDINT" usage="output" safe="1">
+    <comment><![CDATA[Next Station Release Pattern 2]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="STC_CabStatus">
+   <variable name="STCT_X_CabStatus" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Internal Active Cab status Train]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="STC_TrainInaug">
+   <variable name="STCT_X_OwnCstEntry" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[Internal: Indicate the index of the own consist in the Train Configuration]]></comment>
+   </variable>
+   <variable name="STCT_X_LeadingCstEntry" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[Internal: Indicates the leading consist entry]]></comment>
+   </variable>
+   <variable name="STCT_S_WtbHealthy" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: Wtb health status]]></comment>
+   </variable>
+   <variable name="STCT_S_TrainCfgValid" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: Train configuration valid]]></comment>
+   </variable>
+   <variable name="STCT_X_PersOwnCstEntry" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[Internal: Indicate the index of the Persistent own consist in the Train Configuration]]></comment>
+   </variable>
+   <variable name="STCT_X_PerLeadCstEntry" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[Internal: Indicates the Persistent leading consist entry]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="STCT_TrainCfg (from SA1)">
+   <variable name="STCT_X_NbConsists" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[Indicate the number of consists validated in the train configuration]]></comment>
+   </variable>
+   <variable name="STCT_X_LocalCabCoupled" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Indicate the cab coupled status]]></comment>
+   </variable>
+   <variable name="STCT_X_NbCarsCst1" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Indicate the number of cars in cst1]]></comment>
+   </variable>
+   <variable name="STCT_X_NbCarsCst2" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Indicate the number of cars in cst2]]></comment>
+   </variable>
+   <variable name="STCT_X_NbCarsCst3" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Indicate the number of cars in cst3]]></comment>
+   </variable>
+   <variable name="STCT_X_NbCarsCst4" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Indicate the number of cars in cst4]]></comment>
+   </variable>
+   <variable name="STCT_X_LeadCabCst1" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Indicate the leading cab state in cst1]]></comment>
+   </variable>
+   <variable name="STCT_X_LeadCabCst2" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Indicate the leading cab state in cst2]]></comment>
+   </variable>
+   <variable name="STCT_X_LeadCabCst3" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Indicate the leading cab state in cst3]]></comment>
+   </variable>
+   <variable name="STCT_X_LeadCabCst4" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Indicate the leading cab state in cst4]]></comment>
+   </variable>
+   <variable name="STCT_X_CarOrientationTrn1" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Orientation of car1 relative to the leading cab orientation (0=unknown, 1=same, 2=opposite)]]></comment>
+   </variable>
+   <variable name="STCT_X_CarOrientationTrn2" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Orientation of car2 relative to the leading cab orientation (0=unknown, 1=same, 2=opposite)]]></comment>
+   </variable>
+   <variable name="STCT_X_CarOrientationTrn3" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Orientation of car3 relative to the leading cab orientation (0=unknown, 1=same, 2=opposite)]]></comment>
+   </variable>
+   <variable name="STCT_X_CarOrientationTrn4" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Orientation of car4 relative to the leading cab orientation (0=unknown, 1=same, 2=opposite)]]></comment>
+   </variable>
+   <variable name="STCT_X_CarOrientationTrn5" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Orientation of car5 relative to the leading cab orientation (0=unknown, 1=same, 2=opposite)]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="STS_Speed">
+   <variable name="STSC_Xv_TrSpd" array-size="1" type="MWT_UINT" usage="input" safe="1">
+    <comment><![CDATA[Internal Train (consist) speed]]></comment>
+   </variable>
+   <variable name="STSC_S_LowSpdThr" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal SW Low Speed status]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDSC_SdoCalcNbDoors">
+   <variable name="SDSC_X_OffsetToApply" array-size="1" type="MWT_USINT" usage="output" safe="1">
+    <comment><![CDATA[Offset to apply by the local consist to be forward to SA1 WTB]]></comment>
+   </variable>
+  </variable-group>
+ </interface>
+ <parameter-table name="Location" min-rows="1" max-rows="300" parameter-set="FDO_Param.Location">
+  <column name="LongTopLeft" type="SAFEDINT" min="-180000000" max="180000000">
+   <comment><![CDATA[Longitude of the upper left point (0,000001 = 1�)]]></comment>
+  </column>
+  <column name="LatTopLeft" type="SAFEDINT" min="-90000000" max="90000000">
+   <comment><![CDATA[Latitude of the upper left point (0,000001 = 1�)]]></comment>
+  </column>
+  <column name="LongBottomRight" type="SAFEDINT" min="-180000000" max="180000000">
+   <comment><![CDATA[Longitude of the bottom right point (0,000001 = 1�)]]></comment>
+  </column>
+  <column name="LatBottomRight" type="SAFEDINT" min="-90000000" max="90000000">
+   <comment><![CDATA[Latitude of the bottom right point (0,000001 = 1�)]]></comment>
+  </column>
+  <column name="StationId" type="SAFEUDINT" min="0" max="4294967295">
+   <comment><![CDATA[Station ID associated to this box]]></comment>
+  </column>
+ </parameter-table>
+ <parameter-table name="Tracking" min-rows="1" max-rows="600" parameter-set="FDO_Param.Tracking">
+  <column name="StationFrom" type="SAFEUDINT" min="0" max="4294967295">
+   <comment><![CDATA[Station ID of the last station]]></comment>
+  </column>
+  <column name="StationTo" type="SAFEUDINT" min="0" max="4294967295">
+   <comment><![CDATA[Station ID of the approaching station]]></comment>
+  </column>
+  <column name="AsdoExpDist" type="SAFEUDINT" min="0" max="5000">
+   <comment><![CDATA[Asdo Expiry Distance]]></comment>
+  </column>
+  <column name="RfidTagExp" type="SAFEBOOL" min="" max="">
+   <comment><![CDATA[RFID Tag expected at station]]></comment>
+  </column>
+ </parameter-table>
+ <safe-signal variable="SDS_Pt_ColdMovmDelay" type="PARAMETER" value="5000ms"/>
+ <safe-signal variable="SDS_Pt_NvramRedDiffDelay" type="PARAMETER" value="1500ms"/>
+ <safe-signal variable="SDS_Pt_RedStartupDelay" type="PARAMETER" value="20000ms"/>
+ <safe-signal variable="SDS_Pv_LeadCabSpdChange" type="PARAMETER" value="300"/>
+ <safe-signal variable="SDS_P_PibsReplyLimit" type="PARAMETER" value="36"/>
+ <safe-signal variable="PIBS_X_PibsByte1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iRFID_to_TCMS.iRFID_to_TCMS_RFIDData_1"/>
+ </safe-signal>
+ <safe-signal variable="PIBS_X_PibsByte2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iRFID_to_TCMS.iRFID_to_TCMS_RFIDData_2"/>
+ </safe-signal>
+ <safe-signal variable="PIBS_X_PibsByte3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iRFID_to_TCMS.iRFID_to_TCMS_RFIDData_3"/>
+ </safe-signal>
+ <safe-signal variable="PIBS_X_PibsByte4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iRFID_to_TCMS.iRFID_to_TCMS_RFIDData_4"/>
+ </safe-signal>
+ <safe-signal variable="PIBS_X_PibsByte5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iRFID_to_TCMS.iRFID_to_TCMS_RFIDData_5"/>
+ </safe-signal>
+ <safe-signal variable="PIBS_X_PibsByte6" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iRFID_to_TCMS.iRFID_to_TCMS_RFIDData_6"/>
+ </safe-signal>
+ <safe-signal variable="PIBS_S_RfidTagRead" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iRFID_to_TCMS.iRFID_to_TCMS_IRfidTagRead"/>
+ </safe-signal>
+ <safe-signal variable="PIBS_X_PibsTimestampCntIn1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iRFID_to_TCMS.iRFID_to_TCMS_ITimestampCnt1"/>
+ </safe-signal>
+ <safe-signal variable="PIBS_X_PibsTimestampCntIn2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iRFID_to_TCMS.iRFID_to_TCMS_ITimestampCnt2"/>
+ </safe-signal>
+ <safe-signal variable="PIBS_X_PibsTimestampCntIn3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iRFID_to_TCMS.iRFID_to_TCMS_ITimestampCnt3"/>
+ </safe-signal>
+ <safe-signal variable="PIBS_X_PibsTimestampCntIn4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iRFID_to_TCMS.iRFID_to_TCMS_ITimestampCnt4"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_TimestampFromCcus1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.oTCMS_to_RFID.oTCMS_to_RFID_ITimestampCnt1"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_TimestampFromCcus2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.oTCMS_to_RFID.oTCMS_to_RFID_ITimestampCnt2"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_TimestampFromCcus3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.oTCMS_to_RFID.oTCMS_to_RFID_ITimestampCnt3"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_TimestampFromCcus4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.oTCMS_to_RFID.oTCMS_to_RFID_ITimestampCnt4"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_RfidPltfrmLgt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_X_RfidPltfrmLgt"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_CurAsdoExpDistance" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_X_CurAsdoExpDistance"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_IStationId" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_X_IStationId"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_PlatformNo" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_X_PlatformNo"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_ApprDir" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_X_ApprDir"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_Z_StoredRelPat1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_Z_StoredRelPat1"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_Z_StoredRelPat2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_Z_StoredRelPat2"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_JrPibsPltLgt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="IPIBSPlfLgt"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_JrRfidTagRead" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="IRfidTagRead"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_PibsFlt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="IPIBSFlt"/>
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_PibsFlt_Int"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_GPSLocMatch" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="IGPSLocMatch"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_E_GPSLocError" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="FGPSLocError"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_JrPibsStationId" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="IPibsStnId"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_JrAsdoStationId" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="IAsdoStnId"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar1_CD" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar1_CD_Int"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C1ISDOEnCD"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar4_AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar4_AF_Int"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C4ISDOEnAF"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar4_CD" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar4_CD_Int"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C4ISDOEnCD"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar2_AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar2_AF_Int"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C2ISDOEnAF"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar2_CD" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar2_CD_Int"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C2ISDOEnCD"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar5_AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar5_AF_Int"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C5ISDOEnAF"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar5_CD" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar5_CD_Int"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C5ISDOEnCD"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar3_CD" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar3_CD_Int"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C3ISDOEnCD"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_RedOtherLastStationId" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUSSA4Nvram.iCCUSSA4Nvram" member="IRedLastStationId"/>
+ </safe-signal>
+ <safe-signal variable="SDS_Z_RedOtherReleasePat1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUSSA4Nvram.iCCUSSA4Nvram" member="IRedRelPattern1"/>
+ </safe-signal>
+ <safe-signal variable="SDS_Z_RedOtherReleasePat2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUSSA4Nvram.iCCUSSA4Nvram" member="IRedRelPattern2"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_RedOtherLeadCab" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUSSA4Nvram.iCCUSSA4Nvram" member="IRedLeadCab"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_RedOwnLastStationId" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4Nvram.oCCUSSA4Nvram" member="IRedLastStationId"/>
+ </safe-signal>
+ <safe-signal variable="SDS_Z_RedOwnReleasePat1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4Nvram.oCCUSSA4Nvram" member="IRedRelPattern1"/>
+ </safe-signal>
+ <safe-signal variable="SDS_Z_RedOwnReleasePat2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4Nvram.oCCUSSA4Nvram" member="IRedRelPattern2"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_RedOwnLeadCab" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4Nvram.oCCUSSA4Nvram" member="IRedLeadCab"/>
+ </safe-signal>
+ <safe-signal variable="SDST_E_ArrivStationInt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_E_ArrivStationInt"/>
+ </safe-signal>
+ <safe-signal variable="SDST_E_DepFrmStationInt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_E_DepFrmStationInt"/>
+ </safe-signal>
+ <safe-signal variable="SDST_E_ArrivStation" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="EArriveStn"/>
+ </safe-signal>
+ <safe-signal variable="SDST_E_DepFrmStation" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="EDepartStn"/>
+ </safe-signal>
+ <safe-signal variable="SDST_S_CsdeLeftEnabled" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="ICsdePtfmLft"/>
+ </safe-signal>
+ <safe-signal variable="SDST_S_CsdeRgtEnabled" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="ICsdePtfmRgt"/>
+ </safe-signal>
+ <safe-signal variable="SDST_Z_CalcRelPattern1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_Z_CalcRelPattern1"/>
+ </safe-signal>
+ <safe-signal variable="SDST_Z_CalcRelPattern2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_Z_CalcRelPattern2"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_TotDistTrp" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="ITotDistTrp"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_CabStatus" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_CabStatus"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_OwnCstEntry" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_OwnCstEntry"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_LocalCabCoupled" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_LocalCabsCoupled"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_NbCarsCst1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_NbCarsCst1"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_NbCarsCst2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_NbCarsCst2"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_NbCarsCst3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_NbCarsCst3"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_NbCarsCst4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_NbCarsCst4"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_LeadCabCst1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_LeadCabCst1"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_LeadCabCst2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_LeadCabCst2"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_LeadCabCst3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_LeadCabCst3"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_LeadCabCst4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_LeadCabCst4"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_CarOrientationTrn1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_CarOrientationTrn1"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_CarOrientationTrn2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_CarOrientationTrn2"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_CarOrientationTrn3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_CarOrientationTrn3"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_CarOrientationTrn4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_CarOrientationTrn4"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_CarOrientationTrn5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_CarOrientationTrn5"/>
+ </safe-signal>
+ <safe-signal variable="STSC_Xv_TrSpd" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STSC_Xv_TrSpd"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_CalcColdMovm" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_CalcColdMovm"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_ILocConfirmed" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_ILocConfirmed"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="ILocConfirmed"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_RfidValidData" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_RfidValidData"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="ICsdeV"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_RfidSideDoorLeft" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_RfidSideDoorLeft"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_RfidSideDoorRight" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_RfidSideDoorRight"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_CurRfidTagExpected" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_CurRfidTagExpected"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_RedOtherAsdoExpDist" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4Nvram.oCCUSSA4Nvram" member="IAsdoExpDist"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_RedOwnAsdoExpDist" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4Nvram.oCCUSSA4Nvram" member="IAsdoExpDist"/>
+ </safe-signal>
+ <safe-signal variable="STC_P_DoorsPerCar" type="EXT_PARAMETER" scope="Para_Static" set="Project" name="STC_P_DoorsPerCar"/>
+ <safe-signal variable="SDS_E_AsdoOvrdAvlInt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDS_E_AsdoOvrdAvlInt"/>
+ </safe-signal>
+ <safe-signal variable="SDS_E_AsdoOvrdAvl" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="IAsdoOvrdAvl"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_Sif78ConfirmedData0" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_Sif78ConfirmedData0"/>
+ </safe-signal>
+ <safe-signal variable="SDS_C_AsdoSafTst" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_C_AsdoSafTst"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_ASDOSafeTestResultSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_X_ASDOSafeTestResultSt"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar1_AF2B" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar1_AF2B_In"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C1ISDOEnAFRedSaf"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar1_AF2A" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar1_AF2A_In"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C1ISDOEnAFRed"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar1_AF1B" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar1_AF1B_In"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C1ISDOEnAFSaf"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar1_AF1A" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar1_AF1A_In"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C1ISDOEnAF"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar3_AF2B" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar3_AF2B_In"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C3ISDOEnAFRedSaf"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar3_AF2A" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar3_AF2A_In"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C3ISDOEnAFRed"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar3_AF1B" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar3_AF1B_In"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C3ISDOEnAFSaf"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_AsdoEnHwCar3_AF1A" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_AsdoEnHwCar3_AF1A_In"/>
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="C3ISDOEnAF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_S_EAsdoSafTstFltCar1AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="ISdoSafTstFltCar1AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_S_EAsdoRedTstFltCar1AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="ISdoRedTstFltCar1AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_S_EAsdoSafTstFltCar3AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="ISdoSafTstFltCar3AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_S_EAsdoRedTstFltCar3AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="ISdoRedTstFltCar3AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_S_EAsdoSafTstFltCar1AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="ISdoSafTstFltCar1AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_S_EAsdoRedTstFltCar1AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="ISdoRedTstFltCar1AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_S_EAsdoSafTstFltCar3AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="ISdoSafTstFltCar3AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_S_EAsdoRedTstFltCar3AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="ISdoRedTstFltCar3AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_S_EAsdoSafTstFltCar1AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="ISdoSafTstFltCar1AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_S_EAsdoRedTstFltCar3AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="ISdoRedTstFltCar3AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_S_EAsdoSafTstFltCar3AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="ISdoSafTstFltCar3AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_S_EAsdoRedTstFltCar1AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="ISdoRedTstFltCar1AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_S_EAsdoRedTstFltCar3AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="ISdoRedTstFltCar1AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_S_EAsdoSafTstFltCar3AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="ISdoSafTstFltCar3AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_S_EAsdoRedTstFltCar1AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="ISdoRedTstFltCar1AF"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_S_EAsdoSafTstFltCar1AF" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="ISdoSafTstFltCar1AF"/>
+ </safe-signal>
+ <safe-signal variable="S_P_Project" type="EXT_PARAMETER" scope="Para_Static" set="Project" name="S_P_Project"/>
+ <safe-signal variable="SDSC_S_PersLeadCabCpld" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_PersLeadCabCpld"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_PersLeadingCab" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_X_PersLeadingCab"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_PersOwnCstEntry" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_PersOwnCstEntry"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_NbConsists" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_NbConsists"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_PerLeadCstEntry" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_PersLeadCstEntry"/>
+ </safe-signal>
+ <safe-signal variable="SDST_S_Pk44DataStrdInt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_S_Pk44DataStrdInt"/>
+ </safe-signal>
+ <safe-signal variable="SDST_S_Pk44DataExpctInt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_S_Pk44DataExpctInt"/>
+ </safe-signal>
+ <safe-signal variable="SDST_S_Pk44DataStrd" type="NOT_CONNECTED" max-time-diff="0"/>
+ <safe-signal variable="SDST_S_Pk44DataExpct" type="NOT_CONNECTED" max-time-diff="0"/>
+ <safe-signal variable="MIO_S_McsInFwdCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSDXH0x98St.iMIOSDXH0x98St_DI_INPUT6"/>
+ </safe-signal>
+ <safe-signal variable="MIO_S_McsInFwdCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iMIOSDXH0xB8St.iMIOSDXH0xB8St_DI_INPUT6"/>
+ </safe-signal>
+ <safe-signal variable="SDST_S_DrgDetNotActCar3_In" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_S_DrgDetNotActCar3"/>
+ </safe-signal>
+ <safe-signal variable="SDST_S_DrgDetNotActCar1_In" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_S_DrgDetNotActCar1"/>
+ </safe-signal>
+ <safe-signal variable="S_ApplicationCycleTime" type="PARAMETER" value="256"/>
+ <safe-signal variable="SDST_S_DrgDetNotActCar1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="IDrgDetNotAct1"/>
+ </safe-signal>
+ <safe-signal variable="SDST_S_DrgDetNotActCar3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="IDrgDetNotAct2"/>
+ </safe-signal>
+ <safe-signal variable="SDST_S_McsInFwdInt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_S_McsInFwdInt"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_McsInFwdWTB" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_McsInFwdWTB"/>
+ </safe-signal>
+ <safe-signal variable="PIBS_S_PibsFlt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iRFID_to_TCMS.iRFID_to_TCMS_IRfidTagRdHwFlt"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_ColdMovmChecked" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_ColdMovmChecked"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_ColdMovmDetected" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_ColdMovmDetected"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_InsideSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_InsideSt"/>
+ </safe-signal>
+ <safe-signal variable="SDST_S_OvrrdActTrn" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_S_OvrrdActTrn"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_LeadingCstEntry" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_LeadingCstEntry"/>
+ </safe-signal>
+ <safe-signal variable="STSC_S_LowSpdThr" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STSC_S_LowSpdThr"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_StIdMsmDtc" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_StIdMsm"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_NvramAvlblSa4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_NvramOk"/>
+ </safe-signal>
+ <safe-signal variable="SDST_S_TagExpctCcuo" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_S_TagExpected"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_TagExpectedCcuo" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="ICsdeTagExpected"/>
+ </safe-signal>
+ <safe-signal variable="SDS_S_RstDrvOvrd" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_C_RstOvrdPttrn"/>
+ </safe-signal>
+ <safe-signal variable="SDS_C_PibsIso" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_C_PibsIso"/>
+ </safe-signal>
+ <safe-signal variable="SDST_S_StAsdoInAdv" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_S_AsdoStInAdvance"/>
+ </safe-signal>
+ <safe-signal variable="SDST_X_NbDoorsToOpen" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_X_NbDoorsOpen"/>
+ </safe-signal>
+ <safe-signal variable="SDST_S_MsmtDrnCpl" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDST_S_MsmtDrnCpl"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_E_MsmDtcCpl" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="IMsmtDtcCpl"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_S_ColdMovm" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="IColdMovm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_S_ColdMovm" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="IColdMovm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_S_ColdMovm" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="IColdMovm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_S_ColdMovm" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="IColdMovm"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_GPSCurLat" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_GPSCurLat"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_GPSCurLong" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_GPSCurLong"/>
+ </safe-signal>
+ <safe-signal variable="SDS_C_GpsCoordValid" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_C_GpsCoordEn"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_S_TrackingLost" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_S_TrackingLost"/>
+ </safe-signal>
+ <safe-signal variable="STCT_S_WtbHealthy" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_S_WtbOk"/>
+ </safe-signal>
+ <safe-signal variable="STCT_S_TrainCfgValid" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_S_TrainCfgValid"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_OffsetToApply" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_X_OffsetToApply"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_C_ClrMsmOffst" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_C_ClrMsmOffst"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_E_MsgDrs" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="EMissDoor"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_E_DplDrs" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="EDuplDoor"/>
+ </safe-signal>
+ <safe-signal variable="SDS_S_RedOtherTagExpected" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUSSA4Nvram.iCCUSSA4Nvram" member="IAsdoTagExp"/>
+ </safe-signal>
+ <safe-signal variable="SDS_S_RedOwnTagExpected" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4Nvram.oCCUSSA4Nvram" member="IAsdoTagExp"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_NxtStnId" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="INextStationID"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_NxtStnId" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="INextStationID"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_NxtStnId" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="INextStationID"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_NxtStnId" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="INextStationID"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_NextStaRelPat1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="ZNxtStnRelPttrn1"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_NextStaRelPat2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA4DoorSaf.oCCUSSA4DoorSaf" member="ZNxtStnRelPttrn2"/>
+ </safe-signal>
+ <parameter-table name="ReleasePattern" min-rows="1" max-rows="300" parameter-set="FDO_Param.ReleasePattern">
+  <column name="StationId" type="SAFEUDINT" min="0" max="4294967295">
+   <comment><![CDATA[ID of the station]]></comment>
+  </column>
+  <column name="ReleasePattern1" type="SAFEUDINT" min="0" max="4294967295">
+   <comment><![CDATA[Door release pattern part 1 for this station]]></comment>
+  </column>
+  <column name="ReleasePattern2" type="SAFEUDINT" min="0" max="4294967295">
+   <comment><![CDATA[Door release pattern part 2 for this station]]></comment>
+  </column>
+ </parameter-table>
+ <safe-signal variable="S_AsdoIsoAct" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_C_AsdoIso"/>
+ </safe-signal>
+</application>

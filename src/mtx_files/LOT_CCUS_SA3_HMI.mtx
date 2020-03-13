@@ -1,0 +1,1604 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created 2020-02-12 11:06:58 by hdias on BTIS1000002076 using MTPE-5.3.0.1 -->
+<!-- File: C:/BT/Aventra CCUS/AVENTRA_TCMS_SIL2/cfg/CCUS_1/applications/SA3_HMI/LOT_CCUS_SA3_HMI.mtx -->
+<application name="SA3_HMI" version="2.0.2.0" type="safe" cycle-time="128" etb-access="None" redundant="1" broadcast="0">
+ <comment><![CDATA[SA3 was created, as the aggregated size of all IP-TCN telegrams received by SA1_TrCtrl exceeds 4096 octets. We separated the HMI interface for the safe acknowledgement, as t is one of the biggest one (4x528 octets).
+
+SA3_HMI containing safety related and Interface functions like: (alphbetical order)
+- required Libaries (sub-)functions
+- SBHT_ByHldBrReq
+- SBHT_IsoRegBrReq
+- SD_HmiMuxIn
+- SDS_ASDOIsolation
+- SDS_PibsIsolation
+- SDST_SdoOverridingOverrun
+- SIA_HmiRedAct
+- SMP_ACODisableReq - Removed after 1.5.7.5
+]]></comment>
+ <file path="SA3_HMI.zip"/>
+ <meta-data>
+  <tag name="ProductID" value=""/>
+  <tag name="Supplier" value="BT"/>
+  <tag name="Type" value="a"/>
+ </meta-data>
+ <interface>
+  <variable-group name="S_Parameters">
+   <variable name="S_ApplicationCycleTime" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[Parameter: Application Cycle Time]]></comment>
+   </variable>
+   <variable name="S_Pt_AckProcessDelay" array-size="1" type="MWT_TIME" usage="input" safe="1" min="1s" max="20s">
+    <comment><![CDATA[Parameter: HMI-S safe acknowledge request time (s)]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDS_Parameters">
+   <variable name="SDS_Pv_OverrunSpdThr" array-size="1" type="MWT_UINT" usage="input" safe="1" min="100" max="1000">
+    <comment><![CDATA[Parameter: Vehicle over-run speed max (1/100 kph)]]></comment>
+   </variable>
+   <variable name="SDS_PXv_OverrunExpDist" array-size="1" type="MWT_DINT" usage="input" safe="1" min="0" max="100">
+    <comment><![CDATA[Parameter: Overrun Expiry Distance (m)]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SIA_Parameters">
+   <variable name="SIA_HmiLfLostDelay" array-size="1" type="MWT_TIME" usage="input" safe="1" min="100ms" max="10000ms">
+    <comment><![CDATA[Parameter: HMI LifeSign Lost Delay (timeout before device seen as NOK) (ms)]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="HMIS_Interface_In">
+   <variable name="HMI1_X_NonOperationalSafeSt" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status: Non operational safe state.]]></comment>
+   </variable>
+   <variable name="HMI1_X_SafeSeqCounter" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status: Safe Sequence Counter]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78NumConfirmFeedb" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status: SIF 78 num confirmation feedbacks.]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmID" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status: SIF 78 confirm ID.]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmedData" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status: SIF 78 confirmed data.]]></comment>
+   </variable>
+   <variable name="HMI2_X_NonOperationalSafeSt" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status: Non operational safe state.]]></comment>
+   </variable>
+   <variable name="HMI2_X_SafeSeqCounter" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status: Safe Sequence Counter]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78NumConfirmFeedb" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status: SIF 78 num confirmation feedbacks.]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmID" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status: SIF 78 confirm ID.]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmedData" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status: SIF 78 confirmed data.]]></comment>
+   </variable>
+   <variable name="HMI3_X_NonOperationalSafeSt" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status: Non operational safe state.]]></comment>
+   </variable>
+   <variable name="HMI3_X_SafeSeqCounter" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status: Safe Sequence Counter]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78NumConfirmFeedb" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status: SIF 78 num confirmation feedbacks.]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmID" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status: SIF 78 confirm ID.]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmedData" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status: SIF 78 confirmed data.]]></comment>
+   </variable>
+   <variable name="HMI4_X_NonOperationalSafeSt" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status: Non operational safe state.]]></comment>
+   </variable>
+   <variable name="HMI4_X_SafeSeqCounter" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status: Safe Sequence Counter]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78NumConfirmFeedb" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status: SIF 78 num confirmation feedbacks.]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmID" array-size="1" type="MWT_UDINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status: SIF 78 confirm ID.]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmedData" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status: SIF 78 confirmed data.]]></comment>
+   </variable>
+   <variable name="HMI1_X_SafAckSystemRequest" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_1: DOO. Request to CCUS for safe acknowledge system.]]></comment>
+   </variable>
+   <variable name="HMI1_X_SafAckSystemReqCancel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_1: DOO. Request to CCUS for safe acknowledge system cancelled.]]></comment>
+   </variable>
+   <variable name="HMI2_X_SafAckSystemRequest" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_2: DOO. Request to CCUS for safe acknowledge system.]]></comment>
+   </variable>
+   <variable name="HMI2_X_SafAckSystemReqCancel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_2: DOO. Request to CCUS for safe acknowledge system cancelled.]]></comment>
+   </variable>
+   <variable name="HMI3_X_SafAckSystemRequest" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_3: DOO. Request to CCUS for safe acknowledge system.]]></comment>
+   </variable>
+   <variable name="HMI3_X_SafAckSystemReqCancel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_3: DOO. Request to CCUS for safe acknowledge system cancelled.]]></comment>
+   </variable>
+   <variable name="HMI4_X_SafAckSystemRequest" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_4: DOO. Request to CCUS for safe acknowledge system.]]></comment>
+   </variable>
+   <variable name="HMI4_X_SafAckSystemReqCancel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_4: DOO. Request to CCUS for safe acknowledge system cancelled.]]></comment>
+   </variable>
+   <variable name="HMI1_X_ICar1usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_1: Send amended Car 1 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI1_X_ICar2usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_1: Send amended Car 2 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI1_X_ICar3usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_1: Send amended Car 3 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI1_X_ICar4usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_1: Send amended Car 4 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI1_X_ICar5usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_1: Send amended Car 5 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI1_X_ICar6usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_1: Send amended Car 6 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI1_X_ICar7usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_1: Send amended Car 7 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI1_X_ICar8usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_1: Send amended Car 8 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI1_X_ICar9usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_1: Send amended Car 9 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI1_X_ICar10usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_1: Send amended Car 10 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI1_X_ICar11usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_1: Send amended Car 11 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI1_X_ICar12usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_1: Send amended Car 12 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI2_X_ICar1usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_2: Send amended Car 1 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI2_X_ICar2usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_2: Send amended Car 2 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI2_X_ICar3usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_2: Send amended Car 3 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI2_X_ICar4usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_2: Send amended Car 4 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI2_X_ICar5usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_2: Send amended Car 5 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI2_X_ICar6usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_2: Send amended Car 6 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI2_X_ICar7usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_2: Send amended Car 7 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI2_X_ICar8usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_2: Send amended Car 8 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI2_X_ICar9usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_2: Send amended Car 9 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI2_X_ICar10usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_2: Send amended Car 10 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI2_X_ICar11usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_2: Send amended Car 11 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI2_X_ICar12usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_2: Send amended Car 12 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI3_X_ICar1usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_3: Send amended Car 1 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI3_X_ICar2usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_3: Send amended Car 2 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI3_X_ICar3usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_3: Send amended Car 3 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI3_X_ICar4usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_3: Send amended Car 4 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI3_X_ICar5usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_3: Send amended Car 5 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI3_X_ICar6usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_3: Send amended Car 6 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI3_X_ICar7usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_3: Send amended Car 7 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI3_X_ICar8usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_3: Send amended Car 8 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI3_X_ICar9usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_3: Send amended Car 9 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI3_X_ICar10usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_3: Send amended Car 10 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI3_X_ICar11usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_3: Send amended Car 11 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI3_X_ICar12usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_3: Send amended Car 12 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI4_X_ICar1usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_4: Send amended Car 1 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI4_X_ICar2usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_4: Send amended Car 2 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI4_X_ICar3usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_4: Send amended Car 3 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI4_X_ICar4usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_4: Send amended Car 4 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI4_X_ICar5usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_4: Send amended Car 5 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI4_X_ICar6usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_4: Send amended Car 6 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI4_X_ICar7usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_4: Send amended Car 7 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI4_X_ICar8usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_4: Send amended Car 8 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI4_X_ICar9usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_4: Send amended Car 9 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI4_X_ICar10usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_4: Send amended Car 10 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI4_X_ICar11usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_4: Send amended Car 11 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI4_X_ICar12usrRelPttrnSel" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iDMI1SCtrlMs_4: Send amended Car 12 release pattern to CCUS]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmedData0" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status.SIF78_ConfirmData[0]]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmedData1" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status.SIF78_ConfirmData[1]]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmedData2" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status.SIF78_ConfirmData[2]]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmedData3" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status.SIF78_ConfirmData[3]]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmedData4" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status.SIF78_ConfirmData[4]]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmedData5" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status.SIF78_ConfirmData[5]]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmedData6" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status.SIF78_ConfirmData[6]]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmedData7" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status.SIF78_ConfirmData[7]]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmedData8" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status.SIF78_ConfirmData[8]]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmedData9" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status.SIF78_ConfirmData[9]]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmedData10" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status.SIF78_ConfirmData[10]]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmedData11" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status.SIF78_ConfirmData[11]]]></comment>
+   </variable>
+   <variable name="HMI1_X_Sif78ConfirmedData12" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI1411_Status.SIF78_ConfirmData[12]]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmedData0" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status.SIF78_ConfirmData[0]]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmedData1" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status.SIF78_ConfirmData[1]]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmedData2" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status.SIF78_ConfirmData[2]]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmedData3" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status.SIF78_ConfirmData[3]]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmedData4" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status.SIF78_ConfirmData[4]]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmedData5" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status.SIF78_ConfirmData[5]]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmedData6" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status.SIF78_ConfirmData[6]]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmedData7" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status.SIF78_ConfirmData[7]]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmedData8" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status.SIF78_ConfirmData[8]]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmedData9" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status.SIF78_ConfirmData[9]]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmedData10" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status.SIF78_ConfirmData[10]]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmedData11" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status.SIF78_ConfirmData[11]]]></comment>
+   </variable>
+   <variable name="HMI2_X_Sif78ConfirmedData12" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI2411_Status.SIF78_ConfirmData[12]]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmedData0" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status.SIF78_ConfirmData[0]]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmedData1" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status.SIF78_ConfirmData[1]]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmedData2" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status.SIF78_ConfirmData[2]]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmedData3" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status.SIF78_ConfirmData[3]]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmedData4" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status.SIF78_ConfirmData[4]]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmedData5" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status.SIF78_ConfirmData[5]]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmedData6" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status.SIF78_ConfirmData[6]]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmedData7" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status.SIF78_ConfirmData[7]]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmedData8" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status.SIF78_ConfirmData[8]]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmedData9" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status.SIF78_ConfirmData[9]]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmedData10" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status.SIF78_ConfirmData[10]]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmedData11" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status.SIF78_ConfirmData[11]]]></comment>
+   </variable>
+   <variable name="HMI3_X_Sif78ConfirmedData12" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI3411_Status.SIF78_ConfirmData[12]]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmedData0" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status.SIF78_ConfirmData[0]]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmedData1" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status.SIF78_ConfirmData[1]]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmedData2" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status.SIF78_ConfirmData[2]]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmedData3" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status.SIF78_ConfirmData[3]]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmedData4" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status.SIF78_ConfirmData[4]]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmedData5" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status.SIF78_ConfirmData[5]]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmedData6" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status.SIF78_ConfirmData[6]]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmedData7" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status.SIF78_ConfirmData[7]]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmedData8" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status.SIF78_ConfirmData[8]]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmedData9" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status.SIF78_ConfirmData[9]]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmedData10" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status.SIF78_ConfirmData[10]]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmedData11" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status.SIF78_ConfirmData[11]]]></comment>
+   </variable>
+   <variable name="HMI4_X_Sif78ConfirmedData12" array-size="1" type="MWT_DINT" usage="input" safe="1">
+    <comment><![CDATA[iHMI4411_Status.SIF78_ConfirmData[12]]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="HMIS_Interface_Internal_Out">
+   <variable name="SDS_X_SafAckRequest" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Safe acknowledge request.]]></comment>
+   </variable>
+   <variable name="SDS_X_SDOVehOvrunSt" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[Vehicle overrun status.]]></comment>
+   </variable>
+   <variable name="SDS_X_SBHHldBrInhSt" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[Holding Brake Inhibit status]]></comment>
+   </variable>
+   <variable name="SDS_X_SBHIsoRegenBrSt" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[Isolate Regenerative Brake status]]></comment>
+   </variable>
+   <variable name="SDS_X_TcmsRedActSt" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[TCMS Redundancy Activation State]]></comment>
+   </variable>
+   <variable name="SDS_X_AsdoIsoSt" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[Status:ASDO Isolated]]></comment>
+   </variable>
+   <variable name="SDS_X_PibsIsoSt" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[Status Of PIBS Isolated]]></comment>
+   </variable>
+   <variable name="SDS_X_AsdoSafTstSt" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[Status of ASDO Safe Test]]></comment>
+   </variable>
+   <variable name="SDS_C_SDOVehOvrun" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Vehicle overrun safeAck ;; Vehicle overrun Active.]]></comment>
+   </variable>
+   <variable name="SDS_C_SBHHldBrInh" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Holding Brake Inhibit safeAck ;; Holding Brake Inhibit Active]]></comment>
+   </variable>
+   <variable name="SDS_C_SBHIsoRegenBr" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Isolate Regenerative Brake safeAck ;; Isolate Regenerative Brake Active]]></comment>
+   </variable>
+   <variable name="SDS_C_AsdoIso" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Status:ASDO Ioslated safeAck ;; ASDO Isolated Active]]></comment>
+   </variable>
+   <variable name="SDS_C_PibsIso" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Status Of PIBS Isolated safeAck ;; PIBS Isolated Active]]></comment>
+   </variable>
+   <variable name="SDS_C_AsdoSafTst" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: ASDO Safe Test Requested]]></comment>
+   </variable>
+   <variable name="SDSC_X_ASDOSafTstRsltSt_In" array-size="1" type="MWT_UINT" usage="input" safe="1">
+    <comment><![CDATA[Internal: ASDO Safe Test Result Status. 0: Unknown, 1: Pass, 2: Fail]]></comment>
+   </variable>
+   <variable name="SDSC_X_ASDOSafeTestResultSt" array-size="1" type="MWT_USINT" usage="output" safe="1">
+    <comment><![CDATA[ASDO Safe Test Result Status. 0: Unknown, 1: Pass, 2: Fail]]></comment>
+   </variable>
+   <variable name="SDC_C_IAsdoOvrdSt" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[Status Of ASDO Override]]></comment>
+   </variable>
+   <variable name="SDS_X_ICar1RelPttrnSel" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Door release pattern for Car 1]]></comment>
+   </variable>
+   <variable name="SDS_X_ICar2RelPttrnSel" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Door release pattern for Car 2]]></comment>
+   </variable>
+   <variable name="SDS_X_ICar3RelPttrnSel" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Door release pattern for Car 3]]></comment>
+   </variable>
+   <variable name="SDS_X_ICar4RelPttrnSel" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Door release pattern for Car 4]]></comment>
+   </variable>
+   <variable name="SDS_X_ICar5RelPttrnSel" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Door release pattern for Car 5]]></comment>
+   </variable>
+   <variable name="SDS_X_ICar6RelPttrnSel" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Door release pattern for Car 6]]></comment>
+   </variable>
+   <variable name="SDS_X_ICar7RelPttrnSel" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Door release pattern for Car 7]]></comment>
+   </variable>
+   <variable name="SDS_X_ICar8RelPttrnSel" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Door release pattern for Car 8]]></comment>
+   </variable>
+   <variable name="SDS_X_ICar9RelPttrnSel" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Door release pattern for Car 9]]></comment>
+   </variable>
+   <variable name="SDS_X_ICar10RelPttrnSel" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Door release pattern for Car 10]]></comment>
+   </variable>
+   <variable name="SDS_X_ICar11RelPttrnSel" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Door release pattern for Car 11]]></comment>
+   </variable>
+   <variable name="SDS_X_ICar12RelPttrnSel" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Door release pattern for Car 12]]></comment>
+   </variable>
+   <variable name="SDS_X_Sif78ConfirmedData0" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: iHMI411_Status: SIF 78 confirmed data0]]></comment>
+   </variable>
+   <variable name="SDS_X_Sif78ConfirmedData1" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: iHMI411_Status: SIF 78 confirmed data1]]></comment>
+   </variable>
+   <variable name="SDS_X_Sif78ConfirmedData2" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: iHMI411_Status: SIF 78 confirmed data2]]></comment>
+   </variable>
+   <variable name="SDS_X_Sif78ConfirmedData3" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: iHMI411_Status: SIF 78 confirmed data3]]></comment>
+   </variable>
+   <variable name="SDS_X_Sif78ConfirmedData4" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: iHMI411_Status: SIF 78 confirmed data4]]></comment>
+   </variable>
+   <variable name="SDS_X_Sif78ConfirmedData5" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: iHMI411_Status: SIF 78 confirmed data5]]></comment>
+   </variable>
+   <variable name="SDS_X_Sif78ConfirmedData6" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: iHMI411_Status: SIF 78 confirmed data6]]></comment>
+   </variable>
+   <variable name="SDS_X_Sif78ConfirmedData7" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: iHMI411_Status: SIF 78 confirmed data7]]></comment>
+   </variable>
+   <variable name="SDS_X_Sif78ConfirmedData8" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: iHMI411_Status: SIF 78 confirmed data8]]></comment>
+   </variable>
+   <variable name="SDS_X_Sif78ConfirmedData9" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: iHMI411_Status: SIF 78 confirmed data9]]></comment>
+   </variable>
+   <variable name="SDS_X_Sif78ConfirmedData10" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: iHMI411_Status: SIF 78 confirmed data10]]></comment>
+   </variable>
+   <variable name="SDS_X_Sif78ConfirmedData11" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: iHMI411_Status: SIF 78 confirmed data11]]></comment>
+   </variable>
+   <variable name="SDS_X_Sif78ConfirmedData12" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: iHMI411_Status: SIF 78 confirmed data12]]></comment>
+   </variable>
+   <variable name="SDS_X_OverrideState" array-size="1" type="MWT_BYTE" usage="output" safe="1">
+    <comment><![CDATA[Internal: Vehicle override state: 0=unknown; 1=Inactive unavailable; 2=Inactive available; 3=Active]]></comment>
+   </variable>
+   <variable name="SDS_C_VehDrRelPatOvrrid" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Command Vehicle Door release pattern Override]]></comment>
+   </variable>
+   <variable name="SDS_C_OvrridDackAckScrReq" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Request HMI-S to display an acknowledge screen to deactivate the function]]></comment>
+   </variable>
+   <variable name="SDS_C_OverrideActReq" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: Command To ASDO Override request]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SBHT_ByHldBrReq">
+   <variable name="SBHT_S_ByHldBrFk" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal Bypass Holding Brake Feedback]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SBHT_IsoRegBrReq">
+   <variable name="SBHT_S_IsoRegBrStFk" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal Isolate Regenerative Brake Feedback status from Train -feedback]]></comment>
+   </variable>
+   <variable name="SBHT_S_EdBrIsoPcu1" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iPCUSt3P1: Status: Inhibit electro dynamic brake from TCMS acknowledged]]></comment>
+   </variable>
+   <variable name="SBHT_S_EdBrIsoPcu2" array-size="1" type="MWT_BOOL" usage="input">
+    <comment><![CDATA[iPCUSt3P2: Status: Inhibit electro dynamic brake from TCMS acknowledged]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDS_SafEvt_Ack">
+   <variable name="SDS_C_OverrunAllowed" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Command Overrun allow]]></comment>
+   </variable>
+   <variable name="STCT_X_CabStatus" array-size="1" type="MWT_USINT" usage="input" safe="1">
+    <comment><![CDATA[Internal Active Cab status Train]]></comment>
+   </variable>
+   <variable name="STSC_Xv_TrSpd" array-size="1" type="MWT_UINT" usage="input" safe="1">
+    <comment><![CDATA[Internal Train (consist) speed]]></comment>
+   </variable>
+   <variable name="SDS_C_AsdoOvrdAllowed" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: Command Asdo Override allow]]></comment>
+   </variable>
+   <variable name="SDS_S_DrvRelAck" array-size="1" type="MWT_BOOL" usage="input" safe="1">
+    <comment><![CDATA[Internal: Driver release pattern Acknowledge status]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SIA_HmiRedAct">
+   <variable name="SIA_C_MergeHmiDmi" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Command To Merge HMI Function Status ;; TCMS Redundancy Activation Active]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDS_SdoLoc_Input">
+   <variable name="CCUO1_X_ActiveCab" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.IActiveCab]]></comment>
+   </variable>
+   <variable name="CCUO1_X_GPSLatCoord" array-size="1" type="MWT_DINT" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.IGPSCoordsLat]]></comment>
+   </variable>
+   <variable name="CCUO1_X_GPSLongCoord" array-size="1" type="MWT_DINT" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.IGPSCoordsLong]]></comment>
+   </variable>
+   <variable name="CCUO1_X_GddNmeaSelected" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.GddNmeaSelected]]></comment>
+   </variable>
+   <variable name="CCUO1_Xt_NmeaDataUpdatTime" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.NmeaDataUpdateTm]]></comment>
+   </variable>
+   <variable name="CCUO1_X_GddNmea1Checksum" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.GddNmea1Checksum]]></comment>
+   </variable>
+   <variable name="CCUO1_X_GddNmea2Checksum" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.GddNmea2Checksum]]></comment>
+   </variable>
+   <variable name="CCUO1_X_GddNmea1Timestamp" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.GddNmea1Tm]]></comment>
+   </variable>
+   <variable name="CCUO1_X_GddNmea2Timestamp" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.GddNmea2Tm]]></comment>
+   </variable>
+   <variable name="CCUO1_X_Dms1McgLifeSign" array-size="1" type="MWT_WORD" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.Dms1McgLifeSign]]></comment>
+   </variable>
+   <variable name="CCUO1_X_Dms2McgLifeSign" array-size="1" type="MWT_WORD" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.Dms2McgLifeSign]]></comment>
+   </variable>
+   <variable name="CCUO1_X_GddNmea1NumSats" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.GddNmea1NumSats]]></comment>
+   </variable>
+   <variable name="CCUO1_X_GddNmea2NumSats" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.GddNmea2NumSats]]></comment>
+   </variable>
+   <variable name="CCUO1_X_GddMinSatsFix" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.GddMinSatsFix]]></comment>
+   </variable>
+   <variable name="CCUO1_X_GddNmea1PosFixInd" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.GddNmea1PosFixInd]]></comment>
+   </variable>
+   <variable name="CCUO1_X_GddNmea2PosFixInd" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.GddNmea2PosFixInd]]></comment>
+   </variable>
+   <variable name="CCUO1_Xt_DeadReckonTime" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp1.DeadReckonTm]]></comment>
+   </variable>
+   <variable name="CCUO2_X_ActiveCab" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.IActiveCab]]></comment>
+   </variable>
+   <variable name="CCUO2_X_GPSLatCoord" array-size="1" type="MWT_DINT" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.IGPSCoordsLat]]></comment>
+   </variable>
+   <variable name="CCUO2_X_GPSLongCoord" array-size="1" type="MWT_DINT" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.IGPSCoordsLong]]></comment>
+   </variable>
+   <variable name="CCUO2_X_GddNmeaSelected" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.GddNmeaSelected]]></comment>
+   </variable>
+   <variable name="CCUO2_Xt_NmeaDataUpdatTime" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.NmeaDataUpdateTm]]></comment>
+   </variable>
+   <variable name="CCUO2_X_GddNmea1Checksum" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.GddNmea1Checksum]]></comment>
+   </variable>
+   <variable name="CCUO2_X_GddNmea2Checksum" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.GddNmea2Checksum]]></comment>
+   </variable>
+   <variable name="CCUO2_X_GddNmea1Timestamp" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.GddNmea1Tm]]></comment>
+   </variable>
+   <variable name="CCUO2_X_GddNmea2Timestamp" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.GddNmea2Tm]]></comment>
+   </variable>
+   <variable name="CCUO2_X_Dms1McgLifeSign" array-size="1" type="MWT_WORD" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.Dms1McgLifeSign]]></comment>
+   </variable>
+   <variable name="CCUO2_X_Dms2McgLifeSign" array-size="1" type="MWT_WORD" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.Dms2McgLifeSign]]></comment>
+   </variable>
+   <variable name="CCUO2_X_GddNmea1NumSats" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.GddNmea1NumSats]]></comment>
+   </variable>
+   <variable name="CCUO2_X_GddNmea2NumSats" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.GddNmea2NumSats]]></comment>
+   </variable>
+   <variable name="CCUO2_X_GddMinSatsFix" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.GddMinSatsFix]]></comment>
+   </variable>
+   <variable name="CCUO2_X_GddNmea1PosFixInd" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.GddNmea1PosFixInd]]></comment>
+   </variable>
+   <variable name="CCUO2_X_GddNmea2PosFixInd" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.GddNmea2PosFixInd]]></comment>
+   </variable>
+   <variable name="CCUO2_Xt_DeadReckonTime" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp2.DeadReckonTm]]></comment>
+   </variable>
+   <variable name="CCUO3_X_ActiveCab" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.IActiveCab]]></comment>
+   </variable>
+   <variable name="CCUO3_X_GPSLatCoord" array-size="1" type="MWT_DINT" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.IGPSCoordsLat]]></comment>
+   </variable>
+   <variable name="CCUO3_X_GPSLongCoord" array-size="1" type="MWT_DINT" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.IGPSCoordsLong]]></comment>
+   </variable>
+   <variable name="CCUO3_X_GddNmeaSelected" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.GddNmeaSelected]]></comment>
+   </variable>
+   <variable name="CCUO3_Xt_NmeaDataUpdatTime" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.NmeaDataUpdateTm]]></comment>
+   </variable>
+   <variable name="CCUO3_X_GddNmea1Checksum" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.GddNmea1Checksum]]></comment>
+   </variable>
+   <variable name="CCUO3_X_GddNmea2Checksum" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.GddNmea2Checksum]]></comment>
+   </variable>
+   <variable name="CCUO3_X_GddNmea1Timestamp" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.GddNmea1Tm]]></comment>
+   </variable>
+   <variable name="CCUO3_X_GddNmea2Timestamp" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.GddNmea2Tm]]></comment>
+   </variable>
+   <variable name="CCUO3_X_Dms1McgLifeSign" array-size="1" type="MWT_WORD" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.Dms1McgLifeSign]]></comment>
+   </variable>
+   <variable name="CCUO3_X_Dms2McgLifeSign" array-size="1" type="MWT_WORD" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.Dms2McgLifeSign]]></comment>
+   </variable>
+   <variable name="CCUO3_X_GddNmea1NumSats" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.GddNmea1NumSats]]></comment>
+   </variable>
+   <variable name="CCUO3_X_GddNmea2NumSats" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.GddNmea2NumSats]]></comment>
+   </variable>
+   <variable name="CCUO3_X_GddMinSatsFix" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.GddMinSatsFix]]></comment>
+   </variable>
+   <variable name="CCUO3_X_GddNmea1PosFixInd" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.GddNmea1PosFixInd]]></comment>
+   </variable>
+   <variable name="CCUO3_X_GddNmea2PosFixInd" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.GddNmea2PosFixInd]]></comment>
+   </variable>
+   <variable name="CCUO3_Xt_DeadReckonTime" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp3.DeadReckonTm]]></comment>
+   </variable>
+   <variable name="CCUO4_X_ActiveCab" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.IActiveCab]]></comment>
+   </variable>
+   <variable name="CCUO4_X_GPSLatCoord" array-size="1" type="MWT_DINT" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.IGPSCoordsLat]]></comment>
+   </variable>
+   <variable name="CCUO4_X_GPSLongCoord" array-size="1" type="MWT_DINT" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.IGPSCoordsLong]]></comment>
+   </variable>
+   <variable name="CCUO4_X_GddNmeaSelected" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.GddNmeaSelected]]></comment>
+   </variable>
+   <variable name="CCUO4_Xt_NmeaDataUpdatTime" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.NmeaDataUpdateTm]]></comment>
+   </variable>
+   <variable name="CCUO4_X_GddNmea1Checksum" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.GddNmea1Checksum]]></comment>
+   </variable>
+   <variable name="CCUO4_X_GddNmea2Checksum" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.GddNmea2Checksum]]></comment>
+   </variable>
+   <variable name="CCUO4_X_GddNmea1Timestamp" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.GddNmea1Tm]]></comment>
+   </variable>
+   <variable name="CCUO4_X_GddNmea2Timestamp" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.GddNmea2Tm]]></comment>
+   </variable>
+   <variable name="CCUO4_X_Dms1McgLifeSign" array-size="1" type="MWT_WORD" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.Dms1McgLifeSign]]></comment>
+   </variable>
+   <variable name="CCUO4_X_Dms2McgLifeSign" array-size="1" type="MWT_WORD" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.Dms2McgLifeSign]]></comment>
+   </variable>
+   <variable name="CCUO4_X_GddNmea1NumSats" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.GddNmea1NumSats]]></comment>
+   </variable>
+   <variable name="CCUO4_X_GddNmea2NumSats" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.GddNmea2NumSats]]></comment>
+   </variable>
+   <variable name="CCUO4_X_GddMinSatsFix" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.GddMinSatsFix]]></comment>
+   </variable>
+   <variable name="CCUO4_X_GddNmea1PosFixInd" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.GddNmea1PosFixInd]]></comment>
+   </variable>
+   <variable name="CCUO4_X_GddNmea2PosFixInd" array-size="1" type="MWT_BYTE" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.GddNmea2PosFixInd]]></comment>
+   </variable>
+   <variable name="CCUO4_Xt_DeadReckonTime" array-size="1" type="MWT_TIME" usage="input">
+    <comment><![CDATA[iCCUOCtrlOp4.DeadReckonTm]]></comment>
+   </variable>
+  </variable-group>
+  <variable-group name="SDS_SdoLoc_Ouput">
+   <variable name="SDS_X_GpsCurLat" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: GPS Current Latitude]]></comment>
+   </variable>
+   <variable name="SDS_X_GpsCurLong" array-size="1" type="MWT_DINT" usage="output" safe="1">
+    <comment><![CDATA[Internal: GPS Current Longitude]]></comment>
+   </variable>
+   <variable name="SDS_C_GpsCoordValid" array-size="1" type="MWT_BOOL" usage="output" safe="1">
+    <comment><![CDATA[Internal: GPS Coordinates valid for computation]]></comment>
+   </variable>
+  </variable-group>
+ </interface>
+ <safe-signal variable="S_Pt_AckProcessDelay" type="PARAMETER" value="10s"/>
+ <safe-signal variable="SDS_Pv_OverrunSpdThr" type="PARAMETER" value="200"/>
+ <safe-signal variable="SIA_HmiLfLostDelay" type="PARAMETER" value="1000ms"/>
+ <safe-signal variable="HMI1_X_NonOperationalSafeSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="NonOperationalSafeState"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_SafeSeqCounter" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SDT_SSC"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78NumConfirmFeedb" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_NumConfirmationFeedbacks"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmID" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmID"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmedData" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmedData"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_NonOperationalSafeSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="NonOperationalSafeState"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_SafeSeqCounter" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SDT_SSC"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78NumConfirmFeedb" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_NumConfirmationFeedbacks"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmID" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmID"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmedData" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmedData"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_NonOperationalSafeSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="NonOperationalSafeState"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_SafeSeqCounter" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SDT_SSC"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78NumConfirmFeedb" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_NumConfirmationFeedbacks"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmID" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmID"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmedData" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmedData"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_NonOperationalSafeSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="NonOperationalSafeState"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_SafeSeqCounter" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SDT_SSC"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78NumConfirmFeedb" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_NumConfirmationFeedbacks"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmID" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmID"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmedData" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmedData"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_SafAckSystemRequest" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_1.iDMI1SCtrlMs_1" member="IsafAckSysReqMs"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_SafAckSystemReqCancel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_1.iDMI1SCtrlMs_1" member="IsafeAckSysReqCnclMs"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_SafAckSystemRequest" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_2.iDMI1SCtrlMs_2" member="IsafAckSysReqMs"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_SafAckSystemReqCancel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_2.iDMI1SCtrlMs_2" member="IsafeAckSysReqCnclMs"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_SafAckSystemRequest" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_3.iDMI1SCtrlMs_3" member="IsafAckSysReqMs"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_SafAckSystemReqCancel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_3.iDMI1SCtrlMs_3" member="IsafeAckSysReqCnclMs"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_SafAckSystemRequest" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_4.iDMI1SCtrlMs_4" member="IsafAckSysReqMs"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_SafAckSystemReqCancel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_4.iDMI1SCtrlMs_4" member="IsafeAckSysReqCnclMs"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_ICar1usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_1.iDMI1SCtrlMs_1" member="ICar1usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_ICar2usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_1.iDMI1SCtrlMs_1" member="ICar2usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_ICar3usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_1.iDMI1SCtrlMs_1" member="ICar3usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_ICar4usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_1.iDMI1SCtrlMs_1" member="ICar4usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_ICar5usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_1.iDMI1SCtrlMs_1" member="ICar5usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_ICar6usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_1.iDMI1SCtrlMs_1" member="ICar6usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_ICar7usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_1.iDMI1SCtrlMs_1" member="ICar7usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_ICar8usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_1.iDMI1SCtrlMs_1" member="ICar8usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_ICar9usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_1.iDMI1SCtrlMs_1" member="ICar9usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_ICar10usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_1.iDMI1SCtrlMs_1" member="ICar10usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_ICar11usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_1.iDMI1SCtrlMs_1" member="ICar11usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_ICar12usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_1.iDMI1SCtrlMs_1" member="ICar12usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_ICar1usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_2.iDMI1SCtrlMs_2" member="ICar1usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_ICar2usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_2.iDMI1SCtrlMs_2" member="ICar2usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_ICar3usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_2.iDMI1SCtrlMs_2" member="ICar3usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_ICar4usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_2.iDMI1SCtrlMs_2" member="ICar4usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_ICar5usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_2.iDMI1SCtrlMs_2" member="ICar5usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_ICar6usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_2.iDMI1SCtrlMs_2" member="ICar6usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_ICar7usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_2.iDMI1SCtrlMs_2" member="ICar7usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_ICar8usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_2.iDMI1SCtrlMs_2" member="ICar8usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_ICar9usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_2.iDMI1SCtrlMs_2" member="ICar9usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_ICar10usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_2.iDMI1SCtrlMs_2" member="ICar10usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_ICar11usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_2.iDMI1SCtrlMs_2" member="ICar11usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_ICar12usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_2.iDMI1SCtrlMs_2" member="ICar12usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_ICar1usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_3.iDMI1SCtrlMs_3" member="ICar1usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_ICar2usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_3.iDMI1SCtrlMs_3" member="ICar2usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_ICar3usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_3.iDMI1SCtrlMs_3" member="ICar3usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_ICar4usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_3.iDMI1SCtrlMs_3" member="ICar4usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_ICar5usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_3.iDMI1SCtrlMs_3" member="ICar5usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_ICar6usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_3.iDMI1SCtrlMs_3" member="ICar6usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_ICar7usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_3.iDMI1SCtrlMs_3" member="ICar7usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_ICar8usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_3.iDMI1SCtrlMs_3" member="ICar8usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_ICar9usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_3.iDMI1SCtrlMs_3" member="ICar9usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_ICar10usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_3.iDMI1SCtrlMs_3" member="ICar10usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_ICar11usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_3.iDMI1SCtrlMs_3" member="ICar11usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_ICar12usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_3.iDMI1SCtrlMs_3" member="ICar12usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_ICar1usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_4.iDMI1SCtrlMs_4" member="ICar1usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_ICar2usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_4.iDMI1SCtrlMs_4" member="ICar2usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_ICar3usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_4.iDMI1SCtrlMs_4" member="ICar3usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_ICar4usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_4.iDMI1SCtrlMs_4" member="ICar4usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_ICar5usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_4.iDMI1SCtrlMs_4" member="ICar5usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_ICar6usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_4.iDMI1SCtrlMs_4" member="ICar6usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_ICar7usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_4.iDMI1SCtrlMs_4" member="ICar7usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_ICar8usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_4.iDMI1SCtrlMs_4" member="ICar8usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_ICar9usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_4.iDMI1SCtrlMs_4" member="ICar9usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_ICar10usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_4.iDMI1SCtrlMs_4" member="ICar10usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_ICar11usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_4.iDMI1SCtrlMs_4" member="ICar11usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_ICar12usrRelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iDMI1SCtrlMs_4.iDMI1SCtrlMs_4" member="ICar12usrRelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmedData0" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmedData[0]"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmedData1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmedData[1]"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmedData2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmedData[2]"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmedData3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmedData[3]"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmedData4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmedData[4]"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmedData5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmedData[5]"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmedData6" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmedData[6]"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmedData7" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmedData[7]"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmedData8" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmedData[8]"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmedData9" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmedData[9]"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmedData10" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmedData[10]"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmedData11" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmedData[11]"/>
+ </safe-signal>
+ <safe-signal variable="HMI1_X_Sif78ConfirmedData12" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI1411_Status.iHMI1411_Status" member="SIF78_ConfirmedData[12]"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmedData0" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmedData[0]"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmedData1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmedData[1]"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmedData2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmedData[2]"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmedData3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmedData[3]"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmedData4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmedData[4]"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmedData5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmedData[5]"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmedData6" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmedData[6]"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmedData7" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmedData[7]"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmedData8" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmedData[8]"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmedData9" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmedData[9]"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmedData10" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmedData[10]"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmedData11" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmedData[11]"/>
+ </safe-signal>
+ <safe-signal variable="HMI2_X_Sif78ConfirmedData12" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI2411_Status.iHMI2411_Status" member="SIF78_ConfirmedData[12]"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmedData0" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmedData[0]"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmedData1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmedData[1]"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmedData2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmedData[2]"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmedData3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmedData[3]"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmedData4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmedData[4]"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmedData5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmedData[5]"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmedData6" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmedData[6]"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmedData7" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmedData[7]"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmedData8" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmedData[8]"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmedData9" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmedData[9]"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmedData10" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmedData[10]"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmedData11" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmedData[11]"/>
+ </safe-signal>
+ <safe-signal variable="HMI3_X_Sif78ConfirmedData12" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI3411_Status.iHMI3411_Status" member="SIF78_ConfirmedData[12]"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmedData0" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmedData[0]"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmedData1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmedData[1]"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmedData2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmedData[2]"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmedData3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmedData[3]"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmedData4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmedData[4]"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmedData5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmedData[5]"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmedData6" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmedData[6]"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmedData7" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmedData[7]"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmedData8" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmedData[8]"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmedData9" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmedData[9]"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmedData10" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmedData[10]"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmedData11" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmedData[11]"/>
+ </safe-signal>
+ <safe-signal variable="HMI4_X_Sif78ConfirmedData12" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iHMI4411_Status.iHMI4411_Status" member="SIF78_ConfirmedData[12]"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_SafAckRequest" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ISafAckRequest"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_SDOVehOvrunSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ISDOVehOvrunSt"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_SBHHldBrInhSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ISBHHldBrInhSt"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_SBHIsoRegenBrSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ISBHIsoRegenBrSt"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_TcmsRedActSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ITcmsRedActSt"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_AsdoIsoSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="IASDOIslSt"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_PibsIsoSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="IPIBSIslSt"/>
+ </safe-signal>
+ <safe-signal variable="SDS_C_SDOVehOvrun" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_C_SDOVehOvrun"/>
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ISDOVehOvrunAct"/>
+ </safe-signal>
+ <safe-signal variable="SDS_C_SBHHldBrInh" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_C_SBHHldBrInh"/>
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="IHldBrInhAct"/>
+ </safe-signal>
+ <safe-signal variable="SDS_C_SBHIsoRegenBr" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_C_SBHIsoRegenBr"/>
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="IIsoRegBrAct"/>
+ </safe-signal>
+ <safe-signal variable="SDS_C_AsdoIso" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_C_AsdoIso"/>
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="IASDOIsoAct"/>
+ </safe-signal>
+ <safe-signal variable="SDS_C_PibsIso" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_C_PibsIso"/>
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="IPIBSIsoAct"/>
+ </safe-signal>
+ <safe-signal variable="SDC_C_IAsdoOvrdSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="IAsdoOvrdSt"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_ICar1RelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ICar1RelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_ICar2RelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ICar2RelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_ICar3RelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ICar3RelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_ICar4RelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ICar4RelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_ICar5RelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ICar5RelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_ICar6RelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ICar6RelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_ICar7RelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ICar7RelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_ICar8RelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ICar8RelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_ICar9RelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ICar9RelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_ICar10RelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ICar10RelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_ICar11RelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ICar11RelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_ICar12RelPttrnSel" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ICar12RelPttrnSel"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_Sif78ConfirmedData0" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_Sif78ConfirmedData0"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_Sif78ConfirmedData1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_Sif78ConfirmedData1"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_Sif78ConfirmedData2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_Sif78ConfirmedData2"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_Sif78ConfirmedData3" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_Sif78ConfirmedData3"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_Sif78ConfirmedData4" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_Sif78ConfirmedData4"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_Sif78ConfirmedData5" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_Sif78ConfirmedData5"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_Sif78ConfirmedData6" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_Sif78ConfirmedData6"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_Sif78ConfirmedData7" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_Sif78ConfirmedData7"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_Sif78ConfirmedData8" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_Sif78ConfirmedData8"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_Sif78ConfirmedData9" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_Sif78ConfirmedData9"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_Sif78ConfirmedData10" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_Sif78ConfirmedData10"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_Sif78ConfirmedData11" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_Sif78ConfirmedData11"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_Sif78ConfirmedData12" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_Sif78ConfirmedData12"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_OverrideState" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_OverrideState"/>
+ </safe-signal>
+ <safe-signal variable="SDS_C_VehDrRelPatOvrrid" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_C_VehDrRelPatOvrrid"/>
+ </safe-signal>
+ <safe-signal variable="SDS_C_OvrridDackAckScrReq" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_C_OvrridDackAckScrReq"/>
+ </safe-signal>
+ <safe-signal variable="SDS_C_OverrideActReq" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_C_OverrideActReq"/>
+ </safe-signal>
+ <safe-signal variable="SBHT_S_ByHldBrFk" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="SBHT_S_ByHldBrFk"/>
+ </safe-signal>
+ <safe-signal variable="SBHT_S_IsoRegBrStFk" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="SBHT_S_IsoRegBrStFk"/>
+ </safe-signal>
+ <safe-signal variable="STCT_X_CabStatus" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STCT_X_CabStatus"/>
+ </safe-signal>
+ <safe-signal variable="STSC_Xv_TrSpd" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA1TrCtrlInternal.SA1TrCtrlInternal" member="STSC_Xv_TrSpd"/>
+ </safe-signal>
+ <safe-signal variable="SDS_C_AsdoOvrdAllowed" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDS_C_AsdoOvrdAllowed"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_ActiveCab" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="IActiveCab"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_GPSLatCoord" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="IGPSCoordsLat"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_GPSLongCoord" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="IGPSCoordsLong"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_GddNmeaSelected" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="GddNmeaSelected"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_Xt_NmeaDataUpdatTime" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="NmeaDataUpdateTm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_GddNmea1Checksum" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="GddNmea1Checksum"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_GddNmea2Checksum" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="GddNmea2Checksum"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_GddNmea1Timestamp" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="GddNmea1Tm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_GddNmea2Timestamp" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="GddNmea2Tm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_Dms1McgLifeSign" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="Dms1McgLifeSign"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_Dms2McgLifeSign" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="Dms2McgLifeSign"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_GddNmea1NumSats" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="GddNmea1NumSats"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_GddNmea2NumSats" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="GddNmea2NumSats"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_GddMinSatsFix" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="GddMinSatsFix"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_GddNmea1PosFixInd" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="GddNmea1PosFixInd"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_X_GddNmea2PosFixInd" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="GddNmea2PosFixInd"/>
+ </safe-signal>
+ <safe-signal variable="CCUO1_Xt_DeadReckonTime" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp1.iCCUOCtrlOp1" member="DeadReckonTm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_ActiveCab" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="IActiveCab"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_GPSLatCoord" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="IGPSCoordsLat"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_GPSLongCoord" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="IGPSCoordsLong"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_GddNmeaSelected" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="GddNmeaSelected"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_Xt_NmeaDataUpdatTime" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="NmeaDataUpdateTm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_GddNmea1Checksum" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="GddNmea1Checksum"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_GddNmea2Checksum" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="GddNmea2Checksum"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_GddNmea1Timestamp" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="GddNmea1Tm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_GddNmea2Timestamp" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="GddNmea2Tm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_Dms1McgLifeSign" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="Dms1McgLifeSign"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_Dms2McgLifeSign" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="Dms2McgLifeSign"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_GddNmea1NumSats" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="GddNmea1NumSats"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_GddNmea2NumSats" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="GddNmea2NumSats"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_GddMinSatsFix" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="GddMinSatsFix"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_GddNmea1PosFixInd" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="GddNmea1PosFixInd"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_X_GddNmea2PosFixInd" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="GddNmea2PosFixInd"/>
+ </safe-signal>
+ <safe-signal variable="CCUO2_Xt_DeadReckonTime" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp2.iCCUOCtrlOp2" member="DeadReckonTm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_ActiveCab" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="IActiveCab"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_GPSLatCoord" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="IGPSCoordsLat"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_GPSLongCoord" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="IGPSCoordsLong"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_GddNmeaSelected" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="GddNmeaSelected"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_Xt_NmeaDataUpdatTime" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="NmeaDataUpdateTm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_GddNmea1Checksum" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="GddNmea1Checksum"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_GddNmea2Checksum" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="GddNmea2Checksum"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_GddNmea1Timestamp" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="GddNmea1Tm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_GddNmea2Timestamp" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="GddNmea2Tm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_Dms1McgLifeSign" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="Dms1McgLifeSign"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_Dms2McgLifeSign" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="Dms2McgLifeSign"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_GddNmea1NumSats" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="GddNmea1NumSats"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_GddNmea2NumSats" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="GddNmea2NumSats"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_GddMinSatsFix" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="GddMinSatsFix"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_GddNmea1PosFixInd" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="GddNmea1PosFixInd"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_X_GddNmea2PosFixInd" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="GddNmea2PosFixInd"/>
+ </safe-signal>
+ <safe-signal variable="CCUO3_Xt_DeadReckonTime" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp3.iCCUOCtrlOp3" member="DeadReckonTm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_ActiveCab" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="IActiveCab"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_GPSLatCoord" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="IGPSCoordsLat"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_GPSLongCoord" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="IGPSCoordsLong"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_GddNmeaSelected" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="GddNmeaSelected"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_Xt_NmeaDataUpdatTime" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="NmeaDataUpdateTm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_GddNmea1Checksum" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="GddNmea1Checksum"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_GddNmea2Checksum" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="GddNmea2Checksum"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_GddNmea1Timestamp" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="GddNmea1Tm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_GddNmea2Timestamp" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="GddNmea2Tm"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_Dms1McgLifeSign" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="Dms1McgLifeSign"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_GddNmea1NumSats" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="GddNmea1NumSats"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_GddNmea2NumSats" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="GddNmea2NumSats"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_GddMinSatsFix" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="GddMinSatsFix"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_GddNmea1PosFixInd" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="GddNmea1PosFixInd"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_GddNmea2PosFixInd" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="GddNmea2PosFixInd"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_Xt_DeadReckonTime" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="DeadReckonTm"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_GpsCurLat" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_GPSCurLat"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_GpsCurLong" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_X_GPSCurLong"/>
+ </safe-signal>
+ <safe-signal variable="CCUO4_X_Dms2McgLifeSign" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.iCCUOCtrlOp4.iCCUOCtrlOp4" member="Dms2McgLifeSign"/>
+ </safe-signal>
+ <safe-signal variable="SDS_C_GpsCoordValid" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_C_GpsCoordEn"/>
+ </safe-signal>
+ <safe-signal variable="SDS_S_DrvRelAck" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDS_S_DrvRelAck"/>
+ </safe-signal>
+ <safe-signal variable="SIA_C_MergeHmiDmi" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="CMergeHmiDmi"/>
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="ITcmsRedAct"/>
+ </safe-signal>
+ <safe-signal variable="SDS_PXv_OverrunExpDist" type="PARAMETER" value="50"/>
+ <safe-signal variable="SDS_C_AsdoSafTst" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA3HmiInternal.SA3HmiInternal" member="SDS_C_AsdoSafTst"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_ASDOSafTstRsltSt_In" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA4DoorInternal.SA4DoorInternal" member="SDSC_X_ASDOSafeTestResultSt"/>
+ </safe-signal>
+ <safe-signal variable="SBHT_S_EdBrIsoPcu1" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iPCUSt3P1.iPCUSt3P1_S_EdBrInh"/>
+ </safe-signal>
+ <safe-signal variable="SBHT_S_EdBrIsoPcu2" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="MVB1.iPCUSt3P2.iPCUSt3P2_S_EdBrInh"/>
+ </safe-signal>
+ <safe-signal variable="SDSC_X_ASDOSafeTestResultSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="IASDOSafeTestResultSt"/>
+ </safe-signal>
+ <safe-signal variable="SDS_X_AsdoSafTstSt" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.oCCUSSA3HmiSaf.oCCUSSA3HmiSaf" member="IASDOSafeTestSt"/>
+ </safe-signal>
+ <safe-signal variable="S_ApplicationCycleTime" type="PARAMETER" value="128"/>
+ <safe-signal variable="SDS_C_OverrunAllowed" type="DIRECT" max-time-diff="0">
+  <safe-connection variable="ETH_1.SA6DoorInternal.SA6DoorInternal" member="SDS_C_OverrunAllowed"/>
+ </safe-signal>
+</application>
