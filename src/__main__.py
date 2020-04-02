@@ -233,17 +233,17 @@ def check_signal_pool_integrity(file_list):
     return _different_safe_signals
 
 
-def verify_internal_interface():
+def verify_internal_interface(file_path):
     """
     This functional will load the safe applications external interface file (types.mtx)
-    For each safe application external interface a mini dom will be generated in order to gather all its members.
+    For each safe application external interface, a mini dom will be generated in order to gather all its members.
     The member size in bytes will be collected.
     Next it will be verified if all the members are 32-bytes aligned.
     The member structure shall obey a specific order in its ending
     :return: True if structure is valid. False otherwise
     """
 
-    _types_mtx_file = os.path.join(MTX_FILE_DIR, TYPES_MTX)
+    _types_mtx_file = os.path.join(file_path, TYPES_MTX)
     # print('FILE: ' + _types_mtx_file)
     _types_mtx_file_dom = xml.dom.minidom.parse(_types_mtx_file)
 
@@ -287,7 +287,7 @@ def verify_internal_interface():
     # FOR compound list ends
 
 
-def verify_internal_interface_non_connected_signals(mtx_file_list):
+def verify_internal_interface_non_connected_signals(file_path, mtx_file_list):
     """
     This function will load the types.mtx internal interface file,
     will look for Safe Application compounds name=DS_SA*,
@@ -297,7 +297,7 @@ def verify_internal_interface_non_connected_signals(mtx_file_list):
     """
 
     INVALID_MEMBER_NAME_PATTERNS = {'ST_', 'padding', 'Reserved', 'SDT_'}
-    _types_mtx_file = os.path.join(MTX_FILE_DIR, TYPES_MTX)
+    _types_mtx_file = os.path.join(file_path, TYPES_MTX)
     _types_mtx_file_dom = xml.dom.minidom.parse(_types_mtx_file)
 
     # Parse all the mtx files connection list
@@ -344,64 +344,75 @@ def _out(text, _type=OUT_INFO):
     output_string.append(_prefix + text + '\n')
 
 
-def _write_output_to_file():
-    out_file = open(OUTPUT_FILENAME, "w+")
+def _write_output_to_file(file_path):
+    out_file = open(os.path.join(file_path, OUTPUT_FILENAME), "w+")
     out_file.writelines(output_string)
 
 
 def main():
+    #check folders
+    path_input = 'types'
+    path_output = 'results'
+    folders_list = os.listdir(path_input)
+    for i in folders_list:
+        if os.path.isdir(os.path.join(path_input, i)):
+            mtx_file_list = load_all_SA_mtx_files()
+            _normalized_file_list = [filename.split('\\')[1] for filename in mtx_file_list]
+            _out(str(len(mtx_file_list)) + ' .mtx files found')
 
-    mtx_file_list = load_all_SA_mtx_files()
-    _normalized_file_list = [filename.split('\\')[1] for filename in mtx_file_list]
-    _out(str(len(mtx_file_list)) + ' .mtx files found')
+            # if len(mtx_file_list) == 0:
+            #     exit(0)
 
-    # if len(mtx_file_list) == 0:
-    #     exit(0)
+            _out('Checking for non-connected signals...')
+            _flag_non_connected_signals_detected = False
+            for mtx_file in mtx_file_list:
+                if check_not_connected_signals(mtx_file):
+                    _flag_non_connected_signals_detected = True
 
-    _out('Checking for non-connected signals...')
-    _flag_non_connected_signals_detected = False
-    for mtx_file in mtx_file_list:
-        if check_not_connected_signals(mtx_file):
-            _flag_non_connected_signals_detected = True
+            """
+            # ESSENTIALY, DO WE NEED TO DO SOMETHING IF SIGNALS ARE DETECTED AS NON_CONNECTED?
+            # Disabled while we debug
+            # In order to compare signal interfaces, first fix non-connected signals
+            if _flag_halt_exec:
+                input()
+                exit(0)
+            """
+            # Verifica a pool size e a integrity para cada SA
+            safe_applications = dict()
 
-    """
-    # ESSENTIALY, DO WE NEED TO DO SOMETHING IF SIGNALS ARE DETECTED AS NON_CONNECTED?
-    # Disabled while we debug
-    # In order to compare signal interfaces, first fix non-connected signals
-    if _flag_halt_exec:
-        input()
-        exit(0)
-    """
-    # Verifica a pool size e a integrity para cada SA
-    safe_applications = dict()
+            for mtx_file in _normalized_file_list:
+                _sa_number = int(mtx_file[11])
+                if _sa_number not in safe_applications.keys():
+                    safe_applications[_sa_number] = []
+                safe_applications[_sa_number].append(os.path.join(MTX_FILE_DIR, mtx_file))
 
-    for mtx_file in _normalized_file_list:
-        _sa_number = int(mtx_file[11])
-        if _sa_number not in safe_applications.keys():
-            safe_applications[_sa_number] = []
-        safe_applications[_sa_number].append(os.path.join(MTX_FILE_DIR, mtx_file))
+            for _sa_key in safe_applications:
+                _file_list = safe_applications[_sa_key]
+                _out(' - - - [INFO] - - - Comparing .mtx files for SA' + str(_sa_key))
 
-    for _sa_key in safe_applications:
-        _file_list = safe_applications[_sa_key]
-        _out(' - - - [INFO] - - - Comparing .mtx files for SA' + str(_sa_key))
+                check_signal_pool_size(_file_list)
+                check_signal_pool_integrity(_file_list)
+            # _dif_safe_signals = get_different_safe_signals(mtx_file_list)
+            # Export to xlsx (_dif_safe_signals)
+            _out('OK')
+            # print('\n ### MTX files comparison finished... ###')
+            # TYPES.MTX
 
-        check_signal_pool_size(_file_list)
-        check_signal_pool_integrity(_file_list)
-    # _dif_safe_signals = get_different_safe_signals(mtx_file_list)
-    # Export to xlsx (_dif_safe_signals)
-    _out('OK')
-    # print('\n ### MTX files comparison finished... ###')
+            _out('Analysing MTX external interface alignment...')
+            # Verifica o alinhamento
+            verify_internal_interface(os.path.join(path_input, i))
+            # Verifica as ligações entre types.mtx e restantes mtx
+            verify_internal_interface_non_connected_signals(os.path.join(path_input, i), mtx_file_list)
+            if not os.path.isdir(os.path.join(path_output, i)):
+                os.mkdir(os.path.join(path_output, i))
+            # escreve no ficheiro
+            _write_output_to_file(os.path.join(path_output, i))
+            del output_string[:]
 
-    _out('Analysing MTX external interface alignment...')
-    verify_internal_interface()
-    verify_internal_interface_non_connected_signals(mtx_file_list)
-
-    _write_output_to_file()
     _out('Finished')
     # Press any key to exit...
     print('\n Press any key to exit...')
     input()
-
 
 if __name__ == "__main__":
     main()
