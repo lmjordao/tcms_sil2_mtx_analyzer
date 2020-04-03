@@ -1,2 +1,0 @@
-  ----  [NC Signal]: SDST_S_Pk44DataStrd
-  ----  [NC Signal]: SDST_S_Pk44DataExpct
