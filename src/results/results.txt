@@ -1,0 +1,464 @@
+    30 .mtx files found
+    Checking for non-connected signals...
+    Checking for non-connected signals on file: mtx_files\EEA_CCUS_SA1_TrCtrl.mtx
+    Checking for non-connected signals on file: mtx_files\EEA_CCUS_SA2_Mon.mtx
+[!] [NC]: SM_S_CstEvt
+    Checking for non-connected signals on file: mtx_files\EEA_CCUS_SA3_HMI.mtx
+    Checking for non-connected signals on file: mtx_files\EEA_CCUS_SA4_Door.mtx
+[!] [NC]: SDST_S_Pk44DataStrd
+[!] [NC]: SDST_S_Pk44DataExpct
+    Checking for non-connected signals on file: mtx_files\EEA_CCUS_SA5_Signal.mtx
+[!] [NC]: STE_X_Tr2Validity1Car3
+[!] [NC]: STE_X_Tr2alias1Car3
+[!] [NC]: STE_X_Tr2Validity1Car1
+[!] [NC]: STE_X_Tr2alias1Car1
+[!] [NC]: STE_X_Tr1Validity1Car3
+[!] [NC]: STE_X_Tr1Validity1Car1
+[!] [NC]: STE_X_Tr1alias1Car3
+[!] [NC]: STE_X_Tr1alias1Car1
+[!] [NC]: ETCS2_Z_TR8_Validity
+[!] [NC]: ETCS1_Z_TR8_Validity
+[!] [NC]: ETCS2_Z_TR8_Alias
+[!] [NC]: ETCS1_Z_TR8_Alias
+    Checking for non-connected signals on file: mtx_files\EEA_CCUS_SA6_DoorTrain.mtx
+    Checking for non-connected signals on file: mtx_files\EEA_CCUS_SA7_MonTempAxel.mtx
+    Checking for non-connected signals on file: mtx_files\EEA_CCUS_SA8_MonTempGear.mtx
+    Checking for non-connected signals on file: mtx_files\LOT_CCUS_SA1_TrCtrl.mtx
+    Checking for non-connected signals on file: mtx_files\LOT_CCUS_SA2_Mon.mtx
+[!] [NC]: SIAC_E_DossStkSec2S1Car5
+[!] [NC]: SIAC_E_DossStkSec2S1Car4
+[!] [NC]: SIAC_E_DossStkSec2SxCar3
+[!] [NC]: SIAC_E_DossStkSec2SxCar2
+[!] [NC]: SIAC_E_DossStkSec2SxCar1
+[!] [NC]: SIAC_C_SseSec2S1Car5
+[!] [NC]: SIAC_C_SseSec2S1Car4
+[!] [NC]: SIAC_C_SseSec2SxCar3
+[!] [NC]: SIAC_C_SseSec2SxCar2
+[!] [NC]: SIAC_C_SseSec2SxCar1
+[!] [NC]: SM_X_IPTCstNo
+[!] [NC]: SMFC_S_FConFiDetFltCar1
+[!] [NC]: SMFC_S_FConFiDetFltCar3
+[!] [NC]: SMFC_S_FConFiDetFltCar4
+[!] [NC]: SMFC_S_FConFiDetFltCar5
+[!] [NC]: SMFC_S_FTfFiDetFltCar2
+[!] [NC]: SMFC_S_FHvdcFiDetFltCar1
+[!] [NC]: SMFC_S_FHvdcFiDetFltCar3
+[!] [NC]: SMDC_XT_TmpGb1SdBCar1
+[!] [NC]: SMDC_XT_TmpGb2SdACar1
+[!] [NC]: SMDC_XT_TmpGb2SdBCar1
+[!] [NC]: SMDC_XT_TmpGb3SdACar1
+[!] [NC]: SMDC_XT_TmpGb3SdBCar1
+[!] [NC]: SMDC_XT_TmpGb4SdACar1
+[!] [NC]: SMDC_XT_TmpGb4SdBCar1
+[!] [NC]: SMDC_XT_TmpGb1SdACar2
+[!] [NC]: SMDC_XT_TmpGb1SdBCar2
+[!] [NC]: SMDC_XT_TmpGb2SdACar2
+[!] [NC]: SMDC_XT_TmpGb2SdBCar2
+[!] [NC]: SMDC_XT_TmpGb3SdACar2
+[!] [NC]: SMDC_XT_TmpGb3SdBCar2
+[!] [NC]: SMDC_XT_TmpGb4SdACar2
+[!] [NC]: SMDC_XT_TmpGb4SdBCar2
+[!] [NC]: SMDC_XT_TmpGb1SdACar3
+[!] [NC]: SMDC_XT_TmpGb1SdBCar3
+[!] [NC]: SMDC_XT_TmpGb2SdACar3
+[!] [NC]: SMDC_XT_TmpGb2SdBCar3
+[!] [NC]: SMDC_XT_TmpGb3SdACar3
+[!] [NC]: SMDC_XT_TmpGb3SdBCar3
+[!] [NC]: SMDC_XT_TmpGb4SdACar3
+[!] [NC]: SMDC_XT_TmpGb4SdBCar3
+[!] [NC]: SMDC_XT_TmpGb1SdACar4
+[!] [NC]: SMDC_XT_TmpGb1SdBCar4
+[!] [NC]: SMDC_XT_TmpGb2SdACar4
+[!] [NC]: SMDC_XT_TmpGb2SdBCar4
+[!] [NC]: SMDC_XT_TmpGb3SdACar4
+[!] [NC]: SMDC_XT_TmpGb3SdBCar4
+[!] [NC]: SMDC_XT_TmpGb4SdACar4
+[!] [NC]: SMDC_XT_TmpGb4SdBCar4
+[!] [NC]: SMDC_XT_TmpGb1SdACar5
+[!] [NC]: SMDC_XT_TmpGb1SdBCar5
+[!] [NC]: SMDC_XT_TmpGb2SdACar5
+[!] [NC]: SMDC_XT_TmpGb2SdBCar5
+[!] [NC]: SMDC_XT_TmpGb3SdACar5
+[!] [NC]: SMDC_XT_TmpGb3SdBCar5
+[!] [NC]: SMDC_XT_TmpGb4SdACar5
+[!] [NC]: SMDC_XT_TmpGb4SdBCar5
+[!] [NC]: SMDC_XT_TmpGb1SdACar1
+[!] [NC]: SMDC_XT_TmpPrbFltHiLim
+[!] [NC]: SMDC_XT_TmpPrbFltLoLim
+[!] [NC]: SMDC_XT_TmpLwrThrshld
+    Checking for non-connected signals on file: mtx_files\LOT_CCUS_SA3_HMI.mtx
+    Checking for non-connected signals on file: mtx_files\LOT_CCUS_SA4_Door.mtx
+[!] [NC]: SDST_S_DrgDetNotActCar1
+[!] [NC]: SDST_S_DrgDetNotActCar3
+    Checking for non-connected signals on file: mtx_files\LOT_CCUS_SA5_Signal.mtx
+[!] [NC]: STE_X_Tr2Validity1Car3
+[!] [NC]: STE_X_Tr2Validity1Car1
+[!] [NC]: STE_X_Tr2alias1Car3
+[!] [NC]: STE_X_Tr2alias1Car1
+[!] [NC]: STE_X_Tr1Validity1Car3
+[!] [NC]: STE_X_Tr1Validity1Car1
+[!] [NC]: STE_X_Tr1alias1Car3
+[!] [NC]: STE_X_Tr1alias1Car1
+[!] [NC]: ETCS2_Z_TR8_Validity
+[!] [NC]: ETCS1_Z_TR8_Validity
+[!] [NC]: ETCS2_Z_TR8_Alias
+[!] [NC]: ETCS1_Z_TR8_Alias
+    Checking for non-connected signals on file: mtx_files\LOT_CCUS_SA6_DoorTrain.mtx
+[!] [NC]: SDST_S_DrgDetNotActCar1
+[!] [NC]: SDST_S_DrgDetNotActCar3
+[!] [NC]: SDST_S_DragDetEnable
+    Checking for non-connected signals on file: mtx_files\LOT_CCUS_SA7_MonTempAxel.mtx
+    Checking for non-connected signals on file: mtx_files\SWR_CCUS_SA1_TrCtrl.mtx
+    Checking for non-connected signals on file: mtx_files\SWR_CCUS_SA2_Mon.mtx
+[!] [NC]: SIAC_E_DossStkSec2S1Car5
+[!] [NC]: SIAC_E_DossStkSec2S1Car4
+[!] [NC]: SIAC_C_SseSec2S1Car5
+[!] [NC]: SIAC_C_SseSec2S1Car4
+[!] [NC]: SIAC_C_SseSec2SxCar2
+[!] [NC]: SIAC_E_DossStkSec2SxCar2
+[!] [NC]: SM_S_CstEvt
+[!] [NC]: SMDC_XT_TmpPrbFltHiLim
+[!] [NC]: SMDC_XT_TmpLwrThrshld
+[!] [NC]: SMDC_XT_TmpPrbFltLoLim
+    Checking for non-connected signals on file: mtx_files\SWR_CCUS_SA3_HMI.mtx
+    Checking for non-connected signals on file: mtx_files\SWR_CCUS_SA4_Door.mtx
+[!] [NC]: SDST_S_Pk44DataStrd
+[!] [NC]: SDST_S_Pk44DataExpct
+    Checking for non-connected signals on file: mtx_files\SWR_CCUS_SA5_Signal.mtx
+[!] [NC]: ETCS2_Z_TR8_Validity
+[!] [NC]: ETCS1_Z_TR8_Validity
+[!] [NC]: ETCS2_Z_TR8_Alias
+[!] [NC]: ETCS1_Z_TR8_Alias
+    Checking for non-connected signals on file: mtx_files\SWR_CCUS_SA6_DoorTrain.mtx
+    Checking for non-connected signals on file: mtx_files\SWR_CCUS_SA7_MonTempAxel.mtx
+    Checking for non-connected signals on file: mtx_files\WML_CCUS_SA1_TrCtrl.mtx
+    Checking for non-connected signals on file: mtx_files\WML_CCUS_SA2_Mon.mtx
+[!] [NC]: SM_S_CstEvt
+    Checking for non-connected signals on file: mtx_files\WML_CCUS_SA3_HMI.mtx
+    Checking for non-connected signals on file: mtx_files\WML_CCUS_SA4_Door.mtx
+[!] [NC]: SDST_S_Pk44DataStrd
+[!] [NC]: SDST_S_Pk44DataExpct
+    Checking for non-connected signals on file: mtx_files\WML_CCUS_SA5_Signal.mtx
+[!] [NC]: STE_X_Tr2Validity1Car3
+[!] [NC]: STE_X_Tr2alias1Car3
+[!] [NC]: STE_X_Tr2Validity1Car1
+[!] [NC]: STE_X_Tr2alias1Car1
+[!] [NC]: STE_X_Tr1Validity1Car3
+[!] [NC]: STE_X_Tr1Validity1Car1
+[!] [NC]: STE_X_Tr1alias1Car3
+[!] [NC]: STE_X_Tr1alias1Car1
+[!] [NC]: ETCS2_Z_TR8_Validity
+[!] [NC]: ETCS1_Z_TR8_Validity
+[!] [NC]: ETCS2_Z_TR8_Alias
+[!] [NC]: ETCS1_Z_TR8_Alias
+    Checking for non-connected signals on file: mtx_files\WML_CCUS_SA6_DoorTrain.mtx
+    Checking for non-connected signals on file: mtx_files\WML_CCUS_SA7_MonTempAxel.mtx
+    Checking for non-connected signals on file: mtx_files\WML_CCUS_SA8_MonTempGear.mtx
+     - - - [INFO] - - - Comparing .mtx files for SA1
+    Checking safe-signal pool size for current safe application...
+[!] Different signal pool size detected!
+     -- EEA_CCUS_SA1_TrCtrl.mtx: 392 signals
+     -- LOT_CCUS_SA1_TrCtrl.mtx: 463 signals
+     -- SWR_CCUS_SA1_TrCtrl.mtx: 422 signals
+     -- WML_CCUS_SA1_TrCtrl.mtx: 392 signals
+     Info: Different safe-connection signals for safe-signal: MIO_S_BrApBg1Car1 while comparing projects EEA-LOT
+     Info: Different safe-connection signals for safe-signal: MIO_S_BrApBg1Car2 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SMH_S_TcmsHltCar1 while comparing projects EEA-WML
+        Info: Different safe-connection signal pool size for safe-signal: SMH_S_TcmsHltCar3 while comparing projects EEA-WML
+     Info: Different safe-connection signals for safe-signal: MIO_S_BrApBg1Car1 while comparing projects LOT-SWR
+     Info: Different safe-connection signals for safe-signal: MIO_S_BrApBg1Car1 while comparing projects LOT-WML
+     Info: Different safe-connection signals for safe-signal: MIO_S_BrApBg1Car2 while comparing projects SWR-WML
+    Different safe-signals across all projects for the current SA: 
+       MIO_S_BrApBg1Car2       
+       MIO_S_BrApBg1Car1       
+       SMH_S_TcmsHltCar3       
+       SMH_S_TcmsHltCar1
+     - - - [INFO] - - - Comparing .mtx files for SA2
+    Checking safe-signal pool size for current safe application...
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2SxCar1 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2SxCar1 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2SxCar2 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2SxCar2 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2SxCar3 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2SxCar3 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2S1Car4 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2S1Car4 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2S1Car5 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2S1Car5 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_E_DossStkSec2SxCar1 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_E_DossStkSec2SxCar2 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_E_DossStkSec2SxCar3 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_E_DossStkSec2S1Car4 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_E_DossStkSec2S1Car5 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_C_SseSec2SxCar1 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_C_SseSec2SxCar2 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_C_SseSec2SxCar3 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_C_SseSec2S1Car4 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_C_SseSec2S1Car5 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car1 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car1 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car2 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car2 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car4 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car4 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car5 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car5 while comparing projects EEA-LOT
+     Info: Different safe-connection signals for safe-signal: MIO_S_FiSmkDet while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2SxCar2 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2SxCar2 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2S1Car4 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2S1Car4 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2S1Car5 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2S1Car5 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_E_DossStkSec2SxCar2 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_E_DossStkSec2S1Car4 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_E_DossStkSec2S1Car5 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_C_SseSec2SxCar2 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_C_SseSec2S1Car4 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_C_SseSec2S1Car5 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car2 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car2 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car3 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car3 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car4 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car4 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car5 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car5 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_ConFiDetCar4 while comparing projects EEA-SWR
+     Info: Different safe-connection signals for safe-signal: MIO_S_TfFiDetCar2 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_ConFiDetCar1 while comparing projects EEA-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_ConFiDetCar5 while comparing projects EEA-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2SxCar1 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2SxCar1 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2SxCar3 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2SxCar3 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car1 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car1 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car3 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car3 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: BGW_S_AxNtRotAx1Car4 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: BGW_S_AxNtRotAx2Car4 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: BGW_S_AxNtRotAx1Car2 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: BGW_S_AxNtRotAx2Car2 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: PCU_S_AxNtRotAx1Car4 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: PCU_S_AxNtRotAx2Car4 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: PCU_S_AxNtRotAx1Car2 while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: PCU_S_AxNtRotAx2Car2 while comparing projects LOT-SWR
+     Info: Different safe-connection signals for safe-signal: MIO_S_FiSmkDet while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2SxCar1 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2SxCar1 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2SxCar2 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2SxCar2 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2SxCar3 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2SxCar3 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2S1Car4 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2S1Car4 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2S1Car5 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2S1Car5 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car1 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car1 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car2 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car2 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car4 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car4 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car5 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car5 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: BGW_S_AxNtRotAx3Car3 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: BGW_S_AxNtRotAx4Car3 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: BGW_S_AxNtRotAx1Car5 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: BGW_S_AxNtRotAx2Car5 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: BGW_S_AxNtRotAx1Car2 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: BGW_S_AxNtRotAx2Car2 while comparing projects LOT-WML
+     Info: Different safe-connection signals for safe-signal: PCU_S_AxNtRotAx1Car4 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2SxCar2 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2SxCar2 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2S1Car4 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2S1Car4 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss1Sec2S1Car5 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_Doss0Sec2S1Car5 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car2 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car2 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car3 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car3 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car4 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car4 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_A_Car5 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: SIAC_W_DAC_B_Car5 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: BGW_S_AxNtRotAx3Car3 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: BGW_S_AxNtRotAx4Car3 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: BGW_S_AxNtRotAx1Car5 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: BGW_S_AxNtRotAx2Car5 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_ConFiDetCar1 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_ConFiDetCar3 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_ConFiDetCar4 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_ConFiDetCar5 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_HvdcFiDetCar1 while comparing projects SWR-WML
+     Info: Different safe-connection signals for safe-signal: MIO_S_TfFiDetCar2 while comparing projects SWR-WML
+    Different safe-signals across all projects for the current SA: 
+       SIAC_E_DossStkSec2S1Car5       
+       SIAC_W_DAC_A_Car2       
+       SIAC_W_DAC_B_Car3       
+       MIO_S_Doss1Sec2SxCar1       
+       SIAC_C_SseSec2SxCar3       
+       SIAC_W_DAC_B_Car4       
+       MIO_S_ConFiDetCar5       
+       BGW_S_AxNtRotAx2Car2       
+       BGW_S_AxNtRotAx3Car3       
+       SIAC_C_SseSec2SxCar2       
+       MIO_S_Doss0Sec2SxCar2       
+       MIO_S_Doss0Sec2SxCar1       
+       MIO_S_Doss0Sec2S1Car4       
+       BGW_S_AxNtRotAx1Car5       
+       SIAC_E_DossStkSec2SxCar3       
+       SIAC_W_DAC_B_Car1       
+       PCU_S_AxNtRotAx1Car4       
+       MIO_S_Doss1Sec2SxCar3       
+       MIO_S_Doss1Sec2S1Car5       
+       MIO_S_ConFiDetCar3       
+       MIO_S_Doss1Sec2S1Car4       
+       SIAC_C_SseSec2SxCar1       
+       MIO_S_Doss0Sec2SxCar3       
+       BGW_S_AxNtRotAx2Car5       
+       MIO_S_TfFiDetCar2       
+       MIO_S_Doss0Sec2S1Car5       
+       SIAC_E_DossStkSec2SxCar2       
+       BGW_S_AxNtRotAx2Car4       
+       BGW_S_AxNtRotAx4Car3       
+       MIO_S_HvdcFiDetCar1       
+       PCU_S_AxNtRotAx1Car2       
+       BGW_S_AxNtRotAx1Car4       
+       SIAC_C_SseSec2S1Car5       
+       SIAC_W_DAC_A_Car1       
+       PCU_S_AxNtRotAx2Car4       
+       MIO_S_ConFiDetCar4       
+       SIAC_W_DAC_B_Car2       
+       BGW_S_AxNtRotAx1Car2       
+       SIAC_W_DAC_A_Car3       
+       SIAC_W_DAC_A_Car4       
+       SIAC_W_DAC_B_Car5       
+       MIO_S_FiSmkDet       
+       SIAC_E_DossStkSec2S1Car4       
+       SIAC_C_SseSec2S1Car4       
+       MIO_S_ConFiDetCar1       
+       SIAC_E_DossStkSec2SxCar1       
+       SIAC_W_DAC_A_Car5       
+       MIO_S_Doss1Sec2SxCar2       
+       PCU_S_AxNtRotAx2Car2
+     - - - [INFO] - - - Comparing .mtx files for SA3
+    Checking safe-signal pool size for current safe application...
+     - - - [INFO] - - - Comparing .mtx files for SA4
+    Checking safe-signal pool size for current safe application...
+     Info: Different safe-connection signals for safe-signal: SDS_X_RedOtherAsdoExpDist while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: SDSC_S_ILocConfirmed while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SDSC_S_RfidValidData while comparing projects EEA-SWR
+     Info: Different safe-connection signals for safe-signal: SDS_X_RedOtherAsdoExpDist while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SDSC_S_ILocConfirmed while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SDSC_S_RfidValidData while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SDSC_C_AsdoEnHwCar1_AF1B while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SDSC_C_AsdoEnHwCar1_AF2A while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SDSC_C_AsdoEnHwCar1_AF2B while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SDSC_C_AsdoEnHwCar3_AF1B while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SDSC_C_AsdoEnHwCar3_AF2B while comparing projects LOT-SWR
+        Info: Different safe-connection signal pool size for safe-signal: SDSC_C_AsdoEnHwCar3_AF2A while comparing projects LOT-SWR
+     Info: Different safe-connection signals for safe-signal: MIO_S_McsInFwdCar1 while comparing projects LOT-SWR
+     Info: Different safe-connection signals for safe-signal: SDS_X_RedOtherAsdoExpDist while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: SDSC_S_RfidValidData while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: SDSC_S_ILocConfirmed while comparing projects SWR-WML
+     Info: Different safe-connection signals for safe-signal: SDS_X_RedOtherAsdoExpDist while comparing projects SWR-WML
+    Different safe-signals across all projects for the current SA: 
+       SDS_X_RedOtherAsdoExpDist       
+       SDSC_S_ILocConfirmed       
+       SDSC_C_AsdoEnHwCar1_AF1B       
+       SDSC_C_AsdoEnHwCar1_AF2A       
+       SDSC_C_AsdoEnHwCar3_AF2A       
+       SDSC_C_AsdoEnHwCar1_AF2B       
+       SDSC_C_AsdoEnHwCar3_AF2B       
+       SDSC_C_AsdoEnHwCar3_AF1B       
+       MIO_S_McsInFwdCar1       
+       SDSC_S_RfidValidData
+     - - - [INFO] - - - Comparing .mtx files for SA5
+    Checking safe-signal pool size for current safe application...
+     Info: Different safe-connection signals for safe-signal: MIO_S_AwsAckCar1 while comparing projects EEA-LOT
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_McsInSecureCar1 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_McsInSecureCar3 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_McsInRecovCar1 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_McsInRecovCar3 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_AtPTraPrmitCar1 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_AtPTraPrmitCar3 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr2Validity1Car3 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr2alias1Car3 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr2Validity1Car1 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr2alias1Car1 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr1Validity1Car3 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr1Validity1Car1 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr1alias1Car3 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr1alias1Car1 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_AtpSvBrDemCar1 while comparing projects EEA-SWR
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_AtpSvBrDemCar3 while comparing projects EEA-SWR
+     Info: Different safe-connection signals for safe-signal: MIO_S_AwsAckCar1 while comparing projects LOT-SWR
+     Info: Different safe-connection signals for safe-signal: MIO_S_AwsAckCar1 while comparing projects LOT-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_McsInRecovCar1 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_McsInRecovCar3 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_AtPTraPrmitCar1 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_AtPTraPrmitCar3 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr1alias1Car1 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr1alias1Car3 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr1Validity1Car1 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr1Validity1Car3 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr2alias1Car1 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr2alias1Car3 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr2Validity1Car1 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: STE_X_Tr2Validity1Car3 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_McsInSecureCar1 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_McsInSecureCar3 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_AtpSvBrDemCar1 while comparing projects SWR-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_S_AtpSvBrDemCar3 while comparing projects SWR-WML
+    Different safe-signals across all projects for the current SA: 
+       STE_X_Tr2alias1Car1       
+       MIO_S_AtPTraPrmitCar3       
+       MIO_S_AtpSvBrDemCar3       
+       MIO_S_AtPTraPrmitCar1       
+       STE_X_Tr2Validity1Car3       
+       STE_X_Tr2alias1Car3       
+       MIO_S_McsInSecureCar1       
+       MIO_S_AwsAckCar1       
+       STE_X_Tr2Validity1Car1       
+       STE_X_Tr1Validity1Car1       
+       MIO_S_McsInRecovCar1       
+       STE_X_Tr1alias1Car1       
+       STE_X_Tr1alias1Car3       
+       STE_X_Tr1Validity1Car3       
+       MIO_S_McsInSecureCar3       
+       MIO_S_AtpSvBrDemCar1       
+       MIO_S_McsInRecovCar3
+     - - - [INFO] - - - Comparing .mtx files for SA6
+    Checking safe-signal pool size for current safe application...
+     Info: Different safe-connection signals for safe-signal: MIO_S_DoorRelPbRhsCar1 while comparing projects EEA-LOT
+     Info: Different safe-connection signals for safe-signal: MIO_S_DoorRelPbRhsCar1 while comparing projects EEA-LOT
+     Info: Different safe-connection signals for safe-signal: MIO_S_McsInRevCar1 while comparing projects LOT-SWR
+     Info: Different safe-connection signals for safe-signal: MIO_S_McsInRevCar1 while comparing projects LOT-WML
+    Different safe-signals across all projects for the current SA: 
+       MIO_S_McsInRevCar1       
+       MIO_S_DoorRelPbRhsCar1
+     - - - [INFO] - - - Comparing .mtx files for SA7
+    Checking safe-signal pool size for current safe application...
+     - - - [INFO] - - - Comparing .mtx files for SA8
+    Checking safe-signal pool size for current safe application...
+        Info: Different safe-connection signal pool size for safe-signal: MIO_XR_TmpGb2SdBCar4 while comparing projects EEA-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_XR_TmpGb2SdACar4 while comparing projects EEA-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_XR_TmpGb1SdBCar4 while comparing projects EEA-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_XR_TmpGb1SdACar4 while comparing projects EEA-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_XR_TmpGb3SdACar3 while comparing projects EEA-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_XR_TmpGb3SdBCar3 while comparing projects EEA-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_XR_TmpGb4SdACar3 while comparing projects EEA-WML
+        Info: Different safe-connection signal pool size for safe-signal: MIO_XR_TmpGb4SdBCar3 while comparing projects EEA-WML
+    Different safe-signals across all projects for the current SA: 
+       MIO_XR_TmpGb1SdBCar4       
+       MIO_XR_TmpGb1SdACar4       
+       MIO_XR_TmpGb4SdBCar3       
+       MIO_XR_TmpGb3SdBCar3       
+       MIO_XR_TmpGb3SdACar3       
+       MIO_XR_TmpGb4SdACar3       
+       MIO_XR_TmpGb2SdACar4       
+       MIO_XR_TmpGb2SdBCar4
+    OK
