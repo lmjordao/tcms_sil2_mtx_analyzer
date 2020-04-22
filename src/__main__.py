@@ -2,7 +2,6 @@ import os
 import xml.dom.minidom
 from lxml import etree
 import xlwings
-import pandas as pd
 
 # Set these according to project
 MTX_FILE_DIR = 'mtx_files'
@@ -25,6 +24,7 @@ list_status_global = []
 list_comparison_global = []
 list_signals_comparison_global = []
 list_nc_type_global = []
+
 
 def load_all_SA_mtx_files():
     """
@@ -369,8 +369,8 @@ def _write_output_to_file(file_path):
     out_file.writelines(output_string)
 
 
-def _export_excel_file(file_path):
-    file_path = os.path.join(file_path, XLS_FILENAME)
+def _export_excel_file(folder_path):
+    file_path = os.path.join(folder_path, XLS_FILENAME)
     if not os.path.isfile(file_path):
         workbook = xlwings.Book()
     else:
@@ -382,24 +382,24 @@ def _export_excel_file(file_path):
         worksheet.clear_contents()
     else:
         worksheet = workbook.sheets.add('Signals from SA')
-    # worksheet.range('A1').options(header=True).value = ['Signal', 'SA', 'Project', 'Status']
     worksheet.range('A1').options(transpose=True).value = [item for sublist in list_signals_global for item in sublist]
     worksheet.range('B1').options(transpose=True).value = [item for sublist in list_sa_global for item in sublist]
     worksheet.range('C1').options(transpose=True).value = [item for sublist in list_project_global for item in sublist]
     worksheet.range('D1').options(transpose=True).value = [item for sublist in list_status_global for item in sublist]
     table = worksheet.range("A1").expand('table')
     worksheet.api.ListObjects.Add(1, worksheet.api.Range(table.address))
+    worksheet.range('A1').options(header=True).value = ['Signal', 'SA', 'Project', 'Status']
 
     if 'Signals comparison table' in ws_names:
         worksheet = workbook.sheets['Signals comparison table']
         worksheet.clear_contents()
     else:
         worksheet = workbook.sheets.add('Signals comparison table')
-    worksheet.range('A1').value = ['Signals'] + list(set([item for sublist in list_project_global for item in sublist])) + ['In all projects']
-    worksheet.range('A2').options(transpose=True).value = list_signals_comparison_global
-    worksheet.range('B2').options(transpose=True).value = list_comparison_global
+    worksheet.range('A1').options(transpose=True).value = list_signals_comparison_global
+    worksheet.range('B1').options(transpose=True).value = list_comparison_global
     table = worksheet.range("A1").expand('table')
     worksheet.api.ListObjects.Add(1, worksheet.api.Range(table.address))
+    worksheet.range('A1').value = ['Signal'] + list(set([item for sublist in list_project_global for item in sublist])) + ['In all projects']
     # workbook.api.RefreshAll()
 
     if 'Signals NC in types' in ws_names:
@@ -410,23 +410,43 @@ def _export_excel_file(file_path):
     worksheet.range('A1').options(transpose=True).value = list_nc_type_global
     table = worksheet.range("A1").expand('table')
     worksheet.api.ListObjects.Add(1, worksheet.api.Range(table.address))
+    worksheet.range('A1').value = ['Signal']
 
     if 'Sheet1' in ws_names:
         worksheet = workbook.sheets['Sheet1']
         worksheet.delete()
+
+    txt_path = os.path.join(folder_path, OUTPUT_FILENAME)
+    file1 = open(txt_path, 'r')
+    lines = file1.readlines()
+    line_nc = []
+    project_nc = []
+    sa_nc = []
+    # se o nome dos ficheiros mudar, tem que se trocar os indices utilizados
+    for line in lines:
+        if "Checking for non-connected signals on file:" in line:
+            info_line = line.split(": ")[1].partition("\\")[2]
+        if "[!] [NC]:" in line:
+            line_nc.append(line.split(": ")[1].split("\n")[0])
+            project_nc.append(info_line.split("_")[0])
+            sa_nc.append(info_line.split("_")[2])
+
+    if 'Signals NC in SA' in ws_names:
+        worksheet = workbook.sheets['Signals NC in SA']
+        worksheet.clear_contents()
+    else:
+        worksheet = workbook.sheets.add('Signals NC in SA')
+    worksheet.range('A1').options(transpose=True).value = line_nc
+    worksheet.range('B1').options(transpose=True).value = project_nc
+    worksheet.range('C1').options(transpose=True).value = sa_nc
+    table = worksheet.range("A1").expand('table')
+    worksheet.api.ListObjects.Add(1, worksheet.api.Range(table.address))
+    worksheet.range('A1').value = ['Signal', 'Project', 'SA']
+
     workbook.save(file_path)
 
 
 def _comparison_between_projects():
-    # a=set(['a','b','c'])
-    # b=['d','c']
-    # c=['1','2']
-    # for item in a:
-    #    c.append(item)
-    # result=[None] *5
-    # result[c]='funcionou'
-    # print(c)
-    # input('pause')
     global list_signals_global
     global list_project_global
     global list_sa_global
@@ -474,12 +494,9 @@ def _comparison_between_projects():
     list_status_global = aux_list_status
     # create list of all the signals of all projects
     i = 0
-    # global list_signals_comparison_global
     for list_used in list_signals_global:
         if i == 0:
             list_signals_comparison_global = list_signals_global[0]
-            # for h in list_signals_global[i]:
-            # list_signals_comparison_global.append(h)
         else:
             comp = set(list_signals_comparison_global) - set(list_used)
             for item in comp:
