@@ -399,7 +399,9 @@ def _export_excel_file(folder_path):
     worksheet.range('B1').options(transpose=True).value = list_comparison_global
     table = worksheet.range("A1").expand('table')
     worksheet.api.ListObjects.Add(1, worksheet.api.Range(table.address))
-    worksheet.range('A1').value = ['Signal'] + list(set([item for sublist in list_project_global for item in sublist])) + ['In all projects']
+    proj_list = list(set([item for sublist in list_project_global for item in sublist]))
+    proj_list.sort()
+    worksheet.range('A1').value = ['Signal'] + proj_list + ['In all projects']
     # workbook.api.RefreshAll()
 
     if 'Signals NC in types' in ws_names:
@@ -492,11 +494,14 @@ def _comparison_between_projects():
     list_project_global = aux_list_projects
     list_sa_global = aux_list_sa
     list_status_global = aux_list_status
+
     # create list of all the signals of all projects
     i = 0
     for list_used in list_signals_global:
         if i == 0:
-            list_signals_comparison_global = list_signals_global[0]
+            list_signals_comparison_global = []
+            for item in list_signals_global[0]:
+                list_signals_comparison_global.append(item)
         else:
             comp = set(list_signals_comparison_global) - set(list_used)
             for item in comp:
