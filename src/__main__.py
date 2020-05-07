@@ -312,7 +312,7 @@ def verify_internal_interface_non_connected_signals(file_path, mtx_file_list):
     :return: False - If any non-connected signal were found. True - If everything is connected
     """
 
-    INVALID_MEMBER_NAME_PATTERNS = {'ST_', 'padding', 'Reserved', 'SDT_'}
+    INVALID_MEMBER_NAME_PATTERNS = {'ST_', 'padding', 'Reserved', 'SDT_', 'Variable', 'variable'}
     _types_mtx_file = os.path.join(file_path, TYPES_MTX)
     _types_mtx_file_dom = xml.dom.minidom.parse(_types_mtx_file)
 
@@ -344,10 +344,10 @@ def verify_internal_interface_non_connected_signals(file_path, mtx_file_list):
                     # print('Looking for connections on member: ' + _member_name)
                     if _member_name not in all_connections_set:
                         # _out('No connection found for signal: ' + _member_name)
-                        _out('No connection found in SA for signal: variable ' + _member_name)
+                        _out('No connection found in SA for signal: ' + _member_name)
 
     if all_connections_set not in all_connections_type_set:
-        _out('No connection found in type for signal: variable ' + _member_name)
+        _out('No connection found in type for signal: ' + _member_name)
         list_nc_type_global.append(_member_name)
         # FOR _COMPOUND_MEMBER_LIST ENDS
     # FOR _COMPOUND_LIST ENDS
@@ -578,14 +578,14 @@ def main():
     # TYPES.MTX
 
     # escreve no ficheiro
-    _write_output_to_file(path_output)
-    del output_string[:]
+    '''_write_output_to_file(path_output)
+    del output_string[:]'''
 
     # check folders
     folders_list = os.listdir(path_input)
     for i in folders_list:
         if os.path.isdir(os.path.join(path_input, i)):
-            print('For project', i, ':')
+            _out('For project', i)
             _out('Analysing MTX external interface alignment...')
             # Verifica o alinhamento
             verify_internal_interface(os.path.join(path_input, i))
@@ -603,11 +603,13 @@ def main():
                 list_actualized.append(i)
                 # Verifica as ligações entre types.mtx e restantes mtx
                 verify_internal_interface_non_connected_signals(os.path.join(path_input, i), mtx_file_list_project)
-                if not os.path.isdir(os.path.join(path_output, i)):
+                '''if not os.path.isdir(os.path.join(path_output, i)):
                     os.mkdir(os.path.join(path_output, i))
                 # escreve no ficheiro
                 _write_output_to_file(os.path.join(path_output, i))
-            del output_string[:]
+            del output_string[:]'''
+    _write_output_to_file(path_output)
+    del output_string[:]
 
     _comparison_between_projects()
     _export_excel_file(path_output)
