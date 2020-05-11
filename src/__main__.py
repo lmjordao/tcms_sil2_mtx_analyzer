@@ -24,6 +24,7 @@ list_status_global = []
 list_comparison_global = []
 list_signals_comparison_global = []
 list_nc_type_global = []
+list_proj_nc_type_global = []
 
 
 def load_all_SA_mtx_files():
@@ -51,7 +52,6 @@ def check_not_connected_signals(filename):
     _doc = xml.dom.minidom.parse(filename)
 
     _safe_signal_list = _doc.getElementsByTagName('safe-signal')
-
     # _str = ' -- Processing file: ' + filename
     # print(_str)
     # out_file_lines.append(_str)
@@ -63,7 +63,6 @@ def check_not_connected_signals(filename):
     list_connected = []
     for _safe_signal in _safe_signal_list:
         _safe_conn_list = _safe_signal.getElementsByTagName('safe-connection')
-
         # Check for non connections
         _safe_signal_name = _safe_signal.getAttribute('variable')
         _safe_signal_type = _safe_signal.getAttribute('type')
@@ -345,9 +344,18 @@ def verify_internal_interface_non_connected_signals(file_path, mtx_file_list):
                     if _member_name not in all_connections_set:
                         # _out('No connection found for signal: ' + _member_name)
                         _out('No connection found in SA for signal: ' + _member_name)
-
-    if all_connections_set not in all_connections_type_set:
+ 
+    difference = list(set(all_connections_type_set)-set(all_connections_set))
+    invalid_list = []
+    for item in difference:
+        for _member_name_pattern in INVALID_MEMBER_NAME_PATTERNS:
+            if _member_name_pattern in item:
+                invalid_list.append(item)
+                print('invalid', _member_name_pattern)
+    list_difference = set(difference) - set(invalid_list)
+    for _member_name in list_difference:
         _out('No connection found in type for signal: ' + _member_name)
+        list_proj_nc_type_global.append(_types_mtx_file.partition("\\")[2].partition("\\")[0])
         list_nc_type_global.append(_member_name)
         # FOR _COMPOUND_MEMBER_LIST ENDS
     # FOR _COMPOUND_LIST ENDS
@@ -403,16 +411,30 @@ def _export_excel_file(folder_path):
     proj_list.sort()
     worksheet.range('A1').value = ['Signal'] + proj_list + ['In all projects']
     # workbook.api.RefreshAll()
-
+    '''
+    if 'Connections comparison table' in ws_names:
+        worksheet = workbook.sheets['Connections comparison table']
+        worksheet.clear_contents()
+    else:
+        worksheet = workbook.sheets.add('Connections comparison table')
+    worksheet.range('A1').options(transpose=True).value = []
+    worksheet.range('B1').options(transpose=True).value = []
+    table = worksheet.range("A1").expand('table')
+    worksheet.api.ListObjects.Add(1, worksheet.api.Range(table.address))
+    proj_list = list(set([item for sublist in list_project_global for item in sublist]))
+    proj_list.sort()
+    worksheet.range('A1').value = ['Signal'] + proj_list + ['In all projects']
+    '''
     if 'Signals NC in types' in ws_names:
         worksheet = workbook.sheets['Signals NC in types']
         worksheet.clear_contents()
     else:
         worksheet = workbook.sheets.add('Signals NC in types')
     worksheet.range('A1').options(transpose=True).value = list_nc_type_global
+    worksheet.range('B1').options(transpose=True).value = list_proj_nc_type_global
     table = worksheet.range("A1").expand('table')
     worksheet.api.ListObjects.Add(1, worksheet.api.Range(table.address))
-    worksheet.range('A1').value = ['Signal']
+    worksheet.range('A1').value = ['Signal', "Project"]
 
     if 'Sheet1' in ws_names:
         worksheet = workbook.sheets['Sheet1']
@@ -424,6 +446,10 @@ def _export_excel_file(folder_path):
     line_nc = []
     project_nc = []
     sa_nc = []
+    aligned = []
+    project_aligned = []
+    sa_aligned = []
+    signal_not_aligned = []
     # se o nome dos ficheiros mudar, tem que se trocar os indices utilizados
     for line in lines:
         if "Checking for non-connected signals on file:" in line:
@@ -432,6 +458,21 @@ def _export_excel_file(folder_path):
             line_nc.append(line.split(": ")[1].split("\n")[0])
             project_nc.append(info_line.split("_")[0])
             sa_nc.append(info_line.split("_")[2])
+        if "For project" in line:
+            actual_project = line.split(": ")[1]
+        if "Checking alignment for :" in line:
+            info_line = line.split(": ")[1].partition("_")[2].partition("_")[0]
+            sa_aligned.append(info_line)
+            project_aligned.append(actual_project)
+            aligned.append('Yes')
+            signal_not_aligned.append('None')
+        if "Invalid alignment detected" in line:
+            del aligned[-1]
+            del signal_not_aligned[-1]
+            aligned.append('No')
+            info_line = line.split("at ")[1].partition("\n")[0]
+            signal_not_aligned.append(info_line)
+    file1.close()
 
     if 'Signals NC in SA' in ws_names:
         worksheet = workbook.sheets['Signals NC in SA']
@@ -444,6 +485,19 @@ def _export_excel_file(folder_path):
     table = worksheet.range("A1").expand('table')
     worksheet.api.ListObjects.Add(1, worksheet.api.Range(table.address))
     worksheet.range('A1').value = ['Signal', 'Project', 'SA']
+
+    if 'Alignment' in ws_names:
+        worksheet = workbook.sheets['Alignment']
+        worksheet.clear_contents()
+    else:
+        worksheet = workbook.sheets.add('Alignment')
+    worksheet.range('A1').options(transpose=True).value = project_aligned
+    worksheet.range('B1').options(transpose=True).value = sa_aligned
+    worksheet.range('C1').options(transpose=True).value = aligned
+    worksheet.range('D1').options(transpose=True).value = signal_not_aligned
+    table = worksheet.range("A1").expand('table')
+    worksheet.api.ListObjects.Add(1, worksheet.api.Range(table.address))
+    worksheet.range('A1').value = ['Project', 'SA', 'Aligned', 'Signal not aligned']
 
     workbook.save(file_path)
 
@@ -577,15 +631,12 @@ def main():
     # print('\n ### MTX files comparison finished... ###')
     # TYPES.MTX
 
-    # escreve no ficheiro
-    '''_write_output_to_file(path_output)
-    del output_string[:]'''
-
     # check folders
     folders_list = os.listdir(path_input)
     for i in folders_list:
         if os.path.isdir(os.path.join(path_input, i)):
-            _out('For project', i)
+            message = "For project: " + i
+            _out(message)
             _out('Analysing MTX external interface alignment...')
             # Verifica o alinhamento
             verify_internal_interface(os.path.join(path_input, i))
@@ -603,11 +654,6 @@ def main():
                 list_actualized.append(i)
                 # Verifica as ligações entre types.mtx e restantes mtx
                 verify_internal_interface_non_connected_signals(os.path.join(path_input, i), mtx_file_list_project)
-                '''if not os.path.isdir(os.path.join(path_output, i)):
-                    os.mkdir(os.path.join(path_output, i))
-                # escreve no ficheiro
-                _write_output_to_file(os.path.join(path_output, i))
-            del output_string[:]'''
     _write_output_to_file(path_output)
     del output_string[:]
 

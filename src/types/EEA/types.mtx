@@ -37,7 +37,8 @@
    <comment><![CDATA[Reserved padding bits.]]></comment>
   </member>
   <member name="SDT_SSC" type="UINT32">
-   <comment><![CDATA[Safe Sequence Counter
+   <comment><![CDATA[Safe Sequence Counter
+
 ]]></comment>
   </member>
   <member name="SDT_CRC" type="UINT32">
@@ -1969,7 +1970,8 @@
    <comment><![CDATA[Local consist ETH1 IP address for check back. e.g. 10.128.75.34 (only for IP)]]></comment>
   </member>
   <member name="IDevFqdn" type="AR_CHAR8_128">
-   <comment><![CDATA[Fully qualified domain name (FQDN) for
+   <comment><![CDATA[Fully qualified domain name (FQDN) for
+
 check back. e.g. ccus1.car01.consist506]]></comment>
   </member>
  </compound>
@@ -2016,7 +2018,8 @@ check back. e.g. ccus1.car01.consist506]]></comment>
  </compound>
  <compound name="DS_1085001" exclude-from-export="0" data-set-id="1085001">
   <member name="ISystemLifeSign" type="UINT32">
-   <comment><![CDATA[System life sign. Increment it every 100ms.
+   <comment><![CDATA[System life sign. Increment it every 100ms.
+
 Initialized to zero on start up]]></comment>
   </member>
   <member name="IDeviceState" type="UINT32">
@@ -2038,7 +2041,8 @@ Initialized to zero on start up]]></comment>
    <comment><![CDATA[Type of device]]></comment>
   </member>
   <member name="IBatterySup" type="UINT32">
-   <comment><![CDATA[State of power backup for RTC and battery backed non-volatile memory. Information that a battery with at least 2.5V remaining voltage is plug to the device (60 days of usage left before non-volatile data is lost)
+   <comment><![CDATA[State of power backup for RTC and battery backed non-volatile memory. Information that a battery with at least 2.5V remaining voltage is plug to the device (60 days of usage left before non-volatile data is lost)
+
 Note : Always set to 0 = OK for CCU-S]]></comment>
   </member>
   <member name="IMVB1Tropto" type="UINT32">
@@ -2727,50 +2731,79 @@ Note : Always set to 0 = OK for CCU-S]]></comment>
    <comment><![CDATA[Number of TCN nodes according to the inauguration result. For confirmed configuration this is the complete number of TCN nodes (All nodes are counted, confirmed as well as unconfirmed).]]></comment>
   </member>
   <member name="INumberCars" type="UINT8">
-   <comment><![CDATA[Current number of cars in the train composition.
+   <comment><![CDATA[Current number of cars in the train composition.
+
 For confirmed configuration this is the confirmed number of cars.]]></comment>
   </member>
   <member name="reserved2" type="UINT8">
    <comment><![CDATA[reserved]]></comment>
   </member>
   <member name="ISafetyReason" type="UINT32">
-   <comment><![CDATA[Safety status determined by the TCN-GW-S.
-
-Bit 0: 1 = STC of TBN invalid
-Bit 1: 1 = SDTv2 validation of GW Control PVs failed
-Bit 2: 1 = SDTv2 validation of GW Redundancy PVs failed
-Bit 3: 1 = WTB loop back mode active
-Bit 29: 1 = trainCfgOp forced to no operation
-Bit 30: 1 = trainCfgDel forced to delete
+   <comment><![CDATA[Safety status determined by the TCN-GW-S.
+
+
+
+Bit 0: 1 = STC of TBN invalid
+
+Bit 1: 1 = SDTv2 validation of GW Control PVs failed
+
+Bit 2: 1 = SDTv2 validation of GW Redundancy PVs failed
+
+Bit 3: 1 = WTB loop back mode active
+
+Bit 29: 1 = trainCfgOp forced to no operation
+
+Bit 30: 1 = trainCfgDel forced to delete
+
 Bit 31: 1 = Safety reason data valid (Valid bit for all other safetyReason bits)]]></comment>
   </member>
   <member name="IStc" type="UINT32">
    <comment><![CDATA[Safe Topography Counter value determined by the TCN-GW-S.]]></comment>
   </member>
   <member name="IDiagInfo" type="UINT32">
-   <comment><![CDATA[Diagnostic information
-bit 31: 1 = diagnostic information valid
-bit 30..12: reserved
-bit 11: 1 = MVB2 ok
-bit 10: 1 = MVB1 ok
-bit 9: 1 = default follower is active
-bit 8: 1 = gateway redundancy is available
-bit 7: reserved
-bit 6: 1 = PD export telegram contains invalid UIC header
-bit 5: 1 = PD export telegram life sign timeout has been detected
-bit 4: 1 = timeout has been detected (SDTv2)
-bit 3: reserved
-bit 2: 1 = fritting over-current (>35mA) has been detected
-bit 1: 1 = WTB line B ok
+   <comment><![CDATA[Diagnostic information
+
+bit 31: 1 = diagnostic information valid
+
+bit 30..12: reserved
+
+bit 11: 1 = MVB2 ok
+
+bit 10: 1 = MVB1 ok
+
+bit 9: 1 = default follower is active
+
+bit 8: 1 = gateway redundancy is available
+
+bit 7: reserved
+
+bit 6: 1 = PD export telegram contains invalid UIC header
+
+bit 5: 1 = PD export telegram life sign timeout has been detected
+
+bit 4: 1 = timeout has been detected (SDTv2)
+
+bit 3: reserved
+
+bit 2: 1 = fritting over-current (>35mA) has been detected
+
+bit 1: 1 = WTB line B ok
+
 bit 0: 1 = WTB line A ok]]></comment>
   </member>
   <member name="IGwStatus" type="UINT8">
-   <comment><![CDATA[Status information
-bit 7..5: reserved
-bit 4: 1 = bus controlled by a strong master
-bit 3: 1 = inhibit set
-bit 2: 1 = master conflict
-bit 1: 1 = sleep request active
+   <comment><![CDATA[Status information
+
+bit 7..5: reserved
+
+bit 4: 1 = bus controlled by a strong master
+
+bit 3: 1 = inhibit set
+
+bit 2: 1 = master conflict
+
+bit 1: 1 = sleep request active
+
 bit 0: 1 = Non UIC mode]]></comment>
   </member>
   <member name="IOwnUicAddr" type="UINT8">
@@ -2833,15 +2866,18 @@ bit 0: 1 = Non UIC mode]]></comment>
  </compound>
  <compound name="DS_2011001" exclude-from-export="0" data-set-id="2011001">
   <member name="ICcuLifeSign" type="UINT16">
-   <comment><![CDATA[CCU life sign
+   <comment><![CDATA[CCU life sign
+
 CCU shall set this counter to zero after reset including power-up and increment it with every 100ms application cycle.]]></comment>
   </member>
   <member name="Reserved1" type="AR_UINT8_2">
    <comment><![CDATA[Reserved]]></comment>
   </member>
   <member name="ITrainSpeed" type="UINT16">
-   <comment><![CDATA[Train speed
-Train Speed calibrated. Not used for safety related system and not used for fast applications. Max value 0xFFFF means invalid
+   <comment><![CDATA[Train speed
+
+Train Speed calibrated. Not used for safety related system and not used for fast applications. Max value 0xFFFF means invalid
+
 ]]></comment>
   </member>
   <member name="Reserved2" type="AR_UINT8_2">
@@ -2857,49 +2893,83 @@ Train Speed calibrated. Not used for safety related system and not used for fast
    <comment><![CDATA[Daylight Saving Time (DST).]]></comment>
   </member>
   <member name="ITimeZone" type="UINT8">
-   <comment><![CDATA[Time Zone: Local time as an offset from  UTC.
+   <comment><![CDATA[Time Zone: Local time as an offset from  UTC.
+
 ]]></comment>
   </member>
   <member name="Reserved4" type="AR_UINT8_2">
    <comment><![CDATA[Reserved]]></comment>
   </member>
   <member name="IProjectID" type="UINT16">
-   <comment><![CDATA[Information project identification:             
+   <comment><![CDATA[Information project identification:             
+
 321 = LOTrain, 322 = East Anglia, 323 = South Western, 324 = West Midlands, 325= C2C]]></comment>
   </member>
   <member name="IProjectVariant" type="UINT8">
-   <comment><![CDATA[Information project variant.                             Crossrail:
-1:RLU / AC only
-2:FLU / AC only
- 
-Lotrain:
-1: 4 car / AC only
-2: 4 car / Dual Voltage
-3: 5 car / Dual Voltage
- 
-East Anglia:
-1: 5 car / AC only
-2: DT half of 10 car / AC only
-3: DM half of 10 car / AC only
- 
-C2C:
-1: DT half of 10 car / AC only
-2: DM half of 10 car / AC only
- 
-South West Rail:
-1: 5 car / DC only
-2: DM1 half of 10 car / DC only
-3: DM2 half of 10 car / DC only
-4: 5 car / Dual Voltage
-5: DM1 half of 10 car / Dual Voltage
-6: DM2 half of 10 car / Dual Voltage
-7: 5 car / DC only / IMS
-8: DM1 half of 10 car / DC only / IMS
-9: DM2 half of 10 car / DC only / IMS
- 
-West Midlands:
-1: 3 car / AC only
-2: 5 car / AC only
+   <comment><![CDATA[Information project variant.                             Crossrail:
+
+1:RLU / AC only
+
+2:FLU / AC only
+
+ 
+
+Lotrain:
+
+1: 4 car / AC only
+
+2: 4 car / Dual Voltage
+
+3: 5 car / Dual Voltage
+
+ 
+
+East Anglia:
+
+1: 5 car / AC only
+
+2: DT half of 10 car / AC only
+
+3: DM half of 10 car / AC only
+
+ 
+
+C2C:
+
+1: DT half of 10 car / AC only
+
+2: DM half of 10 car / AC only
+
+ 
+
+South West Rail:
+
+1: 5 car / DC only
+
+2: DM1 half of 10 car / DC only
+
+3: DM2 half of 10 car / DC only
+
+4: 5 car / Dual Voltage
+
+5: DM1 half of 10 car / Dual Voltage
+
+6: DM2 half of 10 car / Dual Voltage
+
+7: 5 car / DC only / IMS
+
+8: DM1 half of 10 car / DC only / IMS
+
+9: DM2 half of 10 car / DC only / IMS
+
+ 
+
+West Midlands:
+
+1: 3 car / AC only
+
+2: 5 car / AC only
+
 ]]></comment>
   </member>
   <member name="Reserved5" type="UINT8">
@@ -2930,18 +3000,24 @@ West Midlands:
    <comment><![CDATA[Reserved]]></comment>
   </member>
   <member name="ITempOutside" type="INT16">
-   <comment><![CDATA[Outside Air Temperature (average)
-
-Note the following scale guideline:
-1 : 0.1 degrees C
-10 : 1 degrees C
+   <comment><![CDATA[Outside Air Temperature (average)
+
+
+
+Note the following scale guideline:
+
+1 : 0.1 degrees C
+
+10 : 1 degrees C
+
 200 : 20 degrees C]]></comment>
   </member>
   <member name="Reserved12" type="AR_UINT8_2">
    <comment><![CDATA[Reserved]]></comment>
   </member>
   <member name="IMissionCode" type="AR_CHAR8_4">
-   <comment><![CDATA[Train number for a trip mission (unique per day). Train operator specific.
+   <comment><![CDATA[Train number for a trip mission (unique per day). Train operator specific.
+
 ]]></comment>
   </member>
   <member name="IContainer1" type="AR_UINT8_112">
@@ -2951,11 +3027,16 @@ Note the following scale guideline:
    <comment><![CDATA[Reserved]]></comment>
   </member>
   <member name="IHeading" type="REAL32">
-   <comment><![CDATA[Train heading.
-
-hhh.dd valid
-hhh= degrees ( 0 ..359) else invalid
-dd = decimal part of degrees 
+   <comment><![CDATA[Train heading.
+
+
+
+hhh.dd valid
+
+hhh= degrees ( 0 ..359) else invalid
+
+dd = decimal part of degrees 
+
 ]]></comment>
   </member>
   <member name="ILongitude" type="REAL32">
@@ -2965,8 +3046,10 @@ dd = decimal part of degrees
    <comment><![CDATA[Degrees North.]]></comment>
   </member>
   <member name="IAltitude" type="REAL32">
-   <comment><![CDATA[Altitude in Metres above absolute mean sea level, mmmmm.dd
-mmmmm = meters of sea level.
+   <comment><![CDATA[Altitude in Metres above absolute mean sea level, mmmmm.dd
+
+mmmmm = meters of sea level.
+
 dd = decimal part of meters.]]></comment>
   </member>
   <member name="IDistanceTravelled" type="UINT32">
@@ -2979,7 +3062,8 @@ dd = decimal part of meters.]]></comment>
    <comment><![CDATA[Location where the train is currently located on the infrastructure.]]></comment>
   </member>
   <member name="ILineDir" type="UINT8">
-   <comment><![CDATA[Normal Railway Direction of Travel.
+   <comment><![CDATA[Normal Railway Direction of Travel.
+
 Not a true compass bearing, but the normal direction of the railway line.]]></comment>
   </member>
   <member name="IGPSRxrOffset" type="UINT8">
@@ -3045,7 +3129,8 @@ Not a true compass bearing, but the normal direction of the railway line.]]></co
    <comment><![CDATA[GPS Longtitude coordinate. The real coord is multiplied by 1,000,000 which gives an accuracy of +/- 1m.]]></comment>
   </member>
   <member name="Car1Dr1Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car1Dr1Inhd" type="BOOLEAN8">
@@ -3055,7 +3140,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car1Dr2Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car1Dr2Inhd" type="BOOLEAN8">
@@ -3065,7 +3151,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car1Dr3Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car1Dr3Inhd" type="BOOLEAN8">
@@ -3075,7 +3162,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car1Dr4Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car1Dr4Inhd" type="BOOLEAN8">
@@ -3085,7 +3173,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car1Dr5Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car1Dr5Inhd" type="BOOLEAN8">
@@ -3095,7 +3184,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car1Dr6Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car1Dr6Inhd" type="BOOLEAN8">
@@ -3105,7 +3195,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car2Dr1Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car2Dr1Inhd" type="BOOLEAN8">
@@ -3115,7 +3206,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car2Dr2Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car2Dr2Inhd" type="BOOLEAN8">
@@ -3125,7 +3217,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car2Dr3Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car2Dr3Inhd" type="BOOLEAN8">
@@ -3135,7 +3228,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car2Dr4Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car2Dr4Inhd" type="BOOLEAN8">
@@ -3145,7 +3239,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car2Dr5Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car2Dr5Inhd" type="BOOLEAN8">
@@ -3155,7 +3250,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car2Dr6Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car2Dr6Inhd" type="BOOLEAN8">
@@ -3165,7 +3261,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car3Dr1Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car3Dr1Inhd" type="BOOLEAN8">
@@ -3175,7 +3272,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car3Dr2Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car3Dr2Inhd" type="BOOLEAN8">
@@ -3185,7 +3283,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car3Dr3Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car3Dr3Inhd" type="BOOLEAN8">
@@ -3195,7 +3294,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car3Dr4Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car3Dr4Inhd" type="BOOLEAN8">
@@ -3205,7 +3305,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car3Dr5Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car3Dr5Inhd" type="BOOLEAN8">
@@ -3215,7 +3316,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car3Dr6Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car3Dr6Inhd" type="BOOLEAN8">
@@ -3225,7 +3327,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car4Dr1Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car4Dr1Inhd" type="BOOLEAN8">
@@ -3235,7 +3338,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car4Dr2Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car4Dr2Inhd" type="BOOLEAN8">
@@ -3245,7 +3349,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car4Dr3Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car4Dr3Inhd" type="BOOLEAN8">
@@ -3255,7 +3360,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car4Dr4Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car4Dr4Inhd" type="BOOLEAN8">
@@ -3265,7 +3371,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car4Dr5Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car4Dr5Inhd" type="BOOLEAN8">
@@ -3275,7 +3382,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car4Dr6Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car4Dr6Inhd" type="BOOLEAN8">
@@ -3285,7 +3393,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car5Dr1Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car5Dr1Inhd" type="BOOLEAN8">
@@ -3295,7 +3404,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car5Dr2Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car5Dr2Inhd" type="BOOLEAN8">
@@ -3305,7 +3415,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car5Dr3Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car5Dr3Inhd" type="BOOLEAN8">
@@ -3315,7 +3426,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car5Dr4Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car5Dr4Inhd" type="BOOLEAN8">
@@ -3325,7 +3437,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car5Dr5Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car5Dr5Inhd" type="BOOLEAN8">
@@ -3335,7 +3448,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Door inhibit button status.]]></comment>
   </member>
   <member name="Car5Dr6Sts" type="UINT16">
-   <comment><![CDATA[Door status, DCUA
+   <comment><![CDATA[Door status, DCUA
+
 This is a bitmap and not an enumerated type.]]></comment>
   </member>
   <member name="Car5Dr6Inhd" type="BOOLEAN8">
@@ -3384,19 +3498,23 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Number of remaining door cycles in a cycling test.]]></comment>
   </member>
   <member name="ICBTCDrMdCls" type="BOOLEAN8">
-   <comment><![CDATA[Door closing condition signal.
+   <comment><![CDATA[Door closing condition signal.
+
 (CBTC not used in LOTrain)]]></comment>
   </member>
   <member name="ICBTCDrMdRls" type="BOOLEAN8">
-   <comment><![CDATA[Door release condition signal.
+   <comment><![CDATA[Door release condition signal.
+
 (CBTC not used in LOTrain)]]></comment>
   </member>
   <member name="ICBTCDrMdIntlk" type="BOOLEAN8">
-   <comment><![CDATA[Door interlock condition signal.
+   <comment><![CDATA[Door interlock condition signal.
+
 (CBTC not used in LOTrain)]]></comment>
   </member>
   <member name="ICBTCDrMdTCMOff" type="BOOLEAN8">
-   <comment><![CDATA[Door interlock condition signal.
+   <comment><![CDATA[Door interlock condition signal.
+
 (CBTC not used in LOTrain)]]></comment>
   </member>
   <member name="ISdoSafTstFltCar1AF" type="BOOLEAN8">
@@ -3475,11 +3593,13 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[AWS/TPWS switch in active cab is in "Isolated" position.]]></comment>
   </member>
   <member name="IEtcsIsolated" type="BOOLEAN8">
-   <comment><![CDATA[ETCS switch in active cab is in "Isolated" position.
+   <comment><![CDATA[ETCS switch in active cab is in "Isolated" position.
+
 (ETCS only on provision in LOTrain)]]></comment>
   </member>
   <member name="ICbtcIsolated" type="BOOLEAN8">
-   <comment><![CDATA[CBTC switch in active cab is in "Isolated" position.
+   <comment><![CDATA[CBTC switch in active cab is in "Isolated" position.
+
 (CBTC not used in LOTrain)]]></comment>
   </member>
   <member name="IPeaBrakeIsolated" type="BOOLEAN8">
@@ -3669,62 +3789,76 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Smoke/Fire in detector 4 in car 1 (LC01)]]></comment>
   </member>
   <member name="ISmokeFireDetected_15" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/Fire in detector 5 in car 1 (LC01)
+   <comment><![CDATA[Smoke/Fire in detector 5 in car 1 (LC01)
+
 ]]></comment>
   </member>
   <member name="ISmokeFireDetected_41" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/Fire in detector 1 in car 4 (LC04)
+   <comment><![CDATA[Smoke/Fire in detector 1 in car 4 (LC04)
+
 ]]></comment>
   </member>
   <member name="ISmokeFireDetected_42" type="BOOLEAN8">
    <comment><![CDATA[Smoke/Fire in detector 2 in car 4 (LC04)]]></comment>
   </member>
   <member name="ISmokeFireDetected_43" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/Fire in detector 3 in car 4 (LC04)
+   <comment><![CDATA[Smoke/Fire in detector 3 in car 4 (LC04)
+
 ]]></comment>
   </member>
   <member name="ISmokeFireDetected_51" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/Fire in detector 1 in car 2 (LC02)
+   <comment><![CDATA[Smoke/Fire in detector 1 in car 2 (LC02)
+
 ]]></comment>
   </member>
   <member name="ISmokeFireDetected_52" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/Fire in detector 2 in car 2 (LC02)
+   <comment><![CDATA[Smoke/Fire in detector 2 in car 2 (LC02)
+
 ]]></comment>
   </member>
   <member name="ISmokeFireDetected_53" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/Fire in detector 3 in car 2 (LC02)
+   <comment><![CDATA[Smoke/Fire in detector 3 in car 2 (LC02)
+
 ]]></comment>
   </member>
   <member name="ISmokeFireDetected_61" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/Fire in detector 1 in car 5 (LC05)
+   <comment><![CDATA[Smoke/Fire in detector 1 in car 5 (LC05)
+
 ]]></comment>
   </member>
   <member name="ISmokeFireDetected_62" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/Fire in detector 2 in car 5 (LC05)
+   <comment><![CDATA[Smoke/Fire in detector 2 in car 5 (LC05)
+
 ]]></comment>
   </member>
   <member name="ISmokeFireDetected_63" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/Fire in detector 3 in car 5 (LC05)
+   <comment><![CDATA[Smoke/Fire in detector 3 in car 5 (LC05)
+
 ]]></comment>
   </member>
   <member name="ISmokeFireDetected_91" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/Fire in detector 1 in car 3 (LC03)
+   <comment><![CDATA[Smoke/Fire in detector 1 in car 3 (LC03)
+
 ]]></comment>
   </member>
   <member name="ISmokeFireDetected_92" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/Fire in detector 2 in car 3 (LC03)
+   <comment><![CDATA[Smoke/Fire in detector 2 in car 3 (LC03)
+
 ]]></comment>
   </member>
   <member name="ISmokeFireDetected_93" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/Fire in detector 3 in car 3 (LC03)
+   <comment><![CDATA[Smoke/Fire in detector 3 in car 3 (LC03)
+
 ]]></comment>
   </member>
   <member name="ISmokeFireDetected_94" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/Fire in detector 4 in car 3 (LC03)
+   <comment><![CDATA[Smoke/Fire in detector 4 in car 3 (LC03)
+
 ]]></comment>
   </member>
   <member name="ISmokeFireDetected_95" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/Fire in detector 5 in car 3 (LC03)
+   <comment><![CDATA[Smoke/Fire in detector 5 in car 3 (LC03)
+
 ]]></comment>
   </member>
   <member name="Reserved12" type="BOOLEAN8">
@@ -3767,7 +3901,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Smoke/fire detector 6 in car 3 (LC03)]]></comment>
   </member>
   <member name="ISmokeFireDetected_56" type="BOOLEAN8">
-   <comment><![CDATA[Smoke/fire detector 6 in car 2 (LC02)
+   <comment><![CDATA[Smoke/fire detector 6 in car 2 (LC02)
+
 ]]></comment>
   </member>
   <member name="ISalCrwPnlAct_3" type="BOOLEAN8">
@@ -4350,7 +4485,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Status: Flag if ASDO Override is available]]></comment>
   </member>
   <member name="ST_IDrgDetNotAct1" type="UINT16">
-   <comment><![CDATA[Status: Drag Detection Not Active cab 1
+   <comment><![CDATA[Status: Drag Detection Not Active cab 1
+
 ]]></comment>
   </member>
   <member name="ST_IAsdoOvrdAvl" type="UINT16">
@@ -4387,7 +4523,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[CSDE data - Validity]]></comment>
   </member>
   <member name="IDrgDetNotAct1" type="BOOLEAN8" status="ST_IDrgDetNotAct1">
-   <comment><![CDATA[RDrag Detection Not Active cab 1
+   <comment><![CDATA[RDrag Detection Not Active cab 1
+
 ]]></comment>
   </member>
   <member name="ST_LocConfirmed" type="UINT16">
@@ -4424,34 +4561,41 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Packet 44 Expected]]></comment>
   </member>
   <member name="ST_IDrgDetNotAct2" type="UINT16">
-   <comment><![CDATA[Status: Drag Detection Not Active cab 2
+   <comment><![CDATA[Status: Drag Detection Not Active cab 2
+
 ]]></comment>
   </member>
   <member name="IDrgDetNotAct2" type="BOOLEAN8" status="ST_IDrgDetNotAct2">
-   <comment><![CDATA[Drag Detection Not Active cab 2
+   <comment><![CDATA[Drag Detection Not Active cab 2
+
 ]]></comment>
   </member>
   <member name="Reserved1" type="UINT8">
    <comment><![CDATA[Reserved]]></comment>
   </member>
   <member name="ST_ZCalcRelPattern1" type="UINT16">
-   <comment><![CDATA[Validity for Less significant bits of the trainwide release pattern
+   <comment><![CDATA[Validity for Less significant bits of the trainwide release pattern
+
 ]]></comment>
   </member>
   <member name="ZCalcRelPattern1" type="UINT32" status="ST_ZCalcRelPattern1">
-   <comment><![CDATA[Less significant bits of the trainwide release pattern
+   <comment><![CDATA[Less significant bits of the trainwide release pattern
+
 ]]></comment>
   </member>
   <member name="ST_ZCalcRelPattern2" type="UINT16">
-   <comment><![CDATA[Validity for Most significant bits of the trainwide release pattern
+   <comment><![CDATA[Validity for Most significant bits of the trainwide release pattern
+
 ]]></comment>
   </member>
   <member name="ST_XPersLeadingCab" type="UINT16">
-   <comment><![CDATA[Validty for Persistent leading cab in the train
+   <comment><![CDATA[Validty for Persistent leading cab in the train
+
 ]]></comment>
   </member>
   <member name="ZCalcRelPattern2" type="UINT32" status="ST_ZCalcRelPattern2">
-   <comment><![CDATA[Most significant bits of the trainwide release pattern
+   <comment><![CDATA[Most significant bits of the trainwide release pattern
+
 ]]></comment>
   </member>
   <member name="XPersLeadingCab" type="UINT32" status="ST_XPersLeadingCab">
@@ -5220,7 +5364,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Reserved padding bits.]]></comment>
   </member>
   <member name="SDT_SSC" type="UINT32">
-   <comment><![CDATA[Safe Sequence Counter
+   <comment><![CDATA[Safe Sequence Counter
+
 ]]></comment>
   </member>
   <member name="SDT_CRC" type="UINT32">
@@ -5496,27 +5641,33 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Car5: SA2 Mio_S1 Section 2- DOSS stuck, limits reached to enable MIO with SSE.]]></comment>
   </member>
   <member name="FCar2Ax3AxNtRot" type="BOOLEAN8">
-   <comment><![CDATA[Car2Bg2 Axle1 not rotating
+   <comment><![CDATA[Car2Bg2 Axle1 not rotating
+
 ]]></comment>
   </member>
   <member name="FCar2Ax4AxNtRot" type="BOOLEAN8">
-   <comment><![CDATA[Car2Bg2 Axle2 not rotating
+   <comment><![CDATA[Car2Bg2 Axle2 not rotating
+
 ]]></comment>
   </member>
   <member name="FCar4Ax3AxNtRot" type="BOOLEAN8">
-   <comment><![CDATA[Car4Bg2 Axle1 not rotating
+   <comment><![CDATA[Car4Bg2 Axle1 not rotating
+
 ]]></comment>
   </member>
   <member name="FCar4Ax4AxNtRot" type="BOOLEAN8">
-   <comment><![CDATA[Car4Bg2 Axle2 not rotating
+   <comment><![CDATA[Car4Bg2 Axle2 not rotating
+
 ]]></comment>
   </member>
   <member name="FCar5Ax3AxNtRot" type="BOOLEAN8">
-   <comment><![CDATA[Car5Bg2 Axle1 not rotating
+   <comment><![CDATA[Car5Bg2 Axle1 not rotating
+
 ]]></comment>
   </member>
   <member name="FCar5Ax4AxNtRot" type="BOOLEAN8">
-   <comment><![CDATA[Car5Bg2 Axle2 not rotating
+   <comment><![CDATA[Car5Bg2 Axle2 not rotating
+
 ]]></comment>
   </member>
   <member name="SHVFireWireMIOFlt_1" type="BOOLEAN8">
@@ -5541,179 +5692,223 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Status: DCHV Box FireWire MIO Failure LC02]]></comment>
   </member>
   <member name="C1Gb1ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 1 Side A Temperature in Car 1
+   <comment><![CDATA[Gearbox 1 Side A Temperature in Car 1
+
 ]]></comment>
   </member>
   <member name="C1Gb1ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 1 Side B Temperature in Car 1
+   <comment><![CDATA[Gearbox 1 Side B Temperature in Car 1
+
 ]]></comment>
   </member>
   <member name="C1Gb2ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 2 Side A Temperature in Car 1
+   <comment><![CDATA[Gearbox 2 Side A Temperature in Car 1
+
 ]]></comment>
   </member>
   <member name="C1Gb2ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 2 Side B Temperature in Car 1
+   <comment><![CDATA[Gearbox 2 Side B Temperature in Car 1
+
 ]]></comment>
   </member>
   <member name="C1Gb3ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 3 Side A Temperature in Car 1
+   <comment><![CDATA[Gearbox 3 Side A Temperature in Car 1
+
 ]]></comment>
   </member>
   <member name="C1Gb3ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 3 Side B Temperature in Car 1
+   <comment><![CDATA[Gearbox 3 Side B Temperature in Car 1
+
 ]]></comment>
   </member>
   <member name="C1Gb4ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 4 Side A Temperature in Car 1
+   <comment><![CDATA[Gearbox 4 Side A Temperature in Car 1
+
 ]]></comment>
   </member>
   <member name="C1Gb4ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 4 Side B Temperature in Car 1
+   <comment><![CDATA[Gearbox 4 Side B Temperature in Car 1
+
 ]]></comment>
   </member>
   <member name="C2Gb1ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 1 Side A Temperature in Car 2
+   <comment><![CDATA[Gearbox 1 Side A Temperature in Car 2
+
 ]]></comment>
   </member>
   <member name="C2Gb1ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 1 Side B Temperature in Car 2
+   <comment><![CDATA[Gearbox 1 Side B Temperature in Car 2
+
 ]]></comment>
   </member>
   <member name="C2Gb2ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 2 Side A Temperature in Car 2
+   <comment><![CDATA[Gearbox 2 Side A Temperature in Car 2
+
 ]]></comment>
   </member>
   <member name="C2Gb2ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 2 Side B Temperature in Car 2
+   <comment><![CDATA[Gearbox 2 Side B Temperature in Car 2
+
 ]]></comment>
   </member>
   <member name="C2Gb3ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 3 Side A Temperature in Car 2
+   <comment><![CDATA[Gearbox 3 Side A Temperature in Car 2
+
 ]]></comment>
   </member>
   <member name="C2Gb3ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 3 Side B Temperature in Car 2
+   <comment><![CDATA[Gearbox 3 Side B Temperature in Car 2
+
 ]]></comment>
   </member>
   <member name="C2Gb4ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 4 Side A Temperature in Car 2
+   <comment><![CDATA[Gearbox 4 Side A Temperature in Car 2
+
 ]]></comment>
   </member>
   <member name="C2Gb4ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 4 Side B Temperature in Car 2
+   <comment><![CDATA[Gearbox 4 Side B Temperature in Car 2
+
 ]]></comment>
   </member>
   <member name="C3Gb1ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 1 Side A Temperature in Car 3
+   <comment><![CDATA[Gearbox 1 Side A Temperature in Car 3
+
 ]]></comment>
   </member>
   <member name="C3Gb1ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 1 Side B Temperature in Car 3
+   <comment><![CDATA[Gearbox 1 Side B Temperature in Car 3
+
 ]]></comment>
   </member>
   <member name="C3Gb2ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 2 Side A Temperature in Car 3
+   <comment><![CDATA[Gearbox 2 Side A Temperature in Car 3
+
 ]]></comment>
   </member>
   <member name="C3Gb2ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 2 Side B Temperature in Car 3
+   <comment><![CDATA[Gearbox 2 Side B Temperature in Car 3
+
 ]]></comment>
   </member>
   <member name="C3Gb3ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 3 Side A Temperature in Car 3
+   <comment><![CDATA[Gearbox 3 Side A Temperature in Car 3
+
 ]]></comment>
   </member>
   <member name="C3Gb3ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 3 Side B Temperature in Car 3
+   <comment><![CDATA[Gearbox 3 Side B Temperature in Car 3
+
 ]]></comment>
   </member>
   <member name="C3Gb4ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 4 Side A Temperature in Car 3
+   <comment><![CDATA[Gearbox 4 Side A Temperature in Car 3
+
 ]]></comment>
   </member>
   <member name="C3Gb4ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 4 Side B Temperature in Car 3
+   <comment><![CDATA[Gearbox 4 Side B Temperature in Car 3
+
 ]]></comment>
   </member>
   <member name="C4Gb1ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 1 Side A Temperature in Car 4
+   <comment><![CDATA[Gearbox 1 Side A Temperature in Car 4
+
 ]]></comment>
   </member>
   <member name="C4Gb1ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 1 Side B Temperature in Car 4
+   <comment><![CDATA[Gearbox 1 Side B Temperature in Car 4
+
 ]]></comment>
   </member>
   <member name="C4Gb2ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 2 Side A Temperature in Car 4
+   <comment><![CDATA[Gearbox 2 Side A Temperature in Car 4
+
 ]]></comment>
   </member>
   <member name="C4Gb2ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 2 Side B Temperature in Car 4
+   <comment><![CDATA[Gearbox 2 Side B Temperature in Car 4
+
 ]]></comment>
   </member>
   <member name="C4Gb3ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 3 Side A Temperature in Car 4
+   <comment><![CDATA[Gearbox 3 Side A Temperature in Car 4
+
 ]]></comment>
   </member>
   <member name="C4Gb3ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 3 Side B Temperature in Car 4
+   <comment><![CDATA[Gearbox 3 Side B Temperature in Car 4
+
 ]]></comment>
   </member>
   <member name="C4Gb4ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 4 Side A Temperature in Car 4
+   <comment><![CDATA[Gearbox 4 Side A Temperature in Car 4
+
 ]]></comment>
   </member>
   <member name="C4Gb4ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 4 Side B Temperature in Car 4
+   <comment><![CDATA[Gearbox 4 Side B Temperature in Car 4
+
 ]]></comment>
   </member>
   <member name="C5Gb1ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 1 Side A Temperature in Car 5
+   <comment><![CDATA[Gearbox 1 Side A Temperature in Car 5
+
 ]]></comment>
   </member>
   <member name="C5Gb1ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 1 Side B Temperature in Car 5
+   <comment><![CDATA[Gearbox 1 Side B Temperature in Car 5
+
 ]]></comment>
   </member>
   <member name="C5Gb2ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 2 Side A Temperature in Car 5
+   <comment><![CDATA[Gearbox 2 Side A Temperature in Car 5
+
 ]]></comment>
   </member>
   <member name="C5Gb2ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 2 Side B Temperature in Car 5
+   <comment><![CDATA[Gearbox 2 Side B Temperature in Car 5
+
 ]]></comment>
   </member>
   <member name="C5Gb3ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 3 Side A Temperature in Car 5
+   <comment><![CDATA[Gearbox 3 Side A Temperature in Car 5
+
 ]]></comment>
   </member>
   <member name="C5Gb3ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 3 Side B Temperature in Car 5
+   <comment><![CDATA[Gearbox 3 Side B Temperature in Car 5
+
 ]]></comment>
   </member>
   <member name="C5Gb4ITmpA" type="INT16">
-   <comment><![CDATA[Gearbox 4 Side A Temperature in Car 5
+   <comment><![CDATA[Gearbox 4 Side A Temperature in Car 5
+
 ]]></comment>
   </member>
   <member name="C5Gb4ITmpB" type="INT16">
-   <comment><![CDATA[Gearbox 4 Side B Temperature in Car 5
+   <comment><![CDATA[Gearbox 4 Side B Temperature in Car 5
+
 ]]></comment>
   </member>
   <member name="PGrBxLwrVdLt" type="INT16">
-   <comment><![CDATA[Parameter- Gear Box Lower Valid Limit
+   <comment><![CDATA[Parameter- Gear Box Lower Valid Limit
+
 ]]></comment>
   </member>
   <member name="PGrBxUprVdLt" type="INT16">
-   <comment><![CDATA[Parameter- Gear Box Upper Valid Limit
+   <comment><![CDATA[Parameter- Gear Box Upper Valid Limit
+
 ]]></comment>
   </member>
   <member name="PGrBxLwrTmpThrshld" type="INT16">
-   <comment><![CDATA[Parameter- Gear Box Lower Temperature Threshold
+   <comment><![CDATA[Parameter- Gear Box Lower Temperature Threshold
+
 ]]></comment>
   </member>
   <member name="SGbTmpExc" type="BOOLEAN8">
-   <comment><![CDATA[Gearbox Temperature Exceeded in any gearbox in unit
+   <comment><![CDATA[Gearbox Temperature Exceeded in any gearbox in unit
+
 ]]></comment>
   </member>
   <member name="C1Ax1AHabdPrb24HrFlt" type="BOOLEAN8">
@@ -6268,7 +6463,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Reserved padding bits.]]></comment>
   </member>
   <member name="SDT_SSC" type="UINT32">
-   <comment><![CDATA[Safe Sequence Counter
+   <comment><![CDATA[Safe Sequence Counter
+
 ]]></comment>
   </member>
   <member name="SDT_CRC" type="UINT32">
@@ -6529,7 +6725,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Cooling Water Pump test requested in Car 1.]]></comment>
   </member>
   <member name="Reserved6" type="AR_BOOLEAN8_4">
-   <comment><![CDATA[Reserved
+   <comment><![CDATA[Reserved
+
 ]]></comment>
   </member>
   <member name="HmiRqCar4LcmAcChgTst" type="BOOLEAN8">
@@ -6596,8 +6793,10 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Cooling Water Pump test requested in Car5.]]></comment>
   </member>
   <member name="Reserved7" type="AR_BOOLEAN8_4">
-   <comment><![CDATA[Reserved
-
+   <comment><![CDATA[Reserved
+
+
+
 ]]></comment>
   </member>
   <member name="HmiRqCar3LcmAcChgTst" type="BOOLEAN8">
@@ -6640,7 +6839,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Dis ACM button pressed in Car3]]></comment>
   </member>
   <member name="Reserved8" type="AR_BOOLEAN8_3">
-   <comment><![CDATA[Reserved
+   <comment><![CDATA[Reserved
+
 ]]></comment>
   </member>
   <member name="ViewImages" type="BOOLEAN8">
@@ -6734,7 +6934,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[HMI WSP Test Request]]></comment>
   </member>
   <member name="ISpdLim3mphReq" type="BOOLEAN8">
-   <comment><![CDATA[Speed Limit Request for 3mph
+   <comment><![CDATA[Speed Limit Request for 3mph
+
 ]]></comment>
   </member>
   <member name="ISpdLim5mphReq" type="BOOLEAN8">
@@ -6747,7 +6948,8 @@ This is a bitmap and not an enumerated type.]]></comment>
    <comment><![CDATA[Isolate Regenerative brake request]]></comment>
   </member>
   <member name="ISelectedRecStartTime" type="UINT32">
-   <comment><![CDATA[Start sequence time.
+   <comment><![CDATA[Start sequence time.
+
 Default 0: From the beginning of record]]></comment>
   </member>
   <member name="ISelectedVehicle1Ident" type="UINT32">
@@ -6822,7 +7024,8 @@ Default 0: From the beginning of record]]></comment>
    <comment><![CDATA[Event Marker button press triggered.]]></comment>
   </member>
   <member name="IStrLnCrtLmtPBReq" type="BOOLEAN8">
-   <comment><![CDATA[Store Line Current Limitation button pressed.
+   <comment><![CDATA[Store Line Current Limitation button pressed.
+
 ]]></comment>
   </member>
   <member name="StrSrvBrkTstBut" type="BOOLEAN8">
@@ -6832,11 +7035,13 @@ Default 0: From the beginning of record]]></comment>
    <comment><![CDATA[Start WSP Test Button.]]></comment>
   </member>
   <member name="HmiLnCrtLmt" type="BOOLEAN8">
-   <comment><![CDATA[Line Current Limitation from Maintainer.
+   <comment><![CDATA[Line Current Limitation from Maintainer.
+
 ]]></comment>
   </member>
   <member name="CAplSltBrsh" type="BOOLEAN8">
-   <comment><![CDATA[Apply Sleet Brush Requested
+   <comment><![CDATA[Apply Sleet Brush Requested
+
 ]]></comment>
   </member>
   <member name="CDsAutChgOv" type="BOOLEAN8">
@@ -6846,7 +7051,8 @@ Default 0: From the beginning of record]]></comment>
    <comment><![CDATA[Reserved]]></comment>
   </member>
   <member name="ITrnImpVal" type="INT16">
-   <comment><![CDATA[Train Impedance Value
+   <comment><![CDATA[Train Impedance Value
+
 ]]></comment>
   </member>
   <member name="Reserved6" type="AR_UINT8_2">
@@ -6874,7 +7080,8 @@ Default 0: From the beginning of record]]></comment>
    <comment><![CDATA[Cab cooling test request.]]></comment>
   </member>
   <member name="ISlnSlfTstOn" type="BOOLEAN8">
-   <comment><![CDATA[Saloon self test on.
+   <comment><![CDATA[Saloon self test on.
+
 ]]></comment>
   </member>
   <member name="ISlnHtTstOn" type="BOOLEAN8">
@@ -6959,7 +7166,8 @@ Default 0: From the beginning of record]]></comment>
    <comment><![CDATA[Rollback Detection Isolation]]></comment>
   </member>
   <member name="CDwellTimeOverride" type="BOOLEAN8">
-   <comment><![CDATA[Command: Override dwell time
+   <comment><![CDATA[Command: Override dwell time
+
 ]]></comment>
   </member>
   <member name="CEnRegBr" type="BOOLEAN8">
@@ -6978,7 +7186,8 @@ Default 0: From the beginning of record]]></comment>
    <comment><![CDATA[Reset Converter Fire Detection Fault]]></comment>
   </member>
   <member name="CRstFireDtcAlms" type="BOOLEAN8">
-   <comment><![CDATA[Reset Fire Detection Alarms
+   <comment><![CDATA[Reset Fire Detection Alarms
+
 ]]></comment>
   </member>
   <member name="CActADDIsl" type="BOOLEAN8">
@@ -7065,81 +7274,117 @@ Default 0: From the beginning of record]]></comment>
    <comment><![CDATA[Show Combined Isolation and Fault indicator as Flashing (Steady Red on Aventra)]]></comment>
   </member>
   <member name="Button1Show" type="BOOLEAN8">
-   <comment><![CDATA[SPAD indicator/button.
-
-False = Show button as disabled
+   <comment><![CDATA[SPAD indicator/button.
+
+
+
+False = Show button as disabled
+
 True = Use button state variable]]></comment>
   </member>
   <member name="Button1State" type="UINT8">
-   <comment><![CDATA[SPAD indicator/button.                                                                                                       0 = Enabled (red)
-1 = Flashing (red/light grey)
+   <comment><![CDATA[SPAD indicator/button.                                                                                                       0 = Enabled (red)
+
+1 = Flashing (red/light grey)
+
 ]]></comment>
   </member>
   <member name="Button2Show" type="BOOLEAN8">
-   <comment><![CDATA[OSS indicator/button.
-
-False = Show button as disabled
+   <comment><![CDATA[OSS indicator/button.
+
+
+
+False = Show button as disabled
+
 True = Use button state variable]]></comment>
   </member>
   <member name="Button2State" type="UINT8">
-   <comment><![CDATA[OSS indicator/button.                                                                                                         0 = Enabled (yellow)
+   <comment><![CDATA[OSS indicator/button.                                                                                                         0 = Enabled (yellow)
+
 1 = Flashing (yellow/light grey)]]></comment>
   </member>
   <member name="Button3Show" type="BOOLEAN8">
-   <comment><![CDATA[Release Brake indicator/button.
-
-False = Show button as disabled
+   <comment><![CDATA[Release Brake indicator/button.
+
+
+
+False = Show button as disabled
+
 True = Use button state variable]]></comment>
   </member>
   <member name="Button3State" type="UINT8">
-   <comment><![CDATA[Release Brake indicator/button.                                                                                         0 = Visible (light grey)
+   <comment><![CDATA[Release Brake indicator/button.                                                                                         0 = Visible (light grey)
+
 1 = Not used]]></comment>
   </member>
   <member name="Button4Show" type="BOOLEAN8">
-   <comment><![CDATA[AWS Brake indicator/button.
-
-False = Show button as disabled
+   <comment><![CDATA[AWS Brake indicator/button.
+
+
+
+False = Show button as disabled
+
 True = Use button state variable]]></comment>
   </member>
   <member name="Button4State" type="UINT8">
-   <comment><![CDATA[AWS Brake indicator/button.                                                                                              0 = Enabled (yellow)
+   <comment><![CDATA[AWS Brake indicator/button.                                                                                              0 = Enabled (yellow)
+
 1 = Flashing (yellow/light grey)]]></comment>
   </member>
   <member name="Button5Show" type="BOOLEAN8">
-   <comment><![CDATA[Train Stop Override indicator/button.
-
-False = Show button as disabled
+   <comment><![CDATA[Train Stop Override indicator/button.
+
+
+
+False = Show button as disabled
+
 True = Use button state variable]]></comment>
   </member>
   <member name="Button5ShowInverse" type="BOOLEAN8">
-   <comment><![CDATA[Train Stop Override indicator/button.
-
+   <comment><![CDATA[Train Stop Override indicator/button.
+
+
+
 The antivalent counterpart to Button5Show.]]></comment>
   </member>
   <member name="Button5State" type="UINT8">
-   <comment><![CDATA[Train Stop Override indicator/button.
-
-After successful button-press the button will be flashing until the text message has been acknowledged, the button will then go into enabled.
-
-0 = Enabled/Inactive (light grey)
-1 = Enabled/Active (steady yellow)
+   <comment><![CDATA[Train Stop Override indicator/button.
+
+
+
+After successful button-press the button will be flashing until the text message has been acknowledged, the button will then go into enabled.
+
+
+
+0 = Enabled/Inactive (light grey)
+
+1 = Enabled/Active (steady yellow)
+
 ]]></comment>
   </member>
   <member name="LifeSign" type="UINT16">
-   <comment><![CDATA[This lifesign is used as a safety incrementation to make sure the data is not frozen.
-
-Set to 0 after reset and then incremented with 1 each cycle, turn-around starts at 1
-Max value = 2exp15-1 (65535)
-(As per the IPTCom standard)
+   <comment><![CDATA[This lifesign is used as a safety incrementation to make sure the data is not frozen.
+
+
+
+Set to 0 after reset and then incremented with 1 each cycle, turn-around starts at 1
+
+Max value = 2exp15-1 (65535)
+
+(As per the IPTCom standard)
+
 ]]></comment>
   </member>
   <member name="Reserved1" type="AR_UINT8_2">
    <comment><![CDATA[Byte Padding]]></comment>
   </member>
   <member name="Checksum" type="UINT32">
-   <comment><![CDATA[A CRC-32 checksum of all variables in this message, 18 bytes, from Ind1Black to LifeSign.
-[ Ind1Black | Ind1BlackYellow | ... | But-ton5State | LifeSign MSB | LifeSign LSB ]
-The CRC shall be implemented according to the UIC 556 standard.
+   <comment><![CDATA[A CRC-32 checksum of all variables in this message, 18 bytes, from Ind1Black to LifeSign.
+
+[ Ind1Black | Ind1BlackYellow | ... | But-ton5State | LifeSign MSB | LifeSign LSB ]
+
+The CRC shall be implemented according to the UIC 556 standard.
+
 This uses an initial value of FFFF FFFF, and a polynomial of 1 F4AC FB13.]]></comment>
   </member>
  </compound>
@@ -7169,79 +7414,140 @@ This uses an initial value of FFFF FFFF, and a polynomial of 1 F4AC FB13.]]></co
    <comment><![CDATA[Reserved]]></comment>
   </member>
   <member name="IUnitID" type="AR_UINT32_4" status="ST_IUnitID">
-   <comment><![CDATA[Array which defines the unit ID.
-The array reflects the train topology in order of unit connections. The array is populated from the array element 1 to 4. The array is populated starting from one train extremity to the other but there is not a rule in how to choose the extremity. After populated the array does not change unless there is a topology change (coupling scenario).
-
-Example 3x 5-car Unit configuration:
-(--------------7200501----------)
-DMS1-PMS-DMS2+
-(--------------7200503----------)
-DMS2-PMS-DMS1+ 
-(--------------7200502----------)
-DMS2-PMS-MS1-DMS1
-The output can be:
-[7200501, 7200503, 7200502,0]
-Or
-[7200502, 7200503, 7200501,0]
-
-Example 10-car Unit:
-(--------------7201101----------)
-DT-M3L-M2-PM-EMLW+
-(--------------7202101----------)
+   <comment><![CDATA[Array which defines the unit ID.
+
+The array reflects the train topology in order of unit connections. The array is populated from the array element 1 to 4. The array is populated starting from one train extremity to the other but there is not a rule in how to choose the extremity. After populated the array does not change unless there is a topology change (coupling scenario).
+
+
+
+Example 3x 5-car Unit configuration:
+
+(--------------7200501----------)
+
+DMS1-PMS-DMS2+
+
+(--------------7200503----------)
+
+DMS2-PMS-DMS1+ 
+
+(--------------7200502----------)
+
+DMS2-PMS-MS1-DMS1
+
+The output can be:
+
+[7200501, 7200503, 7200502,0]
+
+Or
+
+[7200502, 7200503, 7200501,0]
+
+
+
+Example 10-car Unit:
+
+(--------------7201101----------)
+
+DT-M3L-M2-PM-EMLW+
+
+(--------------7202101----------)
+
 ET-M3-M2-PML-DM]]></comment>
   </member>
   <member name="ICarPerUni" type="AR_UINT8_4" status="ST_ICarPerUni">
-   <comment><![CDATA[Array which defines the number of cars within each unit. 
-It is aligned to the data presented in the UnitID array.
-Example 3x Unit configuration:
-(--------------7200301----------)
-DMS1-PMS-DMS2+
-(--------------7200303----------)
-DMS2-PMS-DMS1+ 
-(--------------7200402----------)
-DMS2-PMS-MS1-DMS1
-
-The output can be:
-[3,3,4,0]
-Or
+   <comment><![CDATA[Array which defines the number of cars within each unit. 
+
+It is aligned to the data presented in the UnitID array.
+
+Example 3x Unit configuration:
+
+(--------------7200301----------)
+
+DMS1-PMS-DMS2+
+
+(--------------7200303----------)
+
+DMS2-PMS-DMS1+ 
+
+(--------------7200402----------)
+
+DMS2-PMS-MS1-DMS1
+
+
+
+The output can be:
+
+[3,3,4,0]
+
+Or
+
 [4,3,3,0]]]></comment>
   </member>
   <member name="IDMStype" type="AR_UINT8_4" status="ST_IDMStype">
-   <comment><![CDATA[The array represents the DMS car type (DMS1 or DMS2) in a Unit in accordance to the active unit (AUnit). For each unit, the value (1,2) represents  DMS type (DMS1 or DMS2) of the active cab type and the non active cab equivalent DMS cars in the other units (DMS cars travelling in same direction)
-Example 3x Unit configuration:
-(--------------7200501----------)
-DMS1-PMS-DMS2+
-(--------------7200503----------)
-DMS2-PMS-DMS1+ 
-(--------------7200502----------)
-DMS2-PMS-MS1-DMS1
-If DMS1 is the active cab in unit 7200101 [1,2,2,0]
-If DMS2 is the active cab in unit 7200101 [2,1,1,0]
-If DMS1 is the active cab in unit 7200102 [2,1,1,0]
-If DMS2 is the active cab in unit 7200102 [1,2,2,0]
-If DMS1 is the active cab in unit 7200103 [2,1,1,0]
-If DMS2 is the active cab in unit 7200103 [1,2,2,0]
-If the active unit (AUnit) field is 0 all the values in the array are set to 0.
+   <comment><![CDATA[The array represents the DMS car type (DMS1 or DMS2) in a Unit in accordance to the active unit (AUnit). For each unit, the value (1,2) represents  DMS type (DMS1 or DMS2) of the active cab type and the non active cab equivalent DMS cars in the other units (DMS cars travelling in same direction)
+
+Example 3x Unit configuration:
+
+(--------------7200501----------)
+
+DMS1-PMS-DMS2+
+
+(--------------7200503----------)
+
+DMS2-PMS-DMS1+ 
+
+(--------------7200502----------)
+
+DMS2-PMS-MS1-DMS1
+
+If DMS1 is the active cab in unit 7200101 [1,2,2,0]
+
+If DMS2 is the active cab in unit 7200101 [2,1,1,0]
+
+If DMS1 is the active cab in unit 7200102 [2,1,1,0]
+
+If DMS2 is the active cab in unit 7200102 [1,2,2,0]
+
+If DMS1 is the active cab in unit 7200103 [2,1,1,0]
+
+If DMS2 is the active cab in unit 7200103 [1,2,2,0]
+
+If the active unit (AUnit) field is 0 all the values in the array are set to 0.
+
 ]]></comment>
   </member>
   <member name="IAUnit" type="UINT8" status="ST_IAUnit">
-   <comment><![CDATA[Indicates the index in the array CarPerUni  and UnitID where the active cab is located.
+   <comment><![CDATA[Indicates the index in the array CarPerUni  and UnitID where the active cab is located.
+
 The value is set to 0 if there is no active cab or more than 1 active cab.]]></comment>
   </member>
   <member name="ICabCoupled" type="UINT8" status="ST_CabCoupled">
-   <comment><![CDATA[This signal provides the information relevant to the coupling status of the DMS cars of the local unit. 
-Note: Compared to the previous instructions, the CabCoupled  signal provides a different value depending on the unit it is generated and it is not train based.
-It is scope of the supplier to use this signal generated by the active unit only (unit where the cab active is) and ignore this value in the other Units.  
-Example 3x Unit configuration:
-(--------------7200101----------)
-DMS1-PMS-DMS2+
-(--------------7200103----------)
-DMS2-PMS-DMS1+ 
-(--------------7200102----------)
-DMS2-PMS-MS1-DMS1
-If generated in unit 7200101= 2
-If generated in unit 7200103= 3
-If generated in unit 7200102= 2
+   <comment><![CDATA[This signal provides the information relevant to the coupling status of the DMS cars of the local unit. 
+
+Note: Compared to the previous instructions, the CabCoupled  signal provides a different value depending on the unit it is generated and it is not train based.
+
+It is scope of the supplier to use this signal generated by the active unit only (unit where the cab active is) and ignore this value in the other Units.  
+
+Example 3x Unit configuration:
+
+(--------------7200101----------)
+
+DMS1-PMS-DMS2+
+
+(--------------7200103----------)
+
+DMS2-PMS-DMS1+ 
+
+(--------------7200102----------)
+
+DMS2-PMS-MS1-DMS1
+
+If generated in unit 7200101= 2
+
+If generated in unit 7200103= 3
+
+If generated in unit 7200102= 2
+
 ]]></comment>
   </member>
   <member name="Reserved5" type="UINT8">
@@ -7287,7 +7593,8 @@ If generated in unit 7200102= 2
    <comment><![CDATA[Reserved padding bits.]]></comment>
   </member>
   <member name="SDT_SSC" type="UINT32">
-   <comment><![CDATA[Safe Sequence Counter
+   <comment><![CDATA[Safe Sequence Counter
+
 ]]></comment>
   </member>
   <member name="SDT_CRC" type="UINT32">
@@ -7536,7 +7843,8 @@ If generated in unit 7200102= 2
    <comment><![CDATA[Reserved padding bits.]]></comment>
   </member>
   <member name="SDT_SSC" type="UINT32" status="CheckVariable">
-   <comment><![CDATA[Safe Sequence Counter
+   <comment><![CDATA[Safe Sequence Counter
+
 ]]></comment>
   </member>
   <member name="SDT_CRC" type="UINT32">
