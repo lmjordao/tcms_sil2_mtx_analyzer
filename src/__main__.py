@@ -25,6 +25,7 @@ list_comparison_global = []
 list_signals_comparison_global = []
 list_nc_type_global = []
 list_proj_nc_type_global = []
+safe_signals_global = []
 
 
 def load_all_SA_mtx_files():
@@ -161,6 +162,10 @@ def get_different_safe_signals(file_list):
 
 def check_signal_pool_integrity(file_list):
     _normalized_file_list = [filename.split('\\')[1] for filename in file_list]
+    projects_used = []
+    for i in _normalized_file_list:
+        projects_used.append(i.split('_')[0])
+    sa_used = i.split('CCUS_')[1].split('_')[0]
 
     _xml_tree_list = [etree.parse(_file) for _file in file_list]
 
@@ -183,54 +188,123 @@ def check_signal_pool_integrity(file_list):
     # _xlsx_row = 0
 
     _different_safe_signals = set()
+    num_saf_con = [[] for _ in range(0, len(_xml_tree_list))]
+    name_safe_signals = []
+    is_first_add = []
+    # index_safe_signal = 0
+    is_first_round = True
+    #is_first_add = True
 
     # Actually compare signals against each other
     for i in range(0, len(_xml_tree_list) - 1):
-
         # Writes/creates a column for the current file under analysis
         # worksheet.write(0, i + 1, _normalized_file_list[i].replace('.mtx', ''))
-
         for j in range(i + 1, len(_xml_tree_list)):
-            # print(' -- Comparing :' + _normalized_file_list[i] + ' against ' + _normalized_file_list[j])
-
+            print('primeiro for')
+            print(' -- Comparing :' + _normalized_file_list[i] + ' against ' + _normalized_file_list[j])
+            #input('cjreck')
             # Get all safe-signals from i file tree
             _safe_signal_list = _xml_tree_list[i].findall('safe-signal')
             for _safe_signal_1 in _safe_signal_list:
-
+                print('segundo for')
                 # Gets all signal names from i file tree
                 _safe_signal_variable_1 = _safe_signal_1.get('variable')
-
+                print(_safe_signal_variable_1)
+                #print(index_safe_signal)
+                # aux = index_safe_signal
+                if _safe_signal_variable_1 in name_safe_signals:
+                    index_safe_signal = name_safe_signals.index(_safe_signal_variable_1)
+                    print('if1 index', index_safe_signal)
+                    # aux = aux -1
+                    # print(aux)
+                else:
+                    print('new')
+                    name_safe_signals.append(_safe_signal_variable_1)
+                    is_first_add.append(True)
+                    for cur_list in num_saf_con:
+                        cur_list.append(0)
+                    index_safe_signal = len(name_safe_signals) - 1
+                    print('if2 index', index_safe_signal)
+                '''if _safe_signal_variable_1 == 'STCC_X_CabStatus':
+                    # if _safe_signal_variable_1 == 'MIO_S_BrApBg1Car1':
+                    # if _safe_signal_variable_1 == 'SMH_S_TcmsHltCar1':
+                    # print(index_safe_signal)
+                    print(' -- Comparing :' + _normalized_file_list[i] + ' against ' + _normalized_file_list[j])
+                    input('sinal exist')'''
                 # Check if signal exists in second (j) file tree (the file that i is being compared with)
                 _safe_signal_filtered_list_2 = _xml_tree_list[j].findall(
                     'safe-signal[@variable="' + _safe_signal_variable_1 + '"]')
                 if len(_safe_signal_filtered_list_2) > 0:
                     _safe_signal_variable_2 = _safe_signal_filtered_list_2[0].get('variable')
-
+                    print(_safe_signal_variable_2)
+                    print(_safe_signal_variable_2)
+                    
                     # Ok, the signal exists in the second file (j)...
                     # Check if safe-connection pool size match
                     safe_conn_list_1 = _safe_signal_1.findall('safe-connection')
                     safe_conn_list_2 = _safe_signal_filtered_list_2[0].findall('safe-connection')
                     if len(safe_conn_list_1) == len(safe_conn_list_2):
                         # print('SAFE-CONN POOL Match')
-
                         # For each signal pool, check if variables are the same
                         _flag_different_signals = False
                         for k in range(0, len(safe_conn_list_1)):
                             # If safe-conn pool signal names do not match:
+                            print(safe_conn_list_1[k].get('variable'))
+                            print(safe_conn_list_2[k].get('variable'))
+                            print('status first round', is_first_round)
+                            print('status first add', is_first_add[index_safe_signal])
                             if safe_conn_list_1[k].get('variable') != safe_conn_list_2[k].get('variable'):
                                 _flag_different_signals = True
+                                print('zero if')
+                                if is_first_round is True:
+                                    print('primeiro if true')
+                                    if (len(safe_conn_list_1) != 0) and (is_first_add[index_safe_signal] is True):
+                                        num_saf_con[i][index_safe_signal] = num_saf_con[i][index_safe_signal] + 1
+                                        print('primeiro if')
+                                        is_first_add[index_safe_signal] = False
+                                    if len(safe_conn_list_2) != 0:
+                                        print('seg if')
+                                        num_saf_con[j][index_safe_signal] = num_saf_con[j][index_safe_signal] + 1
+
+                                    # is_first_round = False
                                 _out(' Info: Different safe-connection signals for safe-signal: '
                                      + _safe_signal_variable_1 + ' while comparing projects '
                                      + _normalized_file_list[i][:3] + '-' + _normalized_file_list[j][:3])
-
+                            else:
+                                print('primeiro else')
+                                if is_first_round is True:
+                                    print('seg if true')
+                                    if (len(safe_conn_list_1) != 0) and (is_first_add[index_safe_signal] is True):
+                                        print('terceiro if')
+                                        num_saf_con[i][index_safe_signal] = num_saf_con[i][index_safe_signal] + 1
+                                        is_first_add[index_safe_signal] = False
+                                    if len(safe_conn_list_2) != 0:
+                                        print('quarto if')
+                                        num_saf_con[j][index_safe_signal] = num_saf_con[j][index_safe_signal] + 1
+                                num_saf_con[i][index_safe_signal] = num_saf_con[i][index_safe_signal] + 1
+                                num_saf_con[j][index_safe_signal] = num_saf_con[j][index_safe_signal] + 1
+                                    # is_first_round = False
+                                # num_saf_con[i][index_safe_signal] = num_saf_con[i][index_safe_signal] + 1
+                                # num_saf_con[j][index_safe_signal] = num_saf_con[j][index_safe_signal] + 1
                                 # print(' -- ' + _normalized_file_list[j])
                                 # print(' [!] safe-connection does not match for signal ' + safe_conn_list_2[k].get('variable'))
                         # For safe_conn_list ends
+                        # input('stop')
                         if _flag_different_signals:
                             _different_safe_signals.add(_safe_signal_variable_1)
                             break
                     # If safe-conn pool size does not match:
                     else:
+                        print('seg else')
+                        if is_first_round is True:
+                            print('seg if true')
+                            if (len(safe_conn_list_1) != 0) and (is_first_add[index_safe_signal] is True):
+                                print('terceiro if')
+                                num_saf_con[i][index_safe_signal] = num_saf_con[i][index_safe_signal] + 1
+                                is_first_add[index_safe_signal] = False
+                            if len(safe_conn_list_2) != 0:
+                                print('quarto if')
+                                num_saf_con[j][index_safe_signal] = num_saf_con[j][index_safe_signal] + 1
                         # print(' -- ' + _normalized_file_list[j])
                         # print(' [!] Connection pool size does not match for signal: ' + _safe_signal_variable_1)
                         _different_safe_signals.add(_safe_signal_variable_1)
@@ -240,13 +314,41 @@ def check_signal_pool_integrity(file_list):
                         # return False
                 # If the signal in file tree i is not found in file tree j:
                 else:
+                    print('terceiro else')
+                    if is_first_round is True:
+                        print('terceiro if true')
+                        if (len(safe_conn_list_1) != 0) and (is_first_add[index_safe_signal] is True):
+                            print('quinto if')
+                            num_saf_con[i][index_safe_signal] = num_saf_con[i][index_safe_signal] + 1
+                            is_first_add[index_safe_signal] = False
+                        if len(safe_conn_list_2) != 0:
+                            print('sexto if')
+                            num_saf_con[j][index_safe_signal] = num_saf_con[j][index_safe_signal] + 0
+                        # is_first_round = False
                     _out('Signal ' + _safe_signal_variable_1 + ' not found in ' + _normalized_file_list[j], OUT_ERR)
                     _different_safe_signals.add(_safe_signal_variable_1)
                     # return False
+                # index_safe_signal = aux + 1
+            #is_first_add = False
+            '''print('i: ', _normalized_file_list[i][:3])
+            print(num_saf_con[i][index_safe_signal])
+            print('j: ', _normalized_file_list[j][:3])
+            print(num_saf_con[j][index_safe_signal])
+            if _safe_signal_variable_1 == 'MIO_S_BrApBg1Car1':
+            #if _safe_signal_variable_1 == 'STCC_X_CabStatus':
+                input('sinal pause')'''
+            # input('check out')
+        is_first_round = False
     if len(_different_safe_signals) > 0:
         _out('Different safe-signals across all projects for the current SA: ')
         _out('   ' + '       \n       '.join(_different_safe_signals))
 
+    global safe_signals_global
+    safe_signals = [projects_used]
+    safe_signals.append([sa_used] * len(name_safe_signals))
+    safe_signals.append(name_safe_signals)
+    safe_signals.append(num_saf_con)
+    safe_signals_global.append(safe_signals)
     return _different_safe_signals
 
 
@@ -344,8 +446,8 @@ def verify_internal_interface_non_connected_signals(file_path, mtx_file_list):
                     if _member_name not in all_connections_set:
                         # _out('No connection found for signal: ' + _member_name)
                         _out('No connection found in SA for signal: ' + _member_name)
- 
-    difference = list(set(all_connections_type_set)-set(all_connections_set))
+
+    difference = list(set(all_connections_type_set) - set(all_connections_set))
     invalid_list = []
     for item in difference:
         for _member_name_pattern in INVALID_MEMBER_NAME_PATTERNS:
@@ -411,20 +513,41 @@ def _export_excel_file(folder_path):
     proj_list.sort()
     worksheet.range('A1').value = ['Signal'] + proj_list + ['In all projects']
     # workbook.api.RefreshAll()
-    '''
+
     if 'Connections comparison table' in ws_names:
         worksheet = workbook.sheets['Connections comparison table']
         worksheet.clear_contents()
     else:
         worksheet = workbook.sheets.add('Connections comparison table')
-    worksheet.range('A1').options(transpose=True).value = []
-    worksheet.range('B1').options(transpose=True).value = []
-    table = worksheet.range("A1").expand('table')
-    worksheet.api.ListObjects.Add(1, worksheet.api.Range(table.address))
+    sa_safe_signals = []
+    name_safe_signals = []
     proj_list = list(set([item for sublist in list_project_global for item in sublist]))
     proj_list.sort()
-    worksheet.range('A1').value = ['Signal'] + proj_list + ['In all projects']
-    '''
+    num_saf_con_ = [[] for _ in proj_list]
+    for i in safe_signals_global:
+        sa_safe_signals.append(i[1])
+        name_safe_signals.append(i[2])
+        if proj_list == i[0]:
+            for j, _ in enumerate(proj_list):
+                num_saf_con_[j].append(i[3][j])
+        else:
+            order = 0
+            for j, item1 in enumerate(proj_list):
+                if item1 in i[0]:
+                    num_saf_con_[j].append(i[3][order])
+                    order = order + 1
+                else:
+                    num_saf_con_[j].append(['No'] * len(i[2]))
+    num_safe = [[] for _ in proj_list]
+    for j, _ in enumerate(proj_list):
+        num_safe[j] = [item for sublist in num_saf_con_[j] for item in sublist]
+    worksheet.range('A1').options(transpose=True).value = [item for sublist in sa_safe_signals for item in sublist]
+    worksheet.range('B1').options(transpose=True).value = [item for sublist in name_safe_signals for item in sublist]
+    worksheet.range('C1').options(transpose=True).value = num_safe
+    table = worksheet.range("A1").expand('table')
+    worksheet.api.ListObjects.Add(1, worksheet.api.Range(table.address))
+    worksheet.range('A1').value = ['SA', 'Signal'] + proj_list
+
     if 'Signals NC in types' in ws_names:
         worksheet = workbook.sheets['Signals NC in types']
         worksheet.clear_contents()
